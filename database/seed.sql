@@ -4,10 +4,11 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
-TRUNCATE TABLE `comments`;
-TRUNCATE TABLE `likes`;
-TRUNCATE TABLE `posts`;
-TRUNCATE TABLE `users`;
+-- Use DELETE instead of TRUNCATE to avoid FK constraint issues in phpMyAdmin
+DELETE FROM `comments`;
+DELETE FROM `likes`;
+DELETE FROM `posts`;
+DELETE FROM `users`;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
