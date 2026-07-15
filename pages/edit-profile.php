@@ -1,4 +1,5 @@
 <?php
+$baseUrl = '../';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/helpers.php';
 session_start();
@@ -46,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles/modern.css">
     <title>Modifier le profil — Networkee</title>
 </head>
 <body>

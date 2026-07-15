@@ -6,22 +6,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/styles/modern.css">
+    <link rel="stylesheet" href="<?php echo $baseUrl; ?>styles/modern.css">
     <title>Networkee</title>
 </head>
 <body>
     <nav class="navbar-modern">
         <div class="navbar-inner">
-            <a href="/main.php" class="logo">
+            <a href="<?php echo $baseUrl; ?>main.php" class="logo">
                 <div class="logo-mark">N</div>
                 <span>Networkee</span>
             </a>
 
             <div class="nav-links">
-                <a href="/main.php">Home</a>
-                <a href="/pages/profile.php">Profil</a>
-                <a href="/pages/home.php" class="active">Le Fil 🌈</a>
-                <a href="/pages/logout.php" class="logout">Bye 👋</a>
+                <a href="<?php echo $baseUrl; ?>main.php">Home</a>
+                <a href="<?php echo $baseUrl; ?>pages/profile.php">Profil</a>
+                <a href="<?php echo $baseUrl; ?>pages/home.php" class="active">Le Fil 🌈</a>
+                <a href="<?php echo $baseUrl; ?>pages/logout.php" class="logout">Bye 👋</a>
             </div>
 
             <button class="mobile-menu-btn" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">

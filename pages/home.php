@@ -1,4 +1,5 @@
 <?php
+$baseUrl = '../';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/helpers.php';
 session_start();
@@ -85,7 +86,6 @@ $currentUser = $_SESSION['username'] ?? 'Invité';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles/modern.css">
     <title>Le Fil — Networkee</title>
 </head>
 <body>
@@ -151,7 +151,7 @@ $currentUser = $_SESSION['username'] ?? 'Invité';
                 </div>
 
                 <?php if ($post['image']): ?>
-                    <img src="/uploads/<?php echo htmlspecialchars($post['image']); ?>" alt="Image du post" class="post-image">
+                    <img src="<?php echo $baseUrl; ?>uploads/<?php echo htmlspecialchars($post['image']); ?>" alt="Image du post" class="post-image">
                 <?php endif; ?>
 
                 <div class="post-actions">

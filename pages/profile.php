@@ -1,4 +1,5 @@
 <?php
+$baseUrl = '../';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/helpers.php';
 session_start();
@@ -56,7 +57,6 @@ $posts = $stmt->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles/modern.css">
     <title>Profil — Networkee</title>
 </head>
 <body>
@@ -107,7 +107,7 @@ $posts = $stmt->fetchAll();
                     <?php echo nl2br(htmlspecialchars($post['content'])); ?>
                 </div>
                 <?php if ($post['image']): ?>
-                    <img src="/uploads/<?php echo htmlspecialchars($post['image']); ?>" alt="Image du post" class="post-image">
+                    <img src="<?php echo $baseUrl; ?>uploads/<?php echo htmlspecialchars($post['image']); ?>" alt="Image du post" class="post-image">
                 <?php endif; ?>
                 <div class="post-actions">
                     <span class="action-btn">
