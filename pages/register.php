@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax'])) {
                         if (response.success) {
                             messageDiv.html(`<div class='alert alert-success'>${response.message}</div>`);
                             $('#registerForm')[0].reset();
-                            setTimeout(() => window.location.href = '/pages/login.php', 1500);
+                            setTimeout(() => window.location.href = 'login.php', 1500);
                         } else {
                             messageDiv.html(`<div class='alert alert-danger'>${response.message}</div>`);
                         }

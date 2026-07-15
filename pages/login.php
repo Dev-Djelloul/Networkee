@@ -82,7 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax'])) {
                         const messageDiv = $('#message');
                         if (response.success) {
                             messageDiv.html(`<div class='alert alert-success'>${response.message}</div>`);
-                            setTimeout(() => window.location.href = '/main.php', 800);
+                            setTimeout(() => window.location.href = '../main.php', 800);
                         } else {
                             messageDiv.html(`<div class='alert alert-danger'>${response.message}</div>`);
                         }
