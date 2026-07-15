@@ -11,6 +11,12 @@ TRUNCATE TABLE `users`;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
+-- Reset AUTO_INCREMENT counters
+ALTER TABLE `comments` AUTO_INCREMENT = 1;
+ALTER TABLE `likes` AUTO_INCREMENT = 1;
+ALTER TABLE `posts` AUTO_INCREMENT = 1;
+ALTER TABLE `users` AUTO_INCREMENT = 1;
+
 -- Utilisateurs (mots de passe hashés avec bcrypt)
 -- alexandre@networkee.test  -> password : password
 -- sophie@networkee.test     -> password : 123456

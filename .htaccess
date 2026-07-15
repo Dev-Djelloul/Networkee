@@ -3,4 +3,4 @@ DirectoryIndex index.php
 RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^$ /loader.php [L,R=302]
+RewriteRule ^$ loader.php [L,R=302]

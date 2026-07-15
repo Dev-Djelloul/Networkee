@@ -7,6 +7,6 @@ session_unset();
 // Détruire la session
 session_destroy();
 
-// Rediriger vers la page de connexion
-header('Location: /loader.php');
+// Rediriger vers la page de chargement (compatible sous-dossier local)
+header('Location: ../loader.php');
 exit;
