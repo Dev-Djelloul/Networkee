@@ -19,10 +19,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax'])) {
         $response['message'] = 'Les mots de passe ne correspondent pas.';
     } else {
         // Vérifier si l'email est déjà utilisé
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE email = :email");
         $stmt->execute(['email' => $email]);
 
-        if ($stmt->rowCount() > 0) {
+        if ($stmt->fetchColumn() > 0) {
             $response['message'] = "Cet email est déjà utilisé.";
         } else {
             // Hashage du mot de passe

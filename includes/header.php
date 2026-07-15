@@ -15,7 +15,7 @@
             <div class="container-fluid">
                 <!-- Titre avec logo -->
                 <a class="navbar-brand">
-                  <img src="/networkee/icons/icons8-artificial-intelligence-48.png"
+                  <img src="/icons/icons8-artificial-intelligence-48.png"
                    alt="Icône" style="width: 30px; height: 30px; margin-right: 10px; ">
                    Networkee
                 </a>
@@ -29,7 +29,7 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav ms-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="/networkee/main.php">Home </a>
+                            <a class="nav-link" href="/main.php">Home </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="profile.php">Profil</a>

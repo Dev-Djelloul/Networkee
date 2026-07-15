@@ -66,7 +66,7 @@
     <div class="loader-container">
         <div class="logo">
             <!-- Titre avec logo -->
-        <a><img src="/networkee/icons/icons8-artificial-intelligence-48.png"
+        <a><img src="/icons/icons8-artificial-intelligence-48.png"
             alt="Logo loader">
             Networkee</a>
         </div>
@@ -77,7 +77,7 @@
     <!-- Redirection vers la page principale -->
     <script>
         setTimeout(() => {
-            window.location.href = "/networkee/main.php"; // Redirige vers la page principale après 3 secondes
+            window.location.href = "/main.php"; // Redirige vers la page principale après 3 secondes
         }, 1500);
     </script>
 </body>

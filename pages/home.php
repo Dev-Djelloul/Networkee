@@ -17,10 +17,10 @@ $stmt = $pdo->prepare("
     FROM posts 
     JOIN users ON posts.user_id = users.id 
     ORDER BY created_at DESC 
-    LIMIT :offset, :limit
+    LIMIT :limit OFFSET :offset
 ");
-$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->bindValue(':limit', $postsPerPage, PDO::PARAM_INT);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $posts = $stmt->fetchAll();
 
@@ -110,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['like'], $_SESSION['us
                     <div class="like-section">
                         <form method="POST" action="home.php?page=<?php echo $page; ?>">
                             <button class="like-button" name="like" value="<?php echo $post['id']; ?>" type="submit">
-                                <span class="like-icon"><img src="/networkee/icons/icons8-like-24 (1).png"
+                                <span class="like-icon"><img src="/icons/icons8-like-24 (1).png"
                                 alt="Icône" style="width: 20px; height: 20px; margin:5px; ">J'aime</span>
                             </button>
                         </form>

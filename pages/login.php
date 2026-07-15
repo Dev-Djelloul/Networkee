@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax'])) {
                         if (response.success) {
                             messageDiv.html(`<div class='alert alert-success'>${response.message}</div>`);
                             setTimeout(() => {
-                                window.location.href = '/networkee/main.php'; // Redirection vers le profil après connexion
+                                window.location.href = '/main.php'; // Redirection vers le profil après connexion
                             }, 1000);
                         } else {
                             messageDiv.html(`<div class='alert alert-danger'>${response.message}</div>`);
