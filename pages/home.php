@@ -1,22 +1,17 @@
 <?php
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/helpers.php';
 session_start();
 
-// Nombre de posts par page
-$postsPerPage = 3;
-
-// Page actuelle
+$postsPerPage = 5;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
-
-// Calcul de l'offset
 $offset = ($page - 1) * $postsPerPage;
 
-// Récupération des posts avec limite et offset
 $stmt = $pdo->prepare("
-    SELECT posts.*, users.username, users.id AS user_id 
-    FROM posts 
-    JOIN users ON posts.user_id = users.id 
-    ORDER BY created_at DESC 
+    SELECT posts.*, users.username, users.id AS user_id
+    FROM posts
+    JOIN users ON posts.user_id = users.id
+    ORDER BY created_at DESC
     LIMIT :limit OFFSET :offset
 ");
 $stmt->bindValue(':limit', $postsPerPage, PDO::PARAM_INT);
@@ -24,23 +19,30 @@ $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $posts = $stmt->fetchAll();
 
-// Calcul du nombre total de posts
-$totalPostsStmt = $pdo->query("SELECT COUNT(*) FROM posts");
-$totalPosts = $totalPostsStmt->fetchColumn();
+$totalPosts = $pdo->query("SELECT COUNT(*) FROM posts")->fetchColumn();
+$totalPages = max(1, ceil($totalPosts / $postsPerPage));
 
-// Calcul du nombre total de pages
-$totalPages = ceil($totalPosts / $postsPerPage);
-
-// Fonction pour obtenir le nombre de likes d'un post
 function getLikeCount($postId, $pdo) {
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE post_id = :post_id");
     $stmt->execute(['post_id' => $postId]);
     return $stmt->fetchColumn();
 }
 
-// Ajout de commentaire (sans échappement)
+function getComments($postId, $pdo) {
+    $stmt = $pdo->prepare("
+        SELECT comments.*, users.username
+        FROM comments
+        JOIN users ON comments.user_id = users.id
+        WHERE post_id = :post_id
+        ORDER BY created_at ASC
+    ");
+    $stmt->execute(['post_id' => $postId]);
+    return $stmt->fetchAll();
+}
+
+// Ajout de commentaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content'], $_POST['post_id']) && isset($_SESSION['user_id'])) {
-    $comment_content = $_POST['comment_content']; // Aucun traitement
+    $comment_content = htmlspecialchars($_POST['comment_content'], ENT_QUOTES, 'UTF-8');
     $post_id = (int) $_POST['post_id'];
 
     if (!empty($comment_content)) {
@@ -62,117 +64,182 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['like'], $_SESSION['us
     $postId = (int) $_POST['like'];
     $userId = $_SESSION['user_id'];
 
-    // Vérifier si l'utilisateur a déjà liké ce post
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE post_id = :post_id AND user_id = :user_id");
     $stmt->execute(['post_id' => $postId, 'user_id' => $userId]);
     $liked = $stmt->fetchColumn() > 0;
 
     if ($liked) {
-        // Si déjà liké, on supprime le like
         $stmt = $pdo->prepare("DELETE FROM likes WHERE post_id = :post_id AND user_id = :user_id");
-        $stmt->execute(['post_id' => $postId, 'user_id' => $userId]);
     } else {
-        // Sinon, on ajoute le like
         $stmt = $pdo->prepare("INSERT INTO likes (post_id, user_id) VALUES (:post_id, :user_id)");
-        $stmt->execute(['post_id' => $postId, 'user_id' => $userId]);
     }
-    header("Location: home.php?page=$page");  // Redirige pour éviter la soumission multiple
+    $stmt->execute(['post_id' => $postId, 'user_id' => $userId]);
+    header("Location: home.php?page=$page");
     exit;
 }
-?>
 
+$currentUser = $_SESSION['username'] ?? 'Invité';
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../styles/style.css">
-    <title>Fil de publication</title>
+    <link rel="stylesheet" href="/styles/modern.css">
+    <title>Le Fil — Networkee</title>
 </head>
 <body>
     <?php include(__DIR__ . '/../includes/header.php'); ?>
 
-    <div class="container mt-4">
-        <h5>Les derniers posts</h5>
-        <?php foreach ($posts as $post): ?>
-            <div class="post-container">
-                <div class="post">
-                    <h1>
-                        <a class="nav-link" href="profile.php?id=<?php echo $post['user_id']; ?>"><?php echo $post['username']; ?></a>
-                    </h1>
-                    <p><?php echo nl2br($post['content']); ?></p>
-                    <?php if ($post['image']): ?>
-                        <img src="../uploads/<?php echo $post['image']; ?>" alt="Image">
-                    <?php endif; ?>
-                    
-                    <!-- Bouton Like et compteur -->
-                    <div class="like-section">
-                        <form method="POST" action="home.php?page=<?php echo $page; ?>">
-                            <button class="like-button" name="like" value="<?php echo $post['id']; ?>" type="submit">
-                                <span class="like-icon"><img src="/icons/icons8-like-24 (1).png"
-                                alt="Icône" style="width: 20px; height: 20px; margin:5px; ">J'aime</span>
-                            </button>
+    <main class="page-wrapper">
+        <!-- Composer -->
+        <?php if (isset($_SESSION['user_id'])): ?>
+        <div class="card composer">
+            <div class="card-body">
+                <div class="composer-row">
+                    <?php echo renderAvatar($currentUser); ?>
+                    <div class="composer-main">
+                        <form action="profile.php" method="post" enctype="multipart/form-data">
+                            <textarea name="content" rows="2" placeholder="Quoi de neuf aujourd'hui ?"></textarea>
+                            <div class="composer-actions">
+                                <div class="composer-tools">
+                                    <label class="icon-btn" title="Ajouter une image">
+                                        <?php echo renderIcon('image', 20); ?>
+                                        <input type="file" name="image" style="display: none;">
+                                    </label>
+                                    <button type="button" class="icon-btn" title="Emoji">
+                                        <?php echo renderIcon('smile', 20); ?>
+                                    </button>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <span>Publier</span>
+                                    <?php echo renderIcon('send', 16); ?>
+                                </button>
+                            </div>
                         </form>
-                        <span class="like-counter" id="like-counter-<?php echo $post['id']; ?>"><?php echo getLikeCount($post['id'], $pdo); ?></span>
                     </div>
                 </div>
-                
-                <div class="comments">
-                    <?php
-                    $stmt = $pdo->prepare("SELECT comments.*, users.username FROM comments JOIN users ON comments.user_id = users.id WHERE post_id = :post_id ORDER BY created_at DESC");
-                    $stmt->execute(['post_id' => $post['id']]);
-                    $comments = $stmt->fetchAll();
-                    foreach ($comments as $comment): ?>
-                        <div class="comment">
-                            <strong><?php echo $comment['username']; ?>:</strong>
-                            <p><?php echo nl2br($comment['content']); ?></p>
+            </div>
+        </div>
+        <?php endif; ?>
+
+        <!-- Feed -->
+        <div class="feed">
+            <?php foreach ($posts as $post): ?>
+            <?php
+                $comments = getComments($post['id'], $pdo);
+                $likeCount = getLikeCount($post['id'], $pdo);
+                $userLiked = isset($_SESSION['user_id']) && hasUserLikedPost($post['id'], $_SESSION['user_id'], $pdo);
+                $postStyle = getAvatarStyle($post['username']);
+            ?>
+            <article class="post">
+                <div class="post-header">
+                    <div class="post-author">
+                        <?php echo renderAvatar($post['username']); ?>
+                        <div class="post-meta">
+                            <h3><a href="profile.php?id=<?php echo $post['user_id']; ?>"><?php echo htmlspecialchars($post['username']); ?></a></h3>
+                            <time><?php echo timeAgo($post['created_at']); ?></time>
                         </div>
+                    </div>
+                    <button class="post-menu" aria-label="Options">
+                        <?php echo renderIcon('more', 20); ?>
+                    </button>
+                </div>
+
+                <div class="post-content">
+                    <?php echo nl2br(htmlspecialchars($post['content'])); ?>
+                </div>
+
+                <?php if ($post['image']): ?>
+                    <img src="/uploads/<?php echo htmlspecialchars($post['image']); ?>" alt="Image du post" class="post-image">
+                <?php endif; ?>
+
+                <div class="post-actions">
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <form method="POST" action="home.php?page=<?php echo $page; ?>" style="display: inline;">
+                            <button type="submit" name="like" value="<?php echo $post['id']; ?>" class="action-btn <?php echo $userLiked ? 'active' : ''; ?>">
+                                <?php echo renderIcon('heart', 20); ?>
+                                <span><?php echo $likeCount; ?></span>
+                            </button>
+                        </form>
+                    <?php else: ?>
+                        <span class="action-btn">
+                            <?php echo renderIcon('heart', 20); ?>
+                            <span><?php echo $likeCount; ?></span>
+                        </span>
+                    <?php endif; ?>
+                    <span class="action-btn">
+                        <?php echo renderIcon('message', 20); ?>
+                        <span><?php echo count($comments); ?></span>
+                    </span>
+                </div>
+
+                <?php if (count($comments) > 0 || isset($_SESSION['user_id'])): ?>
+                <div class="comments-section">
+                    <?php foreach ($comments as $comment): ?>
+                    <div class="comment">
+                        <?php echo renderAvatar($comment['username'], 'sm'); ?>
+                        <div class="comment-bubble">
+                            <p class="comment-author"><?php echo htmlspecialchars($comment['username']); ?></p>
+                            <p class="comment-text"><?php echo htmlspecialchars($comment['content']); ?></p>
+                        </div>
+                    </div>
                     <?php endforeach; ?>
 
                     <?php if (isset($_SESSION['user_id'])): ?>
-                        <!-- Formulaire de commentaire -->
-                        <form method="POST" action="home.php?page=<?php echo $page; ?>">
-                            <textarea name="comment_content" rows="2" class="form-control"></textarea>
-                            <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>"><br>
-                            <button type="submit" class="btn btn-sm btn-secondary mt-2">Laisse ton commentaire</button>
-                        </form>
-                    <?php else: ?>
-                        <!-- Message pour inviter à se connecter -->
-                        <p><a href="login.php">Connecte-toi</a> pour laisser un commentaire.</p>
+                    <form method="POST" action="home.php?page=<?php echo $page; ?>" class="comment-form">
+                        <?php echo renderAvatar($currentUser, 'sm'); ?>
+                        <textarea name="comment_content" rows="1" placeholder="Laisse ton commentaire..."></textarea>
+                        <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>">
+                        <button type="submit" class="btn btn-primary btn-sm">Envoyer</button>
+                    </form>
                     <?php endif; ?>
                 </div>
-            </div>
-        <?php endforeach; ?>
+                <?php endif; ?>
+            </article>
+            <?php endforeach; ?>
+        </div>
 
         <!-- Pagination -->
-        <div class="pagination mt-4">
-            <nav>
-                <ul class="pagination justify-content-center">
-                    <?php if ($page > 1): ?>
-                        <li class="page-item">
-                            <a class="page-link" href="?page=<?php echo $page - 1; ?>">Précédent</a>
-                        </li>
-                    <?php endif; ?>
+        <?php if ($totalPages > 1): ?>
+        <div class="pagination-modern">
+            <?php if ($page > 1): ?>
+                <a href="?page=<?php echo $page - 1; ?>" class="pagination-link">
+                    <?php echo renderIcon('chevron-left', 16); ?>
+                    <span>Précédent</span>
+                </a>
+            <?php else: ?>
+                <span class="pagination-link disabled">
+                    <?php echo renderIcon('chevron-left', 16); ?>
+                    <span>Précédent</span>
+                </span>
+            <?php endif; ?>
 
-                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                        <li class="page-item <?php if ($i === $page) echo 'active'; ?>">
-                            <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
-                        </li>
-                    <?php endfor; ?>
-
-                    <?php if ($page < $totalPages): ?>
-                        <li class="page-item">
-                            <a class="page-link" href="?page=<?php echo $page + 1; ?>">Suivant</a>
-                        </li>
+            <div class="pagination-pages">
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <?php if ($i === $page): ?>
+                        <span class="current"><?php echo $i; ?></span>
+                    <?php else: ?>
+                        <a href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
                     <?php endif; ?>
-                </ul>
-            </nav>
+                <?php endfor; ?>
+            </div>
+
+            <?php if ($page < $totalPages): ?>
+                <a href="?page=<?php echo $page + 1; ?>" class="pagination-link">
+                    <span>Suivant</span>
+                    <?php echo renderIcon('chevron-right', 16); ?>
+                </a>
+            <?php else: ?>
+                <span class="pagination-link disabled">
+                    <span>Suivant</span>
+                    <?php echo renderIcon('chevron-right', 16); ?>
+                </span>
+            <?php endif; ?>
         </div>
-    </div>
+        <?php endif; ?>
+    </main>
 
     <?php include(__DIR__ . '/../includes/footer.php'); ?>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="like.js"></script>
 </body>
 </html>

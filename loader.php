@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../styles/style.css">
-    <title>Networkee - Chargement</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/modern.css">
+    <title>Networkee — Chargement</title>
     <style>
         body {
             display: flex;
@@ -13,71 +15,58 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color:#445c56;
-            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            background: #f8fafc;
         }
-
         .loader-container {
             text-align: center;
-            color: dodgerblue;
         }
-
-        .logo {
+        .loader-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
             font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 20px;
-            margin-right: 50px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1.5rem;
         }
-
-        .logo img {
-            width: 40px;
-            height: 40px;
-            margin-right: 5px;
-            margin-bottom: 5px;
+        .loader-logo .logo-mark {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.75rem;
+            font-size: 1.25rem;
         }
-
         .loader {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #3498db;
+            width: 48px;
+            height: 48px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #0d9488;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
             animation: spin 1s linear infinite;
             margin: 0 auto;
         }
-
         @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
+            to { transform: rotate(360deg); }
         }
-
         .redirect-message {
-            margin-top: 20px;
-            font-size: large;
-            color: #6c757d;
+            margin-top: 1.25rem;
+            font-size: 0.9375rem;
+            color: #64748b;
         }
     </style>
 </head>
 <body>
     <div class="loader-container">
-        <div class="logo">
-            <!-- Titre avec logo -->
-        <a><img src="/icons/icons8-artificial-intelligence-48.png"
-            alt="Logo loader">
-            Networkee</a>
+        <div class="loader-logo">
+            <div class="logo-mark">N</div>
+            <span>Networkee</span>
         </div>
         <div class="loader"></div>
         <p class="redirect-message">Chargement...</p>
     </div>
 
-    <!-- Redirection vers la page principale -->
     <script>
         setTimeout(() => {
-            window.location.href = "/main.php"; // Redirige vers la page principale après 3 secondes
+            window.location.href = "/main.php";
         }, 1500);
     </script>
 </body>

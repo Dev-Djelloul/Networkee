@@ -1,34 +1,52 @@
 # Networkee
 
-Un mini réseau social — a French-language PHP social network app with posts, likes, comments, and user profiles.
+Un mini réseau social francophone — partage de posts, likes, commentaires et profils.
 
 ## Stack
 
-- **Backend**: PHP 8.2 (built-in dev server)
-- **Database**: Replit PostgreSQL (via `pdo_pgsql`)
-- **Frontend**: Bootstrap 5 + vanilla JS/jQuery
-- **Uploads**: stored locally in `uploads/`
+- **Backend**: PHP 8.2 (serveur de développement intégré)
+- **Database**: PostgreSQL Replit (via `pdo_pgsql`)
+- **Frontend**: CSS custom moderne, police Inter, icônes SVG inline
+- **Uploads**: stockées localement dans `uploads/`
 
-## Running the app
+## Design actuel
 
-The workflow `Start application` runs `php -S 0.0.0.0:5000` from the project root.
+Style **Modern & Épuré** intégré depuis le mockup approuvé sur le Canvas :
+- Navbar blanche avec effet `backdrop-blur`, logo "N" stylisé
+- Fond gris très clair (`#f8fafc`), cartes blanches avec ombres douces
+- Accent teal (`#0d9488`) pour les boutons, liens et états actifs
+- Avatars générés automatiquement avec initiales et gradients
+- Formulaires d'auth centrés, profil avec stats, fil avec composer et commentaires
 
-Entry point: `loader.php` → `main.php`
+## Lancer l'application
 
-Pages live in `pages/`: `home.php`, `login.php`, `register.php`, `profile.php`, `edit-profile.php`, `logout.php`
+Workflow : `Start application` → `php -S 0.0.0.0:5000`
 
-## Database
+Point d'entrée : `loader.php` → `main.php`
 
-Uses Replit's built-in PostgreSQL. Connection is configured via the `DATABASE_URL` environment variable in `config/database.php`.
+Pages principales dans `pages/` :
+- `home.php` — le fil de posts
+- `profile.php` — profil et création de posts
+- `edit-profile.php` — modification de la bio et de la photo
+- `login.php` / `register.php` — authentification AJAX
+- `logout.php` — déconnexion
 
-Tables: `users`, `posts`, `likes`, `comments`
+## Base de données
 
-## Notes
+Utilise la base PostgreSQL intégrée de Replit. La connexion se fait via les variables `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD` dans `config/database.php`.
 
-- The original project was built for XAMPP/MySQL. It was migrated to PostgreSQL for Replit.
-- All hardcoded `/networkee/` URL prefixes have been replaced with `/`.
-- User-uploaded images are stored in `uploads/`.
+Tables : `users`, `posts`, `likes`, `comments`
 
-## User preferences
+Le fichier `database/schema.pgsql.sql` permet de recréer le schéma sur une base vierge.
+
+## Helpers UI
+
+`includes/helpers.php` fournit :
+- `renderAvatar($username, $size)` — avatars avec initiales et gradient
+- `renderIcon($name, $size)` — icônes SVG inline (heart, message, image, smile, send, more, chevrons)
+- `timeAgo($date)` — dates relatives en français
+- `hasUserLikedPost($postId, $userId, $pdo)`
+
+## Préférences utilisateur
 
 (none yet)
