@@ -1,0 +1,127 @@
+Last login: Wed Jul 15 23:42:14 on ttys002
+You have new mail.
+➜  ~ # Voir les fichiers de log MySQL
+ls -la /Applications/XAMPP/xamppfiles/var/mysql/*.err
+ls -la /Applications/XAMPP/xamppfiles/logs/
+-rwxr-xr-x@ 1 digitalblueskye  702  5401421 28 janv. 19:16 /Applications/XAMPP/xamppfiles/var/mysql/MacBook-Air-de-Digitalblueskye.local.err
+-rwxr-xr-x@ 1 digitalblueskye  702   676008 15 juil. 22:45 /Applications/XAMPP/xamppfiles/var/mysql/macbook-air-de-digitalblueskye1.home.err
+total 816
+drwxrwxr-x@ 12 daemon  daemon     384 15 juil. 23:39 .
+drwxrwxr-x@ 39 root    admin     1248 15 juil. 00:47 ..
+-rw-rw-r--@  1 daemon  daemon  278015 15 juil. 23:27 access_log
+srwx------   1 daemon  daemon       0 15 juil. 23:39 cgisock.88080
+-rw-r--r--@  1 root    daemon    5188 23 déc.   2025 dummy-host.example.com-access_log
+-rw-r--r--@  1 root    daemon    8295 23 déc.   2025 dummy-host.example.com-error_log
+-rw-r--r--@  1 root    daemon       0 23 déc.   2025 dummy-host2.example.com-access_log
+-rw-r--r--@  1 root    daemon       0 23 déc.   2025 dummy-host2.example.com-error_log
+-rw-rw-r--@  1 daemon  daemon   50474 15 juil. 23:39 error_log
+-rw-r--r--@  1 root    daemon       6 15 juil. 23:39 httpd.pid
+-rw-rw-r--@  1 daemon  daemon   15119 30 déc.   2025 php_error_log
+-rw-rw-r--@  1 daemon  daemon       0 19 avr.   2013 ssl_request_log
+➜  ~ tail -n 50 /Applications/XAMPP/xamppfiles/var/mysql/*.err
+==> /Applications/XAMPP/xamppfiles/var/mysql/MacBook-Air-de-Digitalblueskye.local.err <==
+2026-01-15  0:45:36 0 [Note] Server socket created on IP: '::'.
+2026-01-15  0:45:36 0 [Note] InnoDB: Buffer pool(s) load completed at 260115  0:45:36
+2026-01-15  0:45:36 0 [ERROR] Incorrect definition of table mysql.event: expected column 'sql_mode' at position 14 to have type set('REAL_AS_FLOAT','PIPES_AS_CONCAT','ANSI_QUOTES','IGNORE_SPACE','IGNORE_BAD_TABLE_OPTIONS','ONLY_FULL_GROUP_BY','NO_UNSIGNED_SUBTRACTION','NO_DIR_IN_CREATE','POSTGRESQL','ORACLE','MSSQL','DB2','MAXDB','NO_KEY_OPTIONS','NO_TABLE_OPTIONS','NO_FIELD_OPTIONS','MYSQL323','MYSQL40','ANSI','NO_AUTO_VALUE_ON_ZERO','NO_BACKSLASH_ESCAPES','STRICT_TRANS_TABLES','STRICT_ALL_TABLES','NO_ZERO_IN_DATE','NO_ZERO_DATE','INVALID_DATES','ERROR_FOR_DIVISION_BY_ZERO','TRADITIONAL','NO_AUTO_CREATE_USER','HIGH_NOT_PRECEDENCE','NO_ENGINE_SUBSTITUTION','PAD_CHAR_TO_FULL_LENGTH','EMPTY_STRING_IS_NULL','SIMULTANEOUS_ASSIGNMENT'), found type set('REAL_AS_FLOAT','PIPES_AS_CONCAT','ANSI_QUOTES','IGNORE_SPACE','IGNORE_BAD_TABLE_OPTIONS','ONLY_FULL_GROUP_BY','NO_UNSIGNED_SUBTRACTION','NO_DIR_IN_CREATE','POSTGRESQL','ORACLE','MSSQL','DB2','MAXDB','NO_KEY_OPTIONS','NO_TABLE_OPTIONS','NO_FIELD_OPTIONS','MYSQL323','MYSQL40','ANSI','NO_AUTO_VALU
+2026-01-15  0:45:36 0 [ERROR] mysqld: Event Scheduler: An error occurred when initializing system tables. Disabling the Event Scheduler.
+2026-01-15  0:45:36 6 [Warning] InnoDB: Table mysql/innodb_table_stats has length mismatch in the column name table_name.  Please run mysql_upgrade
+2026-01-15  0:45:36 6 [Warning] InnoDB: Table mysql/innodb_index_stats has length mismatch in the column name table_name.  Please run mysql_upgrade
+2026-01-15  0:45:36 0 [Note] Reading of all Master_info entries succeeded
+2026-01-15  0:45:36 0 [Note] Added new Master_info '' to hash table
+2026-01-15  0:45:36 0 [Note] /Applications/XAMPP/xamppfiles/sbin/mysqld: ready for connections.
+Version: '10.4.28-MariaDB'  socket: '/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock'  port: 3306  Source distribution
+2026-01-15 14:10:51 1484 mysqld_safe Starting mysqld daemon with databases from /Applications/XAMPP/xamppfiles/var/mysql
+2026-01-15 14:10:51 0 [Note] Starting MariaDB 10.4.28-MariaDB source revision c8f2e9a5c0ac5905f28b050b7df5a9ffd914b7e7 as process 1656
+2026-01-15 14:10:51 0 [Note] Using unique option prefix 'key_buffer' is error-prone and can break in the future. Please use the full name 'key_buffer_size' instead.
+2026-01-15 14:10:51 0 [Warning] Setting lower_case_table_names=2 because file system for /Applications/XAMPP/xamppfiles/var/mysql/ is case insensitive
+2026-01-15 14:10:51 0 [Note] InnoDB: Mutexes and rw_locks use GCC atomic builtins
+2026-01-15 14:10:51 0 [Note] InnoDB: Uses event mutexes
+2026-01-15 14:10:51 0 [Note] InnoDB: Compressed tables use zlib 1.2.11
+2026-01-15 14:10:51 0 [Note] InnoDB: Number of pools: 1
+2026-01-15 14:10:51 0 [Note] InnoDB: Using SSE2 crc32 instructions
+2026-01-15 14:10:51 0 [Note] InnoDB: Initializing buffer pool, total size = 16M, instances = 1, chunk size = 16M
+2026-01-15 14:10:51 0 [Note] InnoDB: Completed initialization of buffer pool
+2026-01-15 14:10:51 0 [Note] InnoDB: Starting crash recovery from checkpoint LSN=2580504
+2026-01-15 14:10:51 0 [Note] InnoDB: 128 out of 128 rollback segments are active.
+2026-01-15 14:10:51 0 [Note] InnoDB: Removed temporary tablespace data file: "ibtmp1"
+2026-01-15 14:10:51 0 [Note] InnoDB: Creating shared tablespace for temporary tables
+2026-01-15 14:10:51 0 [Note] InnoDB: Setting file '/Applications/XAMPP/xamppfiles/var/mysql/ibtmp1' size to 12 MB. Physically writing the file full; Please wait ...
+2026-01-15 14:10:51 0 [Note] InnoDB: File '/Applications/XAMPP/xamppfiles/var/mysql/ibtmp1' size is now 12 MB.
+2026-01-15 14:10:51 0 [Note] InnoDB: 10.4.28 started; log sequence number 2580513; transaction id 3391
+2026-01-15 14:10:51 0 [Note] InnoDB: Loading buffer pool(s) from /Applications/XAMPP/xamppfiles/var/mysql/ib_buffer_pool
+2026-01-15 14:10:51 0 [Note] Plugin 'FEEDBACK' is disabled.
+2026-01-15 14:10:51 0 [Note] Server socket created on IP: '::'.
+2026-01-15 14:10:51 0 [Note] InnoDB: Buffer pool(s) load completed at 260115 14:10:51
+2026-01-15 14:10:51 0 [ERROR] Incorrect definition of table mysql.event: expected column 'sql_mode' at position 14 to have type set('REAL_AS_FLOAT','PIPES_AS_CONCAT','ANSI_QUOTES','IGNORE_SPACE','IGNORE_BAD_TABLE_OPTIONS','ONLY_FULL_GROUP_BY','NO_UNSIGNED_SUBTRACTION','NO_DIR_IN_CREATE','POSTGRESQL','ORACLE','MSSQL','DB2','MAXDB','NO_KEY_OPTIONS','NO_TABLE_OPTIONS','NO_FIELD_OPTIONS','MYSQL323','MYSQL40','ANSI','NO_AUTO_VALUE_ON_ZERO','NO_BACKSLASH_ESCAPES','STRICT_TRANS_TABLES','STRICT_ALL_TABLES','NO_ZERO_IN_DATE','NO_ZERO_DATE','INVALID_DATES','ERROR_FOR_DIVISION_BY_ZERO','TRADITIONAL','NO_AUTO_CREATE_USER','HIGH_NOT_PRECEDENCE','NO_ENGINE_SUBSTITUTION','PAD_CHAR_TO_FULL_LENGTH','EMPTY_STRING_IS_NULL','SIMULTANEOUS_ASSIGNMENT'), found type set('REAL_AS_FLOAT','PIPES_AS_CONCAT','ANSI_QUOTES','IGNORE_SPACE','IGNORE_BAD_TABLE_OPTIONS','ONLY_FULL_GROUP_BY','NO_UNSIGNED_SUBTRACTION','NO_DIR_IN_CREATE','POSTGRESQL','ORACLE','MSSQL','DB2','MAXDB','NO_KEY_OPTIONS','NO_TABLE_OPTIONS','NO_FIELD_OPTIONS','MYSQL323','MYSQL40','ANSI','NO_AUTO_VALU
+2026-01-15 14:10:51 0 [ERROR] mysqld: Event Scheduler: An error occurred when initializing system tables. Disabling the Event Scheduler.
+2026-01-15 14:10:51 6 [Warning] InnoDB: Table mysql/innodb_table_stats has length mismatch in the column name table_name.  Please run mysql_upgrade
+2026-01-15 14:10:51 6 [Warning] InnoDB: Table mysql/innodb_index_stats has length mismatch in the column name table_name.  Please run mysql_upgrade
+2026-01-15 14:10:51 0 [Note] Reading of all Master_info entries succeeded
+2026-01-15 14:10:51 0 [Note] Added new Master_info '' to hash table
+2026-01-15 14:10:51 0 [Note] /Applications/XAMPP/xamppfiles/sbin/mysqld: ready for connections.
+Version: '10.4.28-MariaDB'  socket: '/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock'  port: 3306  Source distribution
+2026-01-19  3:24:47 9 [Warning] InnoDB: Table mysql/innodb_table_stats has length mismatch in the column name table_name.  Please run mysql_upgrade
+2026-01-19  3:24:47 9 [Warning] InnoDB: Table mysql/innodb_index_stats has length mismatch in the column name table_name.  Please run mysql_upgrade
+2026-01-19  3:24:47 9 [ERROR] Incorrect definition of table mysql.column_stats: expected column 'min_value' at position 3 to have type varbinary(255), found type varchar(255).
+2026-01-19  3:24:47 9 [ERROR] Incorrect definition of table mysql.column_stats: expected column 'max_value' at position 4 to have type varbinary(255), found type varchar(255).
+2026-01-28 10:48:19 10 [ERROR] Incorrect definition of table mysql.column_stats: expected column 'min_value' at position 3 to have type varbinary(255), found type varchar(255).
+2026-01-28 10:48:19 10 [ERROR] Incorrect definition of table mysql.column_stats: expected column 'max_value' at position 4 to have type varbinary(255), found type varchar(255).
+2026-01-28 19:16:04 11 [ERROR] Incorrect definition of table mysql.column_stats: expected column 'min_value' at position 3 to have type varbinary(255), found type varchar(255).
+2026-01-28 19:16:04 11 [ERROR] Incorrect definition of table mysql.column_stats: expected column 'max_value' at position 4 to have type varbinary(255), found type varchar(255).
+2026-01-28 19:16:09 12 [ERROR] Incorrect definition of table mysql.column_stats: expected column 'min_value' at position 3 to have type varbinary(255), found type varchar(255).
+2026-01-28 19:16:09 12 [ERROR] Incorrect definition of table mysql.column_stats: expected column 'max_value' at position 4 to have type varbinary(255), found type varchar(255).
+
+==> /Applications/XAMPP/xamppfiles/var/mysql/macbook-air-de-digitalblueskye1.home.err <==
+2026-07-15 22:44:30 78022 mysqld_safe Starting mysqld daemon with databases from /Applications/XAMPP/xamppfiles/var/mysql
+2026-07-15 22:44:30 0 [Note] Using unique option prefix 'key_buffer' is error-prone and can break in the future. Please use the full name 'key_buffer_size' instead.
+2026-07-15 22:44:30 0 [Warning] Setting lower_case_table_names=2 because file system for /Applications/XAMPP/xamppfiles/var/mysql/ is case insensitive
+2026-07-15 22:44:30 0 [Note] Starting MariaDB 10.4.28-MariaDB source revision c8f2e9a5c0ac5905f28b050b7df5a9ffd914b7e7 as process 78172
+2026-07-15 22:44:31 0 [ERROR] mysqld: Can't lock aria control file '/Applications/XAMPP/xamppfiles/var/mysql/aria_log_control' for exclusive use, error: 35. Will retry for 30 seconds
+2026-07-15 22:44:38 78287 mysqld_safe Starting mysqld daemon with databases from /Applications/XAMPP/xamppfiles/var/mysql
+2026-07-15 22:44:38 0 [Note] Starting MariaDB 10.4.28-MariaDB source revision c8f2e9a5c0ac5905f28b050b7df5a9ffd914b7e7 as process 78443
+2026-07-15 22:44:38 0 [Note] Using unique option prefix 'key_buffer' is error-prone and can break in the future. Please use the full name 'key_buffer_size' instead.
+2026-07-15 22:44:38 0 [Warning] Setting lower_case_table_names=2 because file system for /Applications/XAMPP/xamppfiles/var/mysql/ is case insensitive
+2026-07-15 22:44:38 0 [ERROR] mysqld: Can't lock aria control file '/Applications/XAMPP/xamppfiles/var/mysql/aria_log_control' for exclusive use, error: 35. Will retry for 30 seconds
+2026-07-15 22:45:02 0 [ERROR] mysqld: Got error 'Could not get an exclusive lock; file is probably in use by another process' when trying to use aria control file '/Applications/XAMPP/xamppfiles/var/mysql/aria_log_control'
+2026-07-15 22:45:02 0 [ERROR] Plugin 'Aria' init function returned error.
+2026-07-15 22:45:02 0 [ERROR] Plugin 'Aria' registration as a STORAGE ENGINE failed.
+2026-07-15 22:45:02 0 [Note] InnoDB: Mutexes and rw_locks use GCC atomic builtins
+2026-07-15 22:45:02 0 [Note] InnoDB: Uses event mutexes
+2026-07-15 22:45:02 0 [Note] InnoDB: Compressed tables use zlib 1.2.11
+2026-07-15 22:45:02 0 [Note] InnoDB: Number of pools: 1
+2026-07-15 22:45:02 0 [Note] InnoDB: Using SSE2 crc32 instructions
+2026-07-15 22:45:02 0 [Note] InnoDB: Initializing buffer pool, total size = 16M, instances = 1, chunk size = 16M
+2026-07-15 22:45:02 0 [Note] InnoDB: Completed initialization of buffer pool
+2026-07-15 22:45:02 0 [ERROR] InnoDB: Unable to lock /Applications/XAMPP/xamppfiles/var/mysql/ibdata1 error: 35
+2026-07-15 22:45:02 0 [Note] InnoDB: Check that you do not already have another mysqld process using the same InnoDB data or log files.
+2026-07-15 22:45:02 0 [ERROR] InnoDB: Plugin initialization aborted with error Generic error
+2026-07-15 22:45:02 0 [Note] InnoDB: Starting shutdown...
+2026-07-15 22:45:02 0 [ERROR] Plugin 'InnoDB' init function returned error.
+2026-07-15 22:45:02 0 [ERROR] Plugin 'InnoDB' registration as a STORAGE ENGINE failed.
+2026-07-15 22:45:02 0 [Note] Plugin 'FEEDBACK' is disabled.
+2026-07-15 22:45:02 0 [ERROR] Failed to initialize plugins.
+2026-07-15 22:45:02 0 [ERROR] Aborting
+2026-07-15 22:45:02 78022 mysqld_safe mysqld from pid file /Applications/XAMPP/xamppfiles/var/mysql/macbook-air-de-digitalblueskye1.home.pid ended
+2026-07-15 22:45:09 0 [ERROR] mysqld: Got error 'Could not get an exclusive lock; file is probably in use by another process' when trying to use aria control file '/Applications/XAMPP/xamppfiles/var/mysql/aria_log_control'
+2026-07-15 22:45:09 0 [ERROR] Plugin 'Aria' init function returned error.
+2026-07-15 22:45:09 0 [ERROR] Plugin 'Aria' registration as a STORAGE ENGINE failed.
+2026-07-15 22:45:09 0 [Note] InnoDB: Mutexes and rw_locks use GCC atomic builtins
+2026-07-15 22:45:09 0 [Note] InnoDB: Uses event mutexes
+2026-07-15 22:45:09 0 [Note] InnoDB: Compressed tables use zlib 1.2.11
+2026-07-15 22:45:09 0 [Note] InnoDB: Number of pools: 1
+2026-07-15 22:45:09 0 [Note] InnoDB: Using SSE2 crc32 instructions
+2026-07-15 22:45:09 0 [Note] InnoDB: Initializing buffer pool, total size = 16M, instances = 1, chunk size = 16M
+2026-07-15 22:45:09 0 [Note] InnoDB: Completed initialization of buffer pool
+2026-07-15 22:45:09 0 [ERROR] InnoDB: Unable to lock /Applications/XAMPP/xamppfiles/var/mysql/ibdata1 error: 35
+2026-07-15 22:45:09 0 [Note] InnoDB: Check that you do not already have another mysqld process using the same InnoDB data or log files.
+2026-07-15 22:45:09 0 [ERROR] InnoDB: Plugin initialization aborted with error Generic error
+2026-07-15 22:45:09 0 [Note] InnoDB: Starting shutdown...
+2026-07-15 22:45:09 0 [ERROR] Plugin 'InnoDB' init function returned error.
+2026-07-15 22:45:09 0 [ERROR] Plugin 'InnoDB' registration as a STORAGE ENGINE failed.
+2026-07-15 22:45:09 0 [Note] Plugin 'FEEDBACK' is disabled.
+2026-07-15 22:45:09 0 [ERROR] Failed to initialize plugins.
+2026-07-15 22:45:09 0 [ERROR] Aborting
+2026-07-15 22:45:09 78287 mysqld_safe mysqld from pid file /Applications/XAMPP/xamppfiles/var/mysql/macbook-air-de-digitalblueskye1.home.pid ended
+➜  ~ tail -n 50 /Applications/XAMPP/xamppfiles/logs/mysql_error.log
+tail: /Applications/XAMPP/xamppfiles/logs/mysql_error.log: No such file or directory
+➜  ~ 
