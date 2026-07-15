@@ -29,11 +29,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'])) {
         $target_file = $target_dir . $image;
 
         $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
-        if (in_array($_FILES['image']['type'], $allowed_types)) {
-            if (!file_exists($target_file)) {
-                move_uploaded_file($_FILES['image']['tmp_name'], $target_file);
-            }
+        if (!in_array($_FILES['image']['type'], $allowed_types)) {
+            $upload_error = "Seules les images JPG, PNG ou GIF sont autorisées.";
+        } elseif (!is_dir($target_dir) || !is_writable($target_dir)) {
+            $upload_error = "Le dossier d'upload n'est pas accessible en écriture.";
+        } elseif (!move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
+            $upload_error = "Erreur lors du déplacement de l'image (vérifier les permissions du dossier uploads/).";
+            $image = null;
         }
+    } elseif (isset($_FILES['image']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE) {
+        $upload_error = "Erreur upload (code " . $_FILES['image']['error'] . ").";
     }
 
     if (!empty($content)) {

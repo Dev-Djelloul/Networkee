@@ -27,11 +27,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!in_array($_FILES['profile_image']['type'], $allowed_types)) {
             $upload_error = "Seules les images JPG, PNG ou GIF sont autorisées.";
+        } elseif (!is_dir($target_dir) || !is_writable($target_dir)) {
+            $upload_error = "Le dossier d'upload n'est pas accessible en écriture.";
         } elseif (!move_uploaded_file($_FILES['profile_image']['tmp_name'], $target_file)) {
-            $upload_error = "Erreur lors du déplacement de l'image.";
+            $upload_error = "Erreur lors du déplacement de l'image (vérifier les permissions du dossier uploads/).";
         } else {
             $profile_image = $name;
         }
+    } elseif (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] !== UPLOAD_ERR_NO_FILE) {
+        $upload_error = "Erreur upload (code " . $_FILES['profile_image']['error'] . ").";
     }
 
     if (!$upload_error) {
