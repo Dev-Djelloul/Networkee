@@ -1,5 +1,6 @@
 <?php
 $baseUrl = '../';
+$pageTitle = 'Profil — Networkee';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/helpers.php';
 session_start();
@@ -57,13 +58,7 @@ $stmt = $pdo->prepare("SELECT * FROM posts WHERE user_id = :user_id ORDER BY cre
 $stmt->execute(['user_id' => $_SESSION['user_id']]);
 $posts = $stmt->fetchAll();
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil — Networkee</title>
-</head>
+<?php include __DIR__ . '/../includes/head.php'; ?>
 <body>
     <?php include(__DIR__ . '/../includes/header.php'); ?>
 

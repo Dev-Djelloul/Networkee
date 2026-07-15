@@ -1,5 +1,6 @@
 <?php
 $baseUrl = '../';
+$pageTitle = 'Modifier le profil — Networkee';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/helpers.php';
 session_start();
@@ -14,6 +15,7 @@ $stmt->execute(['id' => $_SESSION['user_id']]);
 $user = $stmt->fetch();
 
 $upload_error = null;
+$debug_info = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $bio = htmlspecialchars($_POST['bio'] ?? '', ENT_QUOTES, 'UTF-8');
@@ -46,13 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier le profil — Networkee</title>
-</head>
+<?php include __DIR__ . '/../includes/head.php'; ?>
 <body>
     <?php include(__DIR__ . '/../includes/header.php'); ?>
 
@@ -64,6 +60,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <?php if ($upload_error): ?>
                     <div class="alert alert-danger"><?php echo $upload_error; ?></div>
+                <?php endif; ?>
+
+                <?php if ($debug_info): ?>
+                    <pre style="background: #f1f5f9; padding: 1rem; border-radius: 0.5rem; font-size: 0.75rem; overflow: auto;"><?php echo htmlspecialchars($debug_info); ?></pre>
                 <?php endif; ?>
 
                 <form action="edit-profile.php" method="post" enctype="multipart/form-data">

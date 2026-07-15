@@ -1,5 +1,6 @@
 <?php
 $baseUrl = '../';
+$pageTitle = 'Le Fil — Networkee';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/helpers.php';
 session_start();
@@ -81,13 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['like'], $_SESSION['us
 
 $currentUser = $_SESSION['username'] ?? 'Invité';
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Fil — Networkee</title>
-</head>
+<?php include __DIR__ . '/../includes/head.php'; ?>
 <body>
     <?php include(__DIR__ . '/../includes/header.php'); ?>
 
@@ -103,9 +98,9 @@ $currentUser = $_SESSION['username'] ?? 'Invité';
                             <textarea name="content" rows="2" placeholder="Quoi de neuf aujourd'hui ?"></textarea>
                             <div class="composer-actions">
                                 <div class="composer-tools">
-                                    <label class="icon-btn" title="Ajouter une image">
+                                    <label class="file-input-wrapper icon-btn" title="Ajouter une image">
                                         <?php echo renderIcon('image', 20); ?>
-                                        <input type="file" name="image" style="display: none;">
+                                        <input type="file" name="image" accept="image/jpeg,image/png,image/gif">
                                     </label>
                                     <button type="button" class="icon-btn" title="Emoji">
                                         <?php echo renderIcon('smile', 20); ?>
