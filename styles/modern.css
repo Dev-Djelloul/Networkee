@@ -1114,7 +1114,7 @@ footer .brand {
 .feature-card:hover {
   box-shadow: var(--shadow-hover);
   transform: translateY(-3px);
-  border-color: var(--accent);
+  border-color: rgba(239, 124, 86, 0.86);
 }
 
 .feature-icon {
