@@ -81,10 +81,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <div class="form-group">
                         <label class="form-label" for="profile_image">Photo de profil</label>
-                        <label class="file-input-wrapper" style="display: block;">
-                            <span class="btn btn-secondary" style="width: 100%; justify-content: center;">Choisir une image</span>
-                            <input type="file" id="profile_image" name="profile_image" accept="image/jpeg,image/png,image/gif">
-                        </label>
+                        <div style="display: block;">
+                            <label class="file-input-wrapper">
+                                <span class="btn btn-secondary" style="width: 100%; justify-content: center;">Choisir une image</span>
+                                <input type="file" id="profile_image" name="profile_image" accept="image/jpeg,image/png,image/gif">
+                            </label>
+                        </div>
                     </div>
 
                     <div class="composer-actions" style="margin-top: 1.5rem;">
