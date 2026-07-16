@@ -855,7 +855,7 @@ footer p {
 
 footer .brand {
   color: var(--footer-brand);
-  font-weight: 600;
+  font-weight: 400;
 }
 
 /* Welcome page */
@@ -1125,7 +1125,7 @@ footer .brand {
 .feature-card h3 {
   margin: 0;
   font-size: 1.0625rem;
-  font-weight: 500;
+  font-weight: 250;
   color:rgba(239, 124, 86, 0.86);
 }
 

@@ -68,7 +68,7 @@ include __DIR__ . '/../includes/head.php';
         <!-- En-tête page -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
             <div>
-                <h1 style="margin: 0; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.025em;">Offres d'emploi 💼</h1>
+                <h1 style="margin: 0; font-size: 1.5rem; font-weight: 550; color:rgba(239, 124, 86, 0.86); letter-spacing: -0.025em;">Offres d'emploi</h1>
                 <p style="margin: 0.25rem 0 0; color: var(--text-muted); font-size: 0.9375rem;">Opportunités dans le digital</p>
             </div>
             <?php if (isset($_SESSION['user_id'])): ?>
