@@ -15,6 +15,7 @@
             <a href="<?php echo $baseUrl; ?>main.php">Home</a>
             <a href="<?php echo $baseUrl; ?>pages/profile.php">Profil</a>
             <a href="<?php echo $baseUrl; ?>pages/home.php">Le Fil 🌈</a>
+            <a href="<?php echo $baseUrl; ?>pages/jobs.php">Offres 💼</a>
             <?php if (isset($_SESSION['user_id'])): ?>
                 <a href="<?php echo $baseUrl; ?>pages/logout.php" class="logout">Bye 👋</a>
             <?php else: ?>

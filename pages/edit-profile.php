@@ -17,7 +17,11 @@ $user = $stmt->fetch();
 $upload_error = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $bio = htmlspecialchars($_POST['bio'] ?? '', ENT_QUOTES, 'UTF-8');
+    $bio          = htmlspecialchars($_POST['bio']       ?? '', ENT_QUOTES, 'UTF-8');
+    $job_title    = htmlspecialchars(trim($_POST['job_title']  ?? ''), ENT_QUOTES, 'UTF-8');
+    $location     = htmlspecialchars(trim($_POST['location']   ?? ''), ENT_QUOTES, 'UTF-8');
+    $skills       = htmlspecialchars(trim($_POST['skills']     ?? ''), ENT_QUOTES, 'UTF-8');
+    $open_to_work = isset($_POST['open_to_work']) ? 1 : 0;
     $profile_image = $user['profile_image'];
 
     if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
@@ -45,8 +49,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (!$upload_error) {
-        $stmt = $pdo->prepare("UPDATE users SET bio = :bio, profile_image = :profile_image WHERE id = :id");
-        $stmt->execute(['bio' => $bio, 'profile_image' => $profile_image, 'id' => $_SESSION['user_id']]);
+        $stmt = $pdo->prepare(
+            "UPDATE users SET bio = :bio, profile_image = :profile_image,
+             job_title = :job_title, location = :location, skills = :skills, open_to_work = :open_to_work
+             WHERE id = :id"
+        );
+        $stmt->execute([
+            'bio'           => $bio,
+            'profile_image' => $profile_image,
+            'job_title'     => $job_title,
+            'location'      => $location,
+            'skills'        => $skills,
+            'open_to_work'  => $open_to_work,
+            'id'            => $_SESSION['user_id'],
+        ]);
         header('Location: profile.php');
         exit;
     }
@@ -67,6 +83,41 @@ include __DIR__ . '/../includes/head.php';
                 <?php endif; ?>
 
                 <form action="edit-profile.php" method="post" enctype="multipart/form-data">
+
+                    <div class="form-group">
+                        <label class="form-label" for="job_title">Titre professionnel</label>
+                        <input type="text" name="job_title" id="job_title" class="form-input"
+                               placeholder="Chef de projet Digital · UX Designer · Product Manager"
+                               maxlength="120"
+                               value="<?php echo htmlspecialchars($user['job_title'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="location">Localisation</label>
+                        <input type="text" name="location" id="location" class="form-input"
+                               placeholder="Paris, Île-de-France · Remote"
+                               maxlength="100"
+                               value="<?php echo htmlspecialchars($user['location'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="skills">Compétences <span style="font-weight:400;color:var(--text-muted);">(séparées par des virgules)</span></label>
+                        <input type="text" name="skills" id="skills" class="form-input"
+                               placeholder="Agile, Figma, SEO, UX Design, Google Analytics..."
+                               maxlength="500"
+                               value="<?php echo htmlspecialchars($user['skills'] ?? '', ENT_QUOTES, 'UTF-8'); ?>">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="otw-toggle">
+                            <input type="checkbox" name="open_to_work" <?php echo !empty($user['open_to_work']) ? 'checked' : ''; ?>>
+                            <span class="otw-toggle-label">
+                                <span class="otw-dot"></span>
+                                <strong>Open to work</strong> — afficher le badge "disponible" sur ton profil
+                            </span>
+                        </label>
+                    </div>
+
                     <div class="form-group">
                         <label class="form-label" for="bio">Bio</label>
                         <textarea name="bio" id="bio" rows="4" class="form-input" placeholder="Parle-nous de toi..."><?php echo htmlspecialchars($user['bio'] ?? '', ENT_QUOTES, 'UTF-8'); ?></textarea>

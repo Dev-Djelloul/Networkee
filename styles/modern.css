@@ -878,6 +878,253 @@ footer .brand {
   gap: 0.75rem;
 }
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   PRO PROFILE
+───────────────────────────────────────────────────────────────────────────── */
+
+.profile-job-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin: 0.25rem auto 0.125rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.profile-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0 auto 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.otw-banner {
+  display: inline-block;
+  margin: 0.5rem auto;
+  padding: 0.3rem 0.875rem;
+  border-radius: 99px;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border: 1px solid #bbf7d0;
+}
+
+body.dark .otw-banner {
+  background: #14532d;
+  color: #4ade80;
+  border-color: #166534;
+}
+
+/* Avatar wrapper for OTW badge */
+.avatar-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.otw-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: #22c55e;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--surface);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+/* Skills */
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.375rem;
+  margin: 0.75rem auto 0;
+  max-width: 28rem;
+}
+
+.skill-tag {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 99px;
+  background: var(--accent-light);
+  color: var(--accent);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+}
+
+.skill-tag:hover {
+  border-color: var(--accent);
+}
+
+/* OTW toggle in edit-profile */
+.otw-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--input-bg);
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.otw-toggle:hover {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+.otw-toggle input[type="checkbox"] {
+  accent-color: var(--accent);
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+  cursor: pointer;
+}
+
+.otw-toggle-label {
+  font-size: 0.9rem;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   JOBS PAGE
+───────────────────────────────────────────────────────────────────────────── */
+
+/* Filter pills */
+.jobs-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 99px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-soft);
+  background: var(--hover-bg);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.filter-pill:hover {
+  background: var(--hover-bg-strong);
+  color: var(--text);
+}
+
+.filter-pill.active {
+  background: var(--accent-light);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.pill-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 99px;
+  background: var(--accent);
+  color: white;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  padding: 0 0.3rem;
+}
+
+/* Job card */
+.job-card {
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.job-card:hover {
+  transform: translateY(-2px);
+}
+
+.job-card-footer {
+  margin-top: 1rem;
+  padding-top: 0.875rem;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Company logo placeholder */
+.company-logo {
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, var(--accent-light), var(--hover-bg-strong));
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+}
+
+/* Job type badges */
+.job-type-badge {
+  display: inline-block;
+  padding: 0.2rem 0.625rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.type-cdi       { background: #dcfce7; color: #15803d; }
+.type-cdd       { background: #dbeafe; color: #1d4ed8; }
+.type-freelance { background: #ede9fe; color: #6d28d9; }
+.type-alternance{ background: #fef9c3; color: #a16207; }
+.type-stage     { background: #f1f5f9; color: #475569; }
+
+body.dark .type-cdi       { background: #14532d; color: #4ade80; }
+body.dark .type-cdd       { background: #1e3a5f; color: #60a5fa; }
+body.dark .type-freelance { background: #2e1065; color: #c4b5fd; }
+body.dark .type-alternance{ background: #422006; color: #fbbf24; }
+body.dark .type-stage     { background: #1e293b; color: #94a3b8; }
+
+/* Job location inline */
+.job-location {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+/* Two-column form grid */
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
 /* Responsive */
 @media (max-width: 640px) {
   .nav-links {
@@ -906,5 +1153,18 @@ footer .brand {
 
   .profile-stats {
     gap: 1rem;
+  }
+
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .jobs-filter {
+    gap: 0.375rem;
+  }
+
+  .filter-pill {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.625rem;
   }
 }

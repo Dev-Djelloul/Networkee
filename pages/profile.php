@@ -66,13 +66,31 @@ $posts = $stmt->fetchAll();
         <div class="profile-header">
             <?php
             $avatarUrl = !empty($user['profile_image']) ? $baseUrl . 'uploads/' . htmlspecialchars($user['profile_image']) : '';
-            echo renderAvatar($user['username'], 'lg', $avatarUrl);
+            echo renderAvatar($user['username'], 'lg', $avatarUrl, !empty($user['open_to_work']));
             ?>
             <h2><?php echo htmlspecialchars($user['username']); ?></h2>
+
+            <?php if (!empty($user['job_title'])): ?>
+                <p class="profile-job-title"><?php echo renderIcon('briefcase', 15); ?> <?php echo htmlspecialchars($user['job_title']); ?></p>
+            <?php endif; ?>
+
+            <?php if (!empty($user['location'])): ?>
+                <p class="profile-location"><?php echo renderIcon('map-pin', 14); ?> <?php echo htmlspecialchars($user['location']); ?></p>
+            <?php endif; ?>
+
+            <?php if (!empty($user['open_to_work'])): ?>
+                <div class="otw-banner">✅ Open to work</div>
+            <?php endif; ?>
+
             <?php if (!empty($user['bio'])): ?>
                 <p class="profile-bio"><?php echo htmlspecialchars($user['bio']); ?></p>
             <?php endif; ?>
-            <a href="edit-profile.php" class="btn btn-secondary btn-sm">Modifier le profil</a>
+
+            <?php if (!empty($user['skills'])): ?>
+                <?php echo renderSkillTags($user['skills']); ?>
+            <?php endif; ?>
+
+            <a href="edit-profile.php" class="btn btn-secondary btn-sm" style="margin-top: 1rem;">Modifier le profil</a>
 
             <div class="profile-stats">
                 <div class="stat">
