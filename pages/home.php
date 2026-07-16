@@ -24,24 +24,6 @@ $posts = $stmt->fetchAll();
 $totalPosts = $pdo->query("SELECT COUNT(*) FROM posts")->fetchColumn();
 $totalPages = max(1, ceil($totalPosts / $postsPerPage));
 
-function getLikeCount($postId, $pdo) {
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE post_id = :post_id");
-    $stmt->execute(['post_id' => $postId]);
-    return $stmt->fetchColumn();
-}
-
-function getComments($postId, $pdo) {
-    $stmt = $pdo->prepare("
-        SELECT comments.*, users.username
-        FROM comments
-        JOIN users ON comments.user_id = users.id
-        WHERE post_id = :post_id
-        ORDER BY created_at ASC
-    ");
-    $stmt->execute(['post_id' => $postId]);
-    return $stmt->fetchAll();
-}
-
 // Ajout de commentaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content'], $_POST['post_id']) && isset($_SESSION['user_id'])) {
     $comment_content = htmlspecialchars($_POST['comment_content'], ENT_QUOTES, 'UTF-8');
