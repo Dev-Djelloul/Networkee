@@ -21,6 +21,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $bio = htmlspecialchars($_POST['bio'] ?? '', ENT_QUOTES, 'UTF-8');
     $profile_image = $user['profile_image'];
 
+    $debug_info = "\$_FILES: " . print_r($_FILES, true) . "\n";
+    $debug_info .= "upload_max_filesize: " . ini_get('upload_max_filesize') . "\n";
+    $debug_info .= "post_max_size: " . ini_get('post_max_size') . "\n";
+    $debug_info .= "CONTENT_LENGTH: " . ($_SERVER['CONTENT_LENGTH'] ?? 'n/a') . "\n";
+
     if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] === UPLOAD_ERR_OK) {
         $name = basename($_FILES['profile_image']['name']);
         $target_dir = __DIR__ . '/../uploads/';
@@ -38,6 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } elseif (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] !== UPLOAD_ERR_NO_FILE) {
         $upload_error = "Erreur upload (code " . $_FILES['profile_image']['error'] . ").";
+    } elseif (!empty($_SERVER['CONTENT_LENGTH']) && !isset($_FILES['profile_image'])) {
+        $upload_error = "Le fichier n'a pas été reçu par le serveur. La taille dépasse peut-être upload_max_filesize (" . ini_get('upload_max_filesize') . ").";
     }
 
     if (!$upload_error) {
