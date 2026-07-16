@@ -64,7 +64,10 @@ $posts = $stmt->fetchAll();
 
     <main class="page-wrapper">
         <div class="profile-header">
-            <?php echo renderAvatar($user['username'], 'lg'); ?>
+            <?php
+            $avatarUrl = !empty($user['profile_image']) ? $baseUrl . 'uploads/' . htmlspecialchars($user['profile_image']) : '';
+            echo renderAvatar($user['username'], 'lg', $avatarUrl);
+            ?>
             <h2><?php echo htmlspecialchars($user['username']); ?></h2>
             <?php if (!empty($user['bio'])): ?>
                 <p class="profile-bio"><?php echo htmlspecialchars($user['bio']); ?></p>
@@ -87,12 +90,13 @@ $posts = $stmt->fetchAll();
             <div class="card-body">
                 <h3 style="margin-top: 0; margin-bottom: 1rem; font-size: 1.125rem;">Nouvelle publication</h3>
                 <form action="profile.php" method="post" enctype="multipart/form-data">
-                    <textarea name="content" rows="3" placeholder="Quoi de neuf ?" style="width: 100%; background: #f8fafc; border: 1px solid transparent; border-radius: 0.75rem; padding: 0.875rem 1rem; font-family: inherit; font-size: 0.9375rem; resize: vertical; outline: none;"></textarea>
-                    <div class="composer-actions" style="margin-top: 0.75rem;">
-                        <label class="file-input-wrapper">
-                            <span class="btn btn-secondary btn-sm">📎 Ajouter une image</span>
-                            <input type="file" name="image" accept="image/jpeg,image/png,image/gif">
-                        </label>
+                    <textarea name="content" rows="3" placeholder="Quoi de neuf ?" class="form-input" style="resize: vertical; margin-bottom: 0.75rem;"></textarea>
+                    <div class="composer-actions">
+                        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('profile-post-image').click()">📎 Ajouter une image</button>
+                            <input type="file" id="profile-post-image" name="image" accept="image/jpeg,image/png,image/gif" style="display: none;" onchange="document.getElementById('profile-post-label').textContent = this.files[0] ? this.files[0].name : ''">
+                            <span id="profile-post-label" style="font-size: 0.8125rem; color: var(--text-muted);"></span>
+                        </div>
                         <button type="submit" class="btn btn-primary">Publier</button>
                     </div>
                 </form>

@@ -33,13 +33,16 @@ function getAvatarStyle(string $username): array {
     return ['initials' => $initials, 'gradient' => $gradient];
 }
 
-function renderAvatar(string $username, string $size = ''): string {
+function renderAvatar(string $username, string $size = '', string $imageUrl = ''): string {
     $style = getAvatarStyle($username);
     $class = 'avatar';
     if ($size === 'lg') {
         $class .= ' avatar-lg';
     } elseif ($size === 'sm') {
         $class .= ' avatar-sm';
+    }
+    if ($imageUrl) {
+        return '<img src="' . htmlspecialchars($imageUrl) . '" alt="' . htmlspecialchars($username) . '" class="' . $class . '" style="object-fit:cover;">';
     }
     return '<div class="' . $class . ' ' . $style['gradient'] . '">' . htmlspecialchars($style['initials']) . '</div>';
 }

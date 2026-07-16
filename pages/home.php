@@ -80,6 +80,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['like'], $_SESSION['us
     exit;
 }
 
+// Nouveau post depuis le fil
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'], $_SESSION['user_id']) && !isset($_POST['comment_content']) && !isset($_POST['like'])) {
+    $content = htmlspecialchars(trim($_POST['content']), ENT_QUOTES, 'UTF-8');
+    $image = null;
+
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
+        $allowed = ['jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif'];
+        if (array_key_exists($ext, $allowed) && $_FILES['image']['type'] === $allowed[$ext]) {
+            $name = uniqid('post_') . '.' . $ext;
+            $target = __DIR__ . '/../uploads/' . $name;
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $target)) {
+                $image = $name;
+            }
+        }
+    }
+
+    if (!empty($content)) {
+        $stmt = $pdo->prepare("INSERT INTO posts (user_id, content, image, created_at) VALUES (:user_id, :content, :image, NOW())");
+        $stmt->execute(['user_id' => $_SESSION['user_id'], 'content' => $content, 'image' => $image]);
+    }
+    header("Location: home.php?page=1");
+    exit;
+}
+
 $currentUser = $_SESSION['username'] ?? 'Invité';
 ?>
 <?php include __DIR__ . '/../includes/head.php'; ?>
@@ -94,17 +119,15 @@ $currentUser = $_SESSION['username'] ?? 'Invité';
                 <div class="composer-row">
                     <?php echo renderAvatar($currentUser); ?>
                     <div class="composer-main">
-                        <form action="profile.php" method="post" enctype="multipart/form-data">
+                        <form action="home.php" method="post" enctype="multipart/form-data">
                             <textarea name="content" rows="2" placeholder="Quoi de neuf aujourd'hui ?"></textarea>
                             <div class="composer-actions">
                                 <div class="composer-tools">
-                                    <label class="file-input-wrapper icon-btn" title="Ajouter une image">
+                                    <button type="button" class="icon-btn" title="Ajouter une image" onclick="document.getElementById('home-image-input').click()">
                                         <?php echo renderIcon('image', 20); ?>
-                                        <input type="file" name="image" accept="image/jpeg,image/png,image/gif">
-                                    </label>
-                                    <button type="button" class="icon-btn" title="Emoji">
-                                        <?php echo renderIcon('smile', 20); ?>
                                     </button>
+                                    <input type="file" id="home-image-input" name="image" accept="image/jpeg,image/png,image/gif" style="display:none;" onchange="var l=document.getElementById('home-image-label');l.textContent=this.files[0]?this.files[0].name:''">
+                                    <span id="home-image-label" style="font-size:0.75rem;color:var(--text-muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
                                 </div>
                                 <button type="submit" class="btn btn-primary">
                                     <span>Publier</span>
