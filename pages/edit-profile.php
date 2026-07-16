@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <pre style="background: #f1f5f9; padding: 1rem; border-radius: 0.5rem; font-size: 0.75rem; overflow: auto;"><?php echo htmlspecialchars($debug_info); ?></pre>
                 <?php endif; ?>
 
-                <form action="edit-profile.php" method="post" enctype="multipart/form-data">
+                <form id="editProfileForm" action="edit-profile.php" method="post" enctype="multipart/form-data">
                     <div class="form-group">
                         <label class="form-label" for="bio">Bio</label>
                         <textarea name="bio" id="bio" rows="4" class="form-input" placeholder="Parle-nous de toi..."><?php echo htmlspecialchars($user['bio'] ?? '', ENT_QUOTES, 'UTF-8'); ?></textarea>
@@ -89,9 +89,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <div class="composer-actions" style="margin-top: 1.5rem;">
                         <a href="profile.php" class="btn btn-secondary">Annuler</a>
-                        <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                        <button type="submit" class="btn btn-primary" onclick="console.log('Bouton cliqué');">Mettre à jour</button>
                     </div>
                 </form>
+
+                <script>
+                    document.getElementById('editProfileForm').addEventListener('submit', function(e) {
+                        console.log('Formulaire soumis');
+                        var files = document.getElementById('profile_image').files;
+                        console.log('Fichier sélectionné:', files.length > 0 ? files[0].name : 'aucun');
+                        alert('Soumission du formulaire détectée. Fichier: ' + (files.length > 0 ? files[0].name : 'aucun'));
+                    });
+                </script>
             </div>
         </div>
     </main>
