@@ -63,8 +63,8 @@ include __DIR__ . '/includes/head.php';
                 </div>
                 <?php else: ?>
                 <div class="hero-cta">
-                    <a href="pages/home.php" class="btn btn-primary btn-lg">📡 Voir le fil</a>
-                    <a href="pages/jobs.php" class="btn btn-ghost btn-lg">💼 Offres d'emploi</a>
+                    <a href="pages/home.php" class="btn btn-primary btn-lg">Voir le fil</a>
+                    <a href="pages/jobs.php" class="btn btn-ghost btn-lg">Offres d'emploi</a>
                 </div>
                 <?php endif; ?>
             </div>
@@ -99,17 +99,17 @@ include __DIR__ . '/includes/head.php';
     <section class="features-section">
         <div class="features-inner">
             <a href="pages/home.php" class="feature-card">
-                <div class="feature-icon">📡</div>
+                <div class="feature-icon"><img width="40" height="40" src="https://img.icons8.com/quill/100/rss.png" alt="rss"/></div>
                 <h3>Le Fil</h3>
                 <p>Suis l'actualité de la communauté, commente et partage tes projets.</p>
             </a>
             <a href="pages/profile.php" class="feature-card">
-                <div class="feature-icon">🧑‍💼</div>
+                <div class="feature-icon"><img width="40" height="40" src="https://img.icons8.com/quill/50/conference-call.png" alt="conference-call"/></div>
                 <h3>Mon Profil</h3>
                 <p>Affiche ton titre, tes compétences et active le badge <em>Open to work</em>.</p>
             </a>
             <a href="pages/jobs.php" class="feature-card">
-                <div class="feature-icon">💼</div>
+                <div class="feature-icon"><img width="40" height="40" src="https://img.icons8.com/quill/50/teacher-hirring.png" alt="teacher-hirring"/></div>
                 <h3>Offres d'emploi</h3>
                 <p>Parcours les CDI, freelance, alternances et stages dans le digital.</p>
             </a>
@@ -138,10 +138,10 @@ include __DIR__ . '/includes/head.php';
                     </div>
                 </div>
                 <nav class="widget-nav">
-                    <a href="pages/home.php"    class="widget-link">📡 Le fil</a>
-                    <a href="pages/profile.php" class="widget-link">🧑‍💼 Mon profil</a>
-                    <a href="pages/jobs.php"    class="widget-link">💼 Offres d'emploi</a>
-                    <a href="pages/edit-profile.php" class="widget-link">✏️ Modifier le profil</a>
+                    <a href="pages/home.php"    class="widget-link"><img color="currentColor" width="24" height="24" src="https://img.icons8.com/quill/100/rss.png" alt="rss"/>Le fil</a>
+                    <a href="pages/profile.php" class="widget-link"><img color="currentColor" width="24" height="24" src="https://img.icons8.com/quill/50/conference-call.png" alt="conference-call"/>Mon profil</a>
+                    <a href="pages/jobs.php"    class="widget-link"><img color="currentColor" width="24" height="24" src="https://img.icons8.com/quill/50/teacher-hirring.png" alt="teacher-hirring"/>Offres d'emploi</a>
+                    <a href="pages/edit-profile.php" class="widget-link"><img color="currentColor" width="24" height="24" src="https://img.icons8.com/quill/50/create-new.png" alt="create-new"/>Modifier le profil</a>
                 </nav>
                 <a href="pages/logout.php" class="widget-logout">Déconnexion</a>
             <?php else: ?>

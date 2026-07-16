@@ -144,12 +144,16 @@ a {
   align-items: center;
   gap: 1.5rem;
   font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--text-soft);
+  font-weight: 100;
+  color: var(--accent);
 }
 
 .nav-links a {
   transition: color 0.2s ease;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .nav-links a:hover,
@@ -161,6 +165,10 @@ a {
   border-left: 1px solid var(--border);
   padding-left: 1.5rem;
   margin-left: 0.5rem;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .nav-links a.logout:hover {
@@ -248,8 +256,8 @@ a {
 }
 
 .avatar-lg {
-  width: 7rem;
-  height: 7rem;
+  width: 12rem;
+  height: 12rem;
   border-radius: 1.5rem;
   font-size: 2.5rem;
   border-width: 4px;
@@ -327,7 +335,7 @@ a {
   gap: 0.5rem;
   padding: 0.625rem 1.25rem;
   border-radius: var(--radius-sm);
-  font-weight: 600;
+  font-weight: 400;
   font-size: 0.875rem;
   border: none;
   cursor: pointer;
@@ -933,7 +941,7 @@ footer .brand {
 .hero-title {
   margin: 0 0 1rem;
   font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 800;
+  font-weight: 650;
   line-height: 1.15;
   letter-spacing: -0.03em;
   color: var(--text);
@@ -1117,8 +1125,8 @@ footer .brand {
 .feature-card h3 {
   margin: 0;
   font-size: 1.0625rem;
-  font-weight: 700;
-  color: var(--text);
+  font-weight: 500;
+  color:rgba(239, 124, 86, 0.86);
 }
 
 .feature-card p {
@@ -1234,14 +1242,16 @@ footer .brand {
 }
 
 .widget-link {
-  display: block;
+  display: inline-flex;
   padding: 0.5rem 0.625rem;
   border-radius: 0.5rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--text-soft);
+  color: #ef7c56db;
   white-space: nowrap;
   transition: background 0.15s ease, color 0.15s ease;
+  align-items: center;
+  gap: 10px;
 }
 
 .widget-link:hover {
@@ -1258,7 +1268,7 @@ footer .brand {
   color: var(--danger);
   text-align: center;
   border: 1px solid var(--alert-danger-border);
-  background: var(--alert-danger-bg);
+  background: #dea1a11f;
   white-space: nowrap;
   transition: opacity 0.15s ease;
 }

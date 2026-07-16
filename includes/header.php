@@ -12,12 +12,12 @@
         </a>
 
         <div class="nav-links">
-            <a href="<?php echo $baseUrl; ?>main.php">Home</a>
-            <a href="<?php echo $baseUrl; ?>pages/profile.php">Profil</a>
-            <a href="<?php echo $baseUrl; ?>pages/home.php">Le Fil 🌈</a>
-            <a href="<?php echo $baseUrl; ?>pages/jobs.php">Offres 💼</a>
+            <a href="<?php echo $baseUrl; ?>main.php">Home <img width="25" height="25" src="https://img.icons8.com/plasticine/100/apple-home.png" alt="apple-home"/></a>
+            <a href="<?php echo $baseUrl; ?>pages/profile.php">Profil <img width="25" height="25" src="https://img.icons8.com/plasticine/100/conference-call.png" alt="conference-call"/></a>
+            <a href="<?php echo $baseUrl; ?>pages/home.php">Le Fil <img width="25" height="25" src="https://img.icons8.com/doodle/48/rss--v1.png" alt="rss"/></a>
+            <a href="<?php echo $baseUrl; ?>pages/jobs.php">Offres <img width="25" height="25" src="https://img.icons8.com/plasticine/100/new-job.png" alt="new-job"/></a>
             <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="<?php echo $baseUrl; ?>pages/logout.php" class="logout">Bye 👋</a>
+                <a href="<?php echo $baseUrl; ?>pages/logout.php" class="logout">Bye<img width="20" height="20" src="https://img.icons8.com/external-doodle-color-bomsymbols-/91/external-bye-avatar-basic-colors-doodle-doodle-color-bomsymbols-.png" alt="external-bye-avatar-basic-colors-doodle-doodle-color-bomsymbols-"/></a>
             <?php else: ?>
                 <a href="<?php echo $baseUrl; ?>pages/login.php" class="logout">Se connecter</a>
             <?php endif; ?>
