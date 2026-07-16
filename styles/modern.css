@@ -534,6 +534,32 @@ a {
   cursor: pointer;
 }
 
+/* Plain file input for forms */
+.form-input-file {
+  display: block;
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--input-bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.form-input-file:hover {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+.form-input-file:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.08);
+}
+
 /* Comments */
 .comments-section {
   background: var(--composer-bg);
