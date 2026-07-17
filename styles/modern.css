@@ -145,6 +145,26 @@ a {
   display: block;
 }
 
+/* Logo Networkee au centre du visuel hero (rendu en blanc sur le cercle teal) */
+.main-node .node-logo {
+  width: 2.4rem;
+  height: auto;
+  filter: brightness(0) invert(1);
+}
+
+/* Police du wordmark du header — Garet (fichier à déposer dans /fonts) */
+@font-face {
+  font-family: 'Garet';
+  src: url('../fonts/Garet.woff2') format('woff2'),
+       url('../fonts/Garet.ttf') format('truetype');
+  font-weight: 400 800;
+  font-display: swap;
+}
+
+.logo span {
+  font-family: 'Garet', var(--font);
+}
+
 .nav-links {
   display: flex;
   align-items: center;

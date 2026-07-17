@@ -90,7 +90,7 @@ include __DIR__ . '/includes/head.php';
                     <!-- Nœuds -->
                     <div class="net-node n1"><span>UX</span></div>
                     <div class="net-node n2"><span>PM</span></div>
-                    <div class="net-node n3 main-node"><span>N</span></div>
+                    <div class="net-node n3 main-node"><img src="icons/networkee-mark.png" alt="Networkee" class="node-logo"></div>
                     <div class="net-node n4"><span>SEO</span></div>
                     <div class="net-node n5"><span>Dev</span></div>
                     <div class="net-node n6"><span>Data</span></div>
