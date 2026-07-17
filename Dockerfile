@@ -12,7 +12,17 @@ COPY . /var/www/html/
 # Copier configuration Nginx
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Permissions
+# Config PHP : limites d'upload
+COPY uploads.ini "$PHP_INI_DIR/conf.d/uploads.ini"
+
+# Dossiers temp/log Nginx accessibles en écriture par le worker (www-data)
+RUN mkdir -p /var/cache/nginx/client_temp \
+             /var/cache/nginx/fastcgi_temp \
+             /var/cache/nginx/proxy_temp \
+             /var/log/nginx \
+    && chown -R www-data:www-data /var/cache/nginx /var/log/nginx
+
+# Permissions du projet (uploads/ doit être inscriptible par PHP-FPM)
 RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 
 EXPOSE 8080
