@@ -1542,6 +1542,14 @@ body.dark .type-stage     { background: #1e293b; color: #94a3b8; }
 
 /* Responsive */
 @media (max-width: 640px) {
+  /* La navbar peut s'agrandir pour accueillir le menu sous la 1re ligne */
+  .navbar-inner {
+    height: auto;
+    min-height: 4rem;
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
+
   /* Regroupe thème + hamburger à droite */
   .theme-toggle {
     margin-left: auto;
@@ -1561,20 +1569,17 @@ body.dark .type-stage     { background: #1e293b; color: #94a3b8; }
     color: var(--accent);
   }
 
-  /* Menu déroulant mobile */
+  /* Menu déroulant mobile : dans le flux → il décale la page vers le bas */
   .nav-links {
     display: none;
-    position: absolute;
-    top: 4rem;
-    left: 0;
-    right: 0;
+    order: 5;
+    flex-basis: 100%;
     flex-direction: column;
     align-items: stretch;
     gap: 0;
-    padding: 0.5rem 0;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+    margin: 0 -1rem;
+    padding: 0.25rem 0 0.5rem;
+    border-top: 1px solid var(--border);
     animation: navDrop 0.18s ease;
   }
 
@@ -1613,6 +1618,21 @@ body.dark .type-stage     { background: #1e293b; color: #94a3b8; }
   /* Widget accès rapide : rester utilisable sur petit écran */
   .widget-body {
     width: min(220px, 78vw);
+  }
+
+  /* Onglet réduit à une simple flèche (déborde moins sur le texte) */
+  .quick-widget {
+    align-items: center;
+  }
+
+  .widget-tab-label {
+    display: none;
+  }
+
+  .widget-tab {
+    width: 1.75rem;
+    padding: 0.5rem 0;
+    border-radius: 0.5rem 0 0 0.5rem;
   }
 
   .page-wrapper {
