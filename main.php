@@ -99,7 +99,7 @@ include __DIR__ . '/includes/head.php';
     <section class="features-section">
         <div class="features-inner">
             <a href="pages/home.php" class="feature-card">
-                <div class="feature-icon" style="color: var(--accent);"><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="rss"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg></div>
+                <div class="feature-icon"><span role="img" aria-label="rss" style="display:inline-block;width:40px;height:40px;background-color:var(--accent);-webkit-mask:url('https://img.icons8.com/quill/100/rss.png') center / contain no-repeat;mask:url('https://img.icons8.com/quill/100/rss.png') center / contain no-repeat;"></span></div>
                 <h3>Le Fil</h3>
                 <p>Suis l'actualité de la communauté, commente et partage tes projets.</p>
             </a>
