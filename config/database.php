@@ -1,4 +1,4 @@
- <?php
+<?php
 /**
  * Connexion à la base de données.
  * Railway : PostgreSQL via les variables d'environnement PG*.

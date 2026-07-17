@@ -17,4 +17,4 @@ RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 
 EXPOSE 8080
 
-CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "php /var/www/html/database/init.php; php-fpm -D && nginx -g 'daemon off;'"]
