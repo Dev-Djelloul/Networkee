@@ -9,16 +9,12 @@ RUN apk add --no-cache \
 # Copier le projet
 COPY . /var/www/html/
 
-# Créer configuration Nginx
-RUN mkdir -p /etc/nginx/conf.d
+# Copier configuration Nginx
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Permissions
 RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 
-# Script de démarrage
-RUN echo '#!/bin/sh\nphp-fpm -D\nnginx -g "daemon off;"' > /start.sh && chmod +x /start.sh
-
 EXPOSE 8080
 
-CMD ["/start.sh"]
+CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
