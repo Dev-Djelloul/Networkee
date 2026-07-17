@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax'])) {
                 <form id="registerForm">
                     <div class="form-group">
                         <label class="form-label" for="username">Nom d'utilisateur</label>
-                        <input type="text" id="username" name="username" class="form-input" required placeholder="Djelloul">
+                        <input type="text" id="username" name="username" class="form-input" required placeholder="Ton pseudo">
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="email">Email</label>

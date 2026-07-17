@@ -7,7 +7,7 @@
 <nav class="navbar-modern">
     <div class="navbar-inner">
         <a href="<?php echo $baseUrl; ?>main.php" class="logo">
-            <div class="logo-mark">N</div>
+            <img src="<?php echo $baseUrl; ?>icons/networkee-mark.png" alt="Networkee" class="logo-mark-img">
             <span>Networkee</span>
         </a>
 

@@ -139,6 +139,12 @@ a {
   box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.2);
 }
 
+.logo-mark-img {
+  height: 2.25rem;
+  width: auto;
+  display: block;
+}
+
 .nav-links {
   display: flex;
   align-items: center;
@@ -1140,7 +1146,7 @@ footer .brand {
 .quick-widget {
   position: fixed;
   right: 0;
-  top: 50%;
+  top: 45%;
   transform: translateY(-50%);
   display: flex;
   align-items: stretch;
