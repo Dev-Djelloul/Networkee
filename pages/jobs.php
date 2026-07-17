@@ -147,7 +147,7 @@ include __DIR__ . '/../includes/head.php';
         <!-- Liste des offres -->
         <?php if (empty($offers)): ?>
             <div class="card" style="text-align: center; padding: 3.5rem 1.5rem; margin-top: 1rem;">
-                <div style="font-size: 3.5rem; margin-bottom: 0.75rem;">💼</div>
+                <div style="font-size: 3.5rem; margin-bottom: 0.75rem;"><img width="75" height="75" src="https://img.icons8.com/plasticine/100/new-job.png" alt="new-job"/></div>
                 <p style="color: var(--text-muted); margin: 0 0 1.25rem; font-size: 1rem;">Aucune offre
                     <?php echo ($filter !== 'all') ? 'pour le type "' . htmlspecialchars($filter) . '"' : 'pour le moment'; ?>.
                 </p>

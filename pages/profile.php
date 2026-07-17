@@ -142,8 +142,18 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
             <?php echo $isOwner ? 'Tes publications' : 'Publications de ' . htmlspecialchars($user['username']); ?>
         </h3>
         <div class="feed">
+            <?php $profileAvatar = avatarUrl($user['profile_image'], $baseUrl); ?>
             <?php foreach ($posts as $post): ?>
             <article class="post">
+                <div class="post-header">
+                    <div class="post-author">
+                        <?php echo renderAvatar($user['username'], '', $profileAvatar); ?>
+                        <div class="post-meta">
+                            <h3><a href="profile.php?id=<?php echo (int) $user['id']; ?>"><?php echo htmlspecialchars($user['username']); ?></a></h3>
+                            <time><?php echo timeAgo($post['created_at']); ?></time>
+                        </div>
+                    </div>
+                </div>
                 <div class="post-content" style="padding: 1.25rem;">
                     <?php echo nl2br(htmlspecialchars($post['content'])); ?>
                 </div>
