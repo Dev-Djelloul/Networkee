@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'])) {
         $upload_error = "Erreur upload (code " . $_FILES['image']['error'] . ").";
     }
 
-    if (!empty($content)) {
+    if ($content !== '' || $image !== null) {
         $stmt = $pdo->prepare("INSERT INTO posts (user_id, content, image, created_at) VALUES (:user_id, :content, :image, NOW())");
         $stmt->execute([
             'user_id' => $_SESSION['user_id'],

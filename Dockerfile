@@ -27,4 +27,6 @@ RUN chown -R www-data:www-data /var/www/html && chmod -R 755 /var/www/html
 
 EXPOSE 8080
 
-CMD ["sh", "-c", "php /var/www/html/database/init.php; php-fpm -D && nginx -g 'daemon off;'"]
+# Au démarrage : rendre le volume uploads/ inscriptible (monté par Railway avant le CMD),
+# initialiser la base, puis lancer PHP-FPM + Nginx.
+CMD ["sh", "-c", "mkdir -p /var/www/html/uploads && chown -R www-data:www-data /var/www/html/uploads && chmod 775 /var/www/html/uploads && php /var/www/html/database/init.php; php-fpm -D && nginx -g 'daemon off;'"]

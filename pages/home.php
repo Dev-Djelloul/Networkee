@@ -79,7 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'], $_SESSION[
         }
     }
 
-    if (!empty($content)) {
+    // Un post est valide s'il contient du texte OU une image
+    if ($content !== '' || $image !== null) {
         $stmt = $pdo->prepare("INSERT INTO posts (user_id, content, image, created_at) VALUES (:user_id, :content, :image, NOW())");
         $stmt->execute(['user_id' => $_SESSION['user_id'], 'content' => $content, 'image' => $image]);
     }
