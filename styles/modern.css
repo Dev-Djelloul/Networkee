@@ -140,7 +140,7 @@ a {
 }
 
 .logo-mark-img {
-  height: 2.25rem;
+  height: 1.25rem;
   width: auto;
   display: block;
 }
@@ -155,7 +155,7 @@ a {
 /* Police du wordmark du header — Poppins (Google Fonts) */
 .logo span {
   font-family: 'Poppins', var(--font);
-  font-weight: 700;
+  font-weight: 200;
 }
 
 .nav-links {
@@ -960,7 +960,7 @@ footer .brand {
 .hero-title {
   margin: 0 0 1rem;
   font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 650;
+  font-weight: 300;
   line-height: 1.15;
   letter-spacing: -0.03em;
   color: var(--text);
