@@ -13,6 +13,21 @@ try {
     $statUsers = $statPosts = $statOffers = '—';
 }
 
+// Photo de l'utilisateur connecté (pour le widget d'accès rapide)
+$widgetAvatar = '';
+if (isset($_SESSION['user_id'])) {
+    try {
+        $s = $pdo->prepare("SELECT profile_image FROM users WHERE id = :id");
+        $s->execute(['id' => $_SESSION['user_id']]);
+        $pi = $s->fetchColumn();
+        if (!empty($pi) && $pi !== 'default.png') {
+            $widgetAvatar = $baseUrl . 'uploads/' . $pi;
+        }
+    } catch (\Exception $e) {
+        $widgetAvatar = '';
+    }
+}
+
 include __DIR__ . '/includes/head.php';
 ?>
 <body>
@@ -131,7 +146,11 @@ include __DIR__ . '/includes/head.php';
         <div class="widget-body">
             <?php if (isset($_SESSION['user_id'])): ?>
                 <div class="widget-greeting">
-                    <div class="widget-avatar"><?php echo strtoupper(substr($_SESSION['username'], 0, 1)); ?></div>
+                    <?php if ($widgetAvatar): ?>
+                        <img class="widget-avatar" src="<?php echo htmlspecialchars($widgetAvatar); ?>" alt="<?php echo htmlspecialchars($_SESSION['username']); ?>" style="object-fit:cover;">
+                    <?php else: ?>
+                        <div class="widget-avatar"><?php echo strtoupper(substr($_SESSION['username'], 0, 1)); ?></div>
+                    <?php endif; ?>
                     <div>
                         <div class="widget-name"><?php echo htmlspecialchars($_SESSION['username']); ?></div>
                         <div class="widget-status">Connecté ✓</div>
@@ -147,9 +166,9 @@ include __DIR__ . '/includes/head.php';
             <?php else: ?>
                 <p class="widget-anon">Tu n'es pas connecté.</p>
                 <nav class="widget-nav">
-                    <a href="pages/login.php"    class="widget-link">🔑 Se connecter</a>
-                    <a href="pages/register.php" class="widget-link">🚀 S'inscrire</a>
-                    <a href="pages/jobs.php"     class="widget-link">💼 Offres d'emploi</a>
+                    <a href="pages/login.php"    class="widget-link"><span role="img" aria-label="se connecter" style="display:inline-block;width:24px;height:24px;vertical-align:middle;background-color:var(--accent);-webkit-mask:url('https://img.icons8.com/quill/50/key.png') center / contain no-repeat;mask:url('https://img.icons8.com/quill/50/key.png') center / contain no-repeat;"></span>Se connecter</a>
+                    <a href="pages/register.php" class="widget-link"><span role="img" aria-label="s'inscrire" style="display:inline-block;width:24px;height:24px;vertical-align:middle;background-color:var(--accent);-webkit-mask:url('https://img.icons8.com/quill/50/rocket.png') center / contain no-repeat;mask:url('https://img.icons8.com/quill/50/rocket.png') center / contain no-repeat;"></span>S'inscrire</a>
+                    <a href="pages/jobs.php"     class="widget-link"><span role="img" aria-label="offres d'emploi" style="display:inline-block;width:24px;height:24px;vertical-align:middle;background-color:var(--accent);-webkit-mask:url('https://img.icons8.com/quill/50/teacher-hirring.png') center / contain no-repeat;mask:url('https://img.icons8.com/quill/50/teacher-hirring.png') center / contain no-repeat;"></span>Offres d'emploi</a>
                 </nav>
             <?php endif; ?>
         </div>
