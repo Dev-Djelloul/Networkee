@@ -10,17 +10,22 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+// Profil consulté : ?id=X, sinon le sien
+$profileId = isset($_GET['id']) && is_numeric($_GET['id']) ? (int) $_GET['id'] : (int) $_SESSION['user_id'];
+$isOwner   = $profileId === (int) $_SESSION['user_id'];
+
 $stmt = $pdo->prepare("SELECT * FROM users WHERE id = :id");
-$stmt->execute(['id' => $_SESSION['user_id']]);
+$stmt->execute(['id' => $profileId]);
 $user = $stmt->fetch();
 
- $postCountStmt = $pdo->prepare("SELECT COUNT(*) FROM posts WHERE user_id = :user_id");
-$postCountStmt->execute(['user_id' => $_SESSION['user_id']]);
-$likeCountStmt = $pdo->prepare("SELECT COUNT(*) FROM likes l JOIN posts p ON l.post_id = p.id WHERE p.user_id = :user_id");
-$likeCountStmt->execute(['user_id' => $_SESSION['user_id']]);
+// Utilisateur introuvable → retour au fil
+if (!$user) {
+    header('Location: home.php');
+    exit;
+}
 
-// Ajouter un post
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'])) {
+// Ajouter un post (uniquement sur son propre profil)
+if ($isOwner && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'])) {
     $content = htmlspecialchars($_POST['content'], ENT_QUOTES, 'UTF-8');
     $image = null;
 
@@ -54,9 +59,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'])) {
     }
 }
 
+// Likes reçus par ce profil
+$likeCountStmt = $pdo->prepare("SELECT COUNT(*) FROM likes l JOIN posts p ON l.post_id = p.id WHERE p.user_id = :user_id");
+$likeCountStmt->execute(['user_id' => $profileId]);
+$likesReceived = (int) $likeCountStmt->fetchColumn();
+
+// Publications du profil
 $stmt = $pdo->prepare("SELECT * FROM posts WHERE user_id = :user_id ORDER BY created_at DESC");
-$stmt->execute(['user_id' => $_SESSION['user_id']]);
+$stmt->execute(['user_id' => $profileId]);
 $posts = $stmt->fetchAll();
+
+$pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
 ?>
 <?php include __DIR__ . '/../includes/head.php'; ?>
 <body>
@@ -90,7 +103,9 @@ $posts = $stmt->fetchAll();
                 <?php echo renderSkillTags($user['skills']); ?>
             <?php endif; ?>
 
-            <a href="edit-profile.php" class="btn btn-secondary btn-sm" style="margin-top: 1rem;">Modifier le profil</a>
+            <?php if ($isOwner): ?>
+                <a href="edit-profile.php" class="btn btn-secondary btn-sm" style="margin-top: 1rem;">Modifier le profil</a>
+            <?php endif; ?>
 
             <div class="profile-stats">
                 <div class="stat">
@@ -98,12 +113,13 @@ $posts = $stmt->fetchAll();
                     <div class="stat-label">Posts</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value"><?php echo $likeCountStmt->fetchColumn(); ?></div>
+                    <div class="stat-value"><?php echo $likesReceived; ?></div>
                     <div class="stat-label">Likes reçus</div>
                 </div>
             </div>
         </div>
 
+        <?php if ($isOwner): ?>
         <div class="card" style="margin-bottom: 1.5rem;">
             <div class="card-body">
                 <h3 style="margin-top: 0; margin-bottom: 1rem; font-size: 1.125rem;">Nouvelle publication</h3>
@@ -120,8 +136,11 @@ $posts = $stmt->fetchAll();
                 </form>
             </div>
         </div>
+        <?php endif; ?>
 
-        <h3 style="margin-bottom: 1rem; font-size: 1.125rem; color: var(--text-soft);">Tes publications</h3>
+        <h3 style="margin-bottom: 1rem; font-size: 1.125rem; color: var(--text-soft);">
+            <?php echo $isOwner ? 'Tes publications' : 'Publications de ' . htmlspecialchars($user['username']); ?>
+        </h3>
         <div class="feed">
             <?php foreach ($posts as $post): ?>
             <article class="post">
@@ -149,8 +168,12 @@ $posts = $stmt->fetchAll();
 
             <?php if (count($posts) === 0): ?>
                 <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
-                    <p style="color: var(--text-muted); margin-bottom: 1rem;">Tu n'as pas encore publié. C'est le moment ! 🌟</p>
-                    <a href="home.php" class="btn btn-primary">Découvrir le fil</a>
+                    <?php if ($isOwner): ?>
+                        <p style="color: var(--text-muted); margin-bottom: 1rem;">Tu n'as pas encore publié. C'est le moment ! 🌟</p>
+                        <a href="home.php" class="btn btn-primary">Découvrir le fil</a>
+                    <?php else: ?>
+                        <p style="color: var(--text-muted); margin: 0;"><?php echo htmlspecialchars($user['username']); ?> n'a pas encore publié.</p>
+                    <?php endif; ?>
                 </div>
             <?php endif; ?>
         </div>
