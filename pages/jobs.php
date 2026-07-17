@@ -201,7 +201,7 @@ include __DIR__ . '/../includes/head.php';
                         <div class="job-card-footer">
                             <div style="display: flex; align-items: center; gap: 0.5rem;">
                                 <?php
-                                $avatarUrl = !empty($offer['profile_image']) ? $baseUrl . 'uploads/' . htmlspecialchars($offer['profile_image']) : '';
+                                $avatarUrl = avatarUrl($offer['profile_image'], $baseUrl);
                                 echo renderAvatar($offer['username'], 'sm', $avatarUrl);
                                 ?>
                                 <span style="font-size: 0.8125rem; font-weight: 500; color: var(--text-soft);">

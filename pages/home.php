@@ -10,7 +10,7 @@ $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] :
 $offset = ($page - 1) * $postsPerPage;
 
 $stmt = $pdo->prepare("
-    SELECT posts.*, users.username, users.id AS user_id
+    SELECT posts.*, users.username, users.id AS user_id, users.profile_image
     FROM posts
     JOIN users ON posts.user_id = users.id
     ORDER BY created_at DESC
@@ -89,6 +89,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'], $_SESSION[
 }
 
 $currentUser = $_SESSION['username'] ?? 'Invité';
+
+// Photo de l'utilisateur connecté (pour le composer et son commentaire)
+$currentUserImage = '';
+if (isset($_SESSION['user_id'])) {
+    $imgStmt = $pdo->prepare("SELECT profile_image FROM users WHERE id = :id");
+    $imgStmt->execute(['id' => $_SESSION['user_id']]);
+    $currentUserImage = $imgStmt->fetchColumn() ?: '';
+}
 ?>
 <?php include __DIR__ . '/../includes/head.php'; ?>
 <body>
@@ -100,7 +108,7 @@ $currentUser = $_SESSION['username'] ?? 'Invité';
         <div class="card composer">
             <div class="card-body">
                 <div class="composer-row">
-                    <?php echo renderAvatar($currentUser); ?>
+                    <?php echo renderAvatar($currentUser, '', avatarUrl($currentUserImage, $baseUrl)); ?>
                     <div class="composer-main">
                         <form action="home.php" method="post" enctype="multipart/form-data">
                             <textarea name="content" rows="2" placeholder="Quoi de neuf aujourd'hui ?"></textarea>
@@ -136,7 +144,7 @@ $currentUser = $_SESSION['username'] ?? 'Invité';
             <article class="post">
                 <div class="post-header">
                     <div class="post-author">
-                        <?php echo renderAvatar($post['username']); ?>
+                        <?php echo renderAvatar($post['username'], '', avatarUrl($post['profile_image'], $baseUrl)); ?>
                         <div class="post-meta">
                             <h3><a href="profile.php?id=<?php echo $post['user_id']; ?>"><?php echo htmlspecialchars($post['username']); ?></a></h3>
                             <time><?php echo timeAgo($post['created_at']); ?></time>
@@ -179,7 +187,7 @@ $currentUser = $_SESSION['username'] ?? 'Invité';
                 <div class="comments-section">
                     <?php foreach ($comments as $comment): ?>
                     <div class="comment">
-                        <?php echo renderAvatar($comment['username'], 'sm'); ?>
+                        <?php echo renderAvatar($comment['username'], 'sm', avatarUrl($comment['profile_image'], $baseUrl)); ?>
                         <div class="comment-bubble">
                             <p class="comment-author"><?php echo htmlspecialchars($comment['username']); ?></p>
                             <p class="comment-text"><?php echo htmlspecialchars($comment['content']); ?></p>
@@ -189,7 +197,7 @@ $currentUser = $_SESSION['username'] ?? 'Invité';
 
                     <?php if (isset($_SESSION['user_id'])): ?>
                     <form method="POST" action="home.php?page=<?php echo $page; ?>" class="comment-form">
-                        <?php echo renderAvatar($currentUser, 'sm'); ?>
+                        <?php echo renderAvatar($currentUser, 'sm', avatarUrl($currentUserImage, $baseUrl)); ?>
                         <textarea name="comment_content" rows="1" placeholder="Laisse ton commentaire..."></textarea>
                         <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>">
                         <button type="submit" class="btn btn-primary btn-sm">Envoyer</button>

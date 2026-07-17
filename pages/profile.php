@@ -65,7 +65,7 @@ $posts = $stmt->fetchAll();
     <main class="page-wrapper">
         <div class="profile-header">
             <?php
-            $avatarUrl = !empty($user['profile_image']) ? $baseUrl . 'uploads/' . htmlspecialchars($user['profile_image']) : '';
+            $avatarUrl = avatarUrl($user['profile_image'], $baseUrl);
             echo renderAvatar($user['username'], 'lg', $avatarUrl, !empty($user['open_to_work']));
             ?>
             <h2><?php echo htmlspecialchars($user['username']); ?></h2>
