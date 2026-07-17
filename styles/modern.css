@@ -152,17 +152,10 @@ a {
   filter: brightness(0) invert(1);
 }
 
-/* Police du wordmark du header — Garet (fichier à déposer dans /fonts) */
-@font-face {
-  font-family: 'Garet';
-  src: url('../fonts/Garet.woff2') format('woff2'),
-       url('../fonts/Garet.ttf') format('truetype');
-  font-weight: 400 800;
-  font-display: swap;
-}
-
+/* Police du wordmark du header — Poppins (Google Fonts) */
 .logo span {
-  font-family: 'Garet', var(--font);
+  font-family: 'Poppins', var(--font);
+  font-weight: 700;
 }
 
 .nav-links {
