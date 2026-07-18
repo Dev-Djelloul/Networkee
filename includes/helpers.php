@@ -165,10 +165,12 @@ function getUnreadNotificationCount(int $userId, PDO $pdo): int {
 }
 
 function getNotifications(int $userId, PDO $pdo, int $limit = 30): array {
+    // post_id est réutilisé comme job_offer_id pour le type 'application'.
     $stmt = $pdo->prepare(
-        "SELECT n.*, u.username AS actor_username, u.profile_image AS actor_image
+        "SELECT n.*, u.username AS actor_username, u.profile_image AS actor_image, jo.title AS job_title
          FROM notifications n
          JOIN users u ON n.actor_id = u.id
+         LEFT JOIN job_offers jo ON n.type = 'application' AND n.post_id = jo.id
          WHERE n.user_id = :user_id
          ORDER BY n.created_at DESC
          LIMIT $limit"
@@ -184,10 +186,11 @@ function markNotificationsRead(int $userId, PDO $pdo): void {
 
 function notificationText(array $n): string {
     return match ($n['type']) {
-        'follow'  => 'a commencé à te suivre.',
-        'like'    => 'a aimé ta publication.',
-        'comment' => 'a commenté ta publication.',
-        default   => 'a interagi avec ton compte.',
+        'follow'      => 'a commencé à te suivre.',
+        'like'        => 'a aimé ta publication.',
+        'comment'     => 'a commenté ta publication.',
+        'application' => 'a postulé à ton offre' . (!empty($n['job_title']) ? ' « ' . $n['job_title'] . ' »' : '') . '.',
+        default       => 'a interagi avec ton compte.',
     };
 }
 
@@ -228,6 +231,30 @@ function searchTextMatches(string $normalizedHaystack, string $normalizedQuery):
         }
     }
     return true;
+}
+
+function hasApplied(int $jobOfferId, int $userId, PDO $pdo): bool {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM job_applications WHERE job_offer_id = :job_offer_id AND user_id = :user_id");
+    $stmt->execute(['job_offer_id' => $jobOfferId, 'user_id' => $userId]);
+    return $stmt->fetchColumn() > 0;
+}
+
+function getApplicationCount(int $jobOfferId, PDO $pdo): int {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM job_applications WHERE job_offer_id = :job_offer_id");
+    $stmt->execute(['job_offer_id' => $jobOfferId]);
+    return (int) $stmt->fetchColumn();
+}
+
+function getApplicants(int $jobOfferId, PDO $pdo): array {
+    $stmt = $pdo->prepare(
+        "SELECT ja.*, u.username, u.profile_image, u.job_title, u.location
+         FROM job_applications ja
+         JOIN users u ON ja.user_id = u.id
+         WHERE ja.job_offer_id = :job_offer_id
+         ORDER BY ja.created_at DESC"
+    );
+    $stmt->execute(['job_offer_id' => $jobOfferId]);
+    return $stmt->fetchAll();
 }
 
 function renderSkillTags(string $skills): string {

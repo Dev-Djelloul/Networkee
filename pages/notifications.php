@@ -15,9 +15,10 @@ $notifications = getNotifications($userId, $pdo);
 markNotificationsRead($userId, $pdo);
 
 $icons = [
-    'follow'  => 'user-plus',
-    'like'    => 'heart',
-    'comment' => 'message',
+    'follow'      => 'user-plus',
+    'like'        => 'heart',
+    'comment'     => 'message',
+    'application' => 'briefcase',
 ];
 ?>
 <?php include __DIR__ . '/../includes/head.php'; ?>

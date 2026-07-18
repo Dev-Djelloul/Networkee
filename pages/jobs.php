@@ -9,8 +9,32 @@ $types   = ['CDI', 'CDD', 'Freelance', 'Alternance', 'Stage'];
 $success = false;
 $error   = null;
 
+// ── Candidature à une offre ─────────────────────────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['apply_job_id'], $_SESSION['user_id'])) {
+    $jobOfferId = (int) $_POST['apply_job_id'];
+    $userId     = (int) $_SESSION['user_id'];
+    // Stocké brut : applicants.php échappe déjà à l'affichage (un htmlspecialchars ici
+    // aurait doublé l'échappement, ex. "m'intéresse" -> "m&#039;intéresse" affiché tel quel).
+    $message    = trim($_POST['message'] ?? '');
+
+    $ownerStmt = $pdo->prepare("SELECT user_id FROM job_offers WHERE id = :id");
+    $ownerStmt->execute(['id' => $jobOfferId]);
+    $offerOwnerId = (int) $ownerStmt->fetchColumn();
+
+    if ($offerOwnerId && $offerOwnerId !== $userId && !hasApplied($jobOfferId, $userId, $pdo)) {
+        $stmt = $pdo->prepare(
+            "INSERT INTO job_applications (job_offer_id, user_id, message, created_at) VALUES (:job_offer_id, :user_id, :message, NOW())"
+        );
+        $stmt->execute(['job_offer_id' => $jobOfferId, 'user_id' => $userId, 'message' => $message ?: null]);
+        createNotification($offerOwnerId, $userId, 'application', $jobOfferId, $pdo);
+    }
+
+    header('Location: jobs.php?applied=1');
+    exit;
+}
+
 // ── Nouvelle offre ──────────────────────────────────────────────────────────
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['user_id'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['user_id'], $_POST['form_type']) && $_POST['form_type'] === 'create_offer') {
     $title       = htmlspecialchars(trim($_POST['title']       ?? ''), ENT_QUOTES, 'UTF-8');
     $company     = htmlspecialchars(trim($_POST['company']     ?? ''), ENT_QUOTES, 'UTF-8');
     $loc         = htmlspecialchars(trim($_POST['location']    ?? ''), ENT_QUOTES, 'UTF-8');
@@ -84,6 +108,9 @@ include __DIR__ . '/../includes/head.php';
         <?php if (isset($_GET['success'])): ?>
             <div class="alert alert-success" style="margin-bottom: 1rem;">✅ Offre publiée avec succès !</div>
         <?php endif; ?>
+        <?php if (isset($_GET['applied'])): ?>
+            <div class="alert alert-success" style="margin-bottom: 1rem;">✅ Ta candidature a bien été envoyée !</div>
+        <?php endif; ?>
         <?php if ($error): ?>
             <div class="alert alert-danger" style="margin-bottom: 1rem;"><?php echo $error; ?></div>
         <?php endif; ?>
@@ -94,6 +121,7 @@ include __DIR__ . '/../includes/head.php';
             <div class="card-body">
                 <h3 style="margin: 0 0 1.25rem; font-size: 1.125rem;">Nouvelle offre d'emploi</h3>
                 <form action="jobs.php" method="post">
+                    <input type="hidden" name="form_type" value="create_offer">
                     <div class="form-grid-2">
                         <div class="form-group">
                             <label class="form-label">Intitulé du poste *</label>
@@ -212,6 +240,37 @@ include __DIR__ . '/../includes/head.php';
                                 <?php echo timeAgo($offer['created_at']); ?>
                             </time>
                         </div>
+
+                        <!-- Candidature -->
+                        <?php if (!isset($_SESSION['user_id'])): ?>
+                            <div style="margin-top: 0.875rem;">
+                                <a href="login.php" class="btn btn-secondary btn-sm">Se connecter pour postuler</a>
+                            </div>
+                        <?php elseif ((int) $offer['user_id'] === (int) $_SESSION['user_id']): ?>
+                            <?php $appCount = getApplicationCount((int) $offer['id'], $pdo); ?>
+                            <div style="margin-top: 0.875rem;">
+                                <a href="applicants.php?job_id=<?php echo (int) $offer['id']; ?>" class="btn btn-secondary btn-sm">
+                                    <?php echo renderIcon('users', 15); ?>
+                                    <?php echo $appCount; ?> candidature<?php echo $appCount > 1 ? 's' : ''; ?>
+                                </a>
+                            </div>
+                        <?php elseif (hasApplied((int) $offer['id'], (int) $_SESSION['user_id'], $pdo)): ?>
+                            <div style="margin-top: 0.875rem;">
+                                <span class="btn btn-secondary btn-sm" style="cursor: default; opacity: 0.75;">Candidature envoyée ✓</span>
+                            </div>
+                        <?php else: ?>
+                            <div style="margin-top: 0.875rem;">
+                                <button type="button" class="btn btn-primary btn-sm" onclick="toggleApply(<?php echo (int) $offer['id']; ?>)">
+                                    Postuler
+                                </button>
+                                <form id="apply-form-<?php echo (int) $offer['id']; ?>" method="POST" action="jobs.php" style="display: none; margin-top: 0.75rem;">
+                                    <input type="hidden" name="apply_job_id" value="<?php echo (int) $offer['id']; ?>">
+                                    <textarea name="message" rows="2" class="form-input" style="resize: vertical; margin-bottom: 0.5rem;"
+                                              placeholder="Un message pour accompagner ta candidature (optionnel)"></textarea>
+                                    <button type="submit" class="btn btn-primary btn-sm">Envoyer ma candidature</button>
+                                </form>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </article>
                 <?php endforeach; ?>
@@ -226,6 +285,12 @@ include __DIR__ . '/../includes/head.php';
         const visible = form.style.display !== 'none';
         form.style.display = visible ? 'none' : 'block';
         if (!visible) form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function toggleApply(jobId) {
+        const form = document.getElementById('apply-form-' + jobId);
+        if (!form) return;
+        form.style.display = form.style.display !== 'none' ? 'none' : 'block';
     }
     </script>
 

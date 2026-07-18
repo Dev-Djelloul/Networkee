@@ -69,6 +69,15 @@ CREATE TABLE IF NOT EXISTS job_offers (
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS job_applications (
+    id           SERIAL PRIMARY KEY,
+    job_offer_id INTEGER NOT NULL REFERENCES job_offers(id) ON DELETE CASCADE,
+    user_id      INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    message      TEXT DEFAULT NULL,
+    created_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (job_offer_id, user_id)
+);
+
 -- ─── Données de démonstration (seed only if empty) ──────────────────────────
 -- mots de passe : Alexandre=password, Sophie=123456, Hugo=azerty, Camille=networkee
 INSERT INTO users (id, username, email, password, profile_image, bio, created_at)
