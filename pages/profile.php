@@ -48,7 +48,7 @@ if ($isOwner && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_po
 
 // Ajouter un post (uniquement sur son propre profil)
 if ($isOwner && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'])) {
-    $content = htmlspecialchars($_POST['content'], ENT_QUOTES, 'UTF-8');
+    $content = trim($_POST['content']);
     $image = null;
     $video = null;
 

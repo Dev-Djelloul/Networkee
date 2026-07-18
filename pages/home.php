@@ -135,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_post'], $_SESS
 
 // Nouveau post depuis le fil
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'], $_SESSION['user_id']) && !isset($_POST['comment_content']) && !isset($_POST['like'])) {
-    $content = htmlspecialchars(trim($_POST['content']), ENT_QUOTES, 'UTF-8');
+    $content = trim($_POST['content']);
     $image = null;
     $video = null;
 
