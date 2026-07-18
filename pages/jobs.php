@@ -249,10 +249,15 @@ include __DIR__ . '/../includes/head.php';
                         <?php elseif ((int) $offer['user_id'] === (int) $_SESSION['user_id']): ?>
                             <?php $appCount = getApplicationCount((int) $offer['id'], $pdo); ?>
                             <div style="margin-top: 0.875rem;">
-                                <a href="applicants.php?job_id=<?php echo (int) $offer['id']; ?>" class="btn btn-secondary btn-sm">
-                                    <?php echo renderIcon('users', 15); ?>
-                                    <?php echo $appCount; ?> candidature<?php echo $appCount > 1 ? 's' : ''; ?>
-                                </a>
+                                <span class="hover-stat" style="display: inline-flex;">
+                                    <a href="applicants.php?job_id=<?php echo (int) $offer['id']; ?>" class="btn btn-secondary btn-sm">
+                                        <?php echo renderIcon('users', 15); ?>
+                                        <?php echo $appCount; ?> candidature<?php echo $appCount > 1 ? 's' : ''; ?>
+                                    </a>
+                                    <div class="hover-popover">
+                                        <?php echo renderHoverList(getApplicants((int) $offer['id'], $pdo), 'Aucune candidature pour le moment.', $baseUrl); ?>
+                                    </div>
+                                </span>
                             </div>
                         <?php elseif (hasApplied((int) $offer['id'], (int) $_SESSION['user_id'], $pdo)): ?>
                             <div style="margin-top: 0.875rem;">

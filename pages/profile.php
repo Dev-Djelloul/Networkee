@@ -24,6 +24,26 @@ if (!$user) {
     exit;
 }
 
+// Suppression d'un post (auteur uniquement)
+if ($isOwner && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_post'])) {
+    $deleteId = (int) $_POST['delete_post'];
+    $stmt = $pdo->prepare("SELECT user_id, image FROM posts WHERE id = :id");
+    $stmt->execute(['id' => $deleteId]);
+    $postToDelete = $stmt->fetch();
+
+    if ($postToDelete && (int) $postToDelete['user_id'] === (int) $_SESSION['user_id']) {
+        $pdo->prepare("DELETE FROM posts WHERE id = :id")->execute(['id' => $deleteId]);
+        if (!empty($postToDelete['image'])) {
+            $imagePath = __DIR__ . '/../uploads/' . $postToDelete['image'];
+            if (is_file($imagePath)) {
+                @unlink($imagePath);
+            }
+        }
+    }
+    header('Location: profile.php');
+    exit;
+}
+
 // Ajouter un post (uniquement sur son propre profil)
 if ($isOwner && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'])) {
     $content = htmlspecialchars($_POST['content'], ENT_QUOTES, 'UTF-8');
@@ -200,6 +220,24 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
                         <div class="post-meta">
                             <h3><a href="profile.php?id=<?php echo (int) $user['id']; ?>"><?php echo htmlspecialchars($user['username']); ?></a></h3>
                             <time><?php echo timeAgo($post['created_at']); ?></time>
+                        </div>
+                    </div>
+                    <div class="post-menu-wrapper">
+                        <button type="button" class="post-menu" aria-label="Options" onclick="togglePostMenu(this)">
+                            <?php echo renderIcon('more', 20); ?>
+                        </button>
+                        <div class="post-menu-dropdown">
+                            <button type="button" class="post-menu-item" onclick="copyPostLink(<?php echo $post['id']; ?>)">
+                                <?php echo renderIcon('link', 16); ?> Copier le lien
+                            </button>
+                            <?php if ($isOwner): ?>
+                                <form method="POST" action="profile.php" onsubmit="return confirm('Supprimer définitivement cette publication ?');">
+                                    <input type="hidden" name="delete_post" value="<?php echo $post['id']; ?>">
+                                    <button type="submit" class="post-menu-item post-menu-item-danger">
+                                        <?php echo renderIcon('trash', 16); ?> Supprimer
+                                    </button>
+                                </form>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

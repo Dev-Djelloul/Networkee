@@ -15,5 +15,7 @@
     <link rel="stylesheet" href="<?php echo $baseUrl; ?>styles/modern.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="<?php echo $baseUrl; ?>scripts/theme.js" defer></script>
+    <script src="<?php echo $baseUrl; ?>scripts/hover-popover.js" defer></script>
+    <script src="<?php echo $baseUrl; ?>scripts/post-menu.js" defer></script>
     <title><?php echo $pageTitle ?? 'Networkee'; ?></title>
 </head>

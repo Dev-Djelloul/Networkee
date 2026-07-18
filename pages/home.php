@@ -78,6 +78,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['like'], $_SESSION['us
     exit;
 }
 
+// Suppression d'un post (auteur uniquement)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_post'], $_SESSION['user_id'])) {
+    $deleteId = (int) $_POST['delete_post'];
+    $stmt = $pdo->prepare("SELECT user_id, image FROM posts WHERE id = :id");
+    $stmt->execute(['id' => $deleteId]);
+    $postToDelete = $stmt->fetch();
+
+    if ($postToDelete && (int) $postToDelete['user_id'] === (int) $_SESSION['user_id']) {
+        $pdo->prepare("DELETE FROM posts WHERE id = :id")->execute(['id' => $deleteId]);
+        if (!empty($postToDelete['image'])) {
+            $imagePath = __DIR__ . '/../uploads/' . $postToDelete['image'];
+            if (is_file($imagePath)) {
+                @unlink($imagePath);
+            }
+        }
+    }
+    header("Location: home.php?page=$page");
+    exit;
+}
+
 // Nouveau post depuis le fil
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'], $_SESSION['user_id']) && !isset($_POST['comment_content']) && !isset($_POST['like'])) {
     $content = htmlspecialchars(trim($_POST['content']), ENT_QUOTES, 'UTF-8');
@@ -166,9 +186,24 @@ if (isset($_SESSION['user_id'])) {
                             <time><?php echo timeAgo($post['created_at']); ?></time>
                         </div>
                     </div>
-                    <button class="post-menu" aria-label="Options">
-                        <?php echo renderIcon('more', 20); ?>
-                    </button>
+                    <div class="post-menu-wrapper">
+                        <button type="button" class="post-menu" aria-label="Options" onclick="togglePostMenu(this)">
+                            <?php echo renderIcon('more', 20); ?>
+                        </button>
+                        <div class="post-menu-dropdown">
+                            <button type="button" class="post-menu-item" onclick="copyPostLink(<?php echo $post['id']; ?>)">
+                                <?php echo renderIcon('link', 16); ?> Copier le lien
+                            </button>
+                            <?php if (isset($_SESSION['user_id']) && (int) $post['user_id'] === (int) $_SESSION['user_id']): ?>
+                                <form method="POST" action="home.php?page=<?php echo $page; ?>" onsubmit="return confirm('Supprimer définitivement cette publication ?');">
+                                    <input type="hidden" name="delete_post" value="<?php echo $post['id']; ?>">
+                                    <button type="submit" class="post-menu-item post-menu-item-danger">
+                                        <?php echo renderIcon('trash', 16); ?> Supprimer
+                                    </button>
+                                </form>
+                            <?php endif; ?>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="post-content">
