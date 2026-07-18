@@ -28,10 +28,11 @@ $notifications = getNotifications($userId, $pdo);
 markNotificationsRead($userId, $pdo);
 
 $customIcons = [
-    'follow'  => 'icons8-add-user-50.png',
-    'like'    => 'icons8-like-heart-50.png',
-    'comment' => 'icons8-comment-50.png',
-    'repost'  => 'icons8-repost-64.png',
+    'follow'      => 'icons8-add-user-50.png',
+    'like'        => 'icons8-like-heart-50.png',
+    'comment'     => 'icons8-comment-50.png',
+    'repost'      => 'icons8-repost-64.png',
+    'application' => 'icons8-job-seeker-100.png',
 ];
 ?>
 <?php include __DIR__ . '/../includes/head.php'; ?>
@@ -77,7 +78,7 @@ $customIcons = [
                         <?php elseif (isset($customIcons[$n['type']])): ?>
                             <span class="notif-type-icon"><img src="<?php echo $baseUrl; ?>icons/<?php echo $customIcons[$n['type']]; ?>" alt="" width="18" height="18"></span>
                         <?php else: ?>
-                            <span class="notif-type-icon"><?php echo renderIcon('briefcase', 18); ?></span>
+                            <span class="notif-type-icon"><?php echo renderIcon('bell', 18); ?></span>
                         <?php endif; ?>
                     </div>
                 </div>

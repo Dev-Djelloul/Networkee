@@ -157,7 +157,7 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
             <?php endif; ?>
 
             <?php if (!empty($user['open_to_work'])): ?>
-                <div class="otw-banner">✅ Open to work</div>
+                <div class="otw-banner"><img src="<?php echo $baseUrl; ?>icons/icons8-open-to-work.gif" alt="" width="18" height="18" style="vertical-align: -4px; border-radius: 50%;"> Open to work</div>
             <?php endif; ?>
 
             <?php if (!empty($user['bio'])): ?>

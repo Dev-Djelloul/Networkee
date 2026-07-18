@@ -33,7 +33,7 @@ function getAvatarStyle(string $username): array {
     return ['initials' => $initials, 'gradient' => $gradient];
 }
 
-function renderAvatar(string $username, string $size = '', string $imageUrl = '', bool $openToWork = false): string {
+function renderAvatar(string $username, string $size = '', string $imageUrl = '', bool $openToWork = false, string $baseUrl = '../'): string {
     $style = getAvatarStyle($username);
     $class = 'avatar';
     if ($size === 'lg') {
@@ -47,7 +47,7 @@ function renderAvatar(string $username, string $size = '', string $imageUrl = ''
         $html = '<div class="' . $class . ' ' . $style['gradient'] . '">' . htmlspecialchars($style['initials']) . '</div>';
     }
     if ($openToWork) {
-        return '<div class="avatar-wrapper">' . $html . '<span class="otw-badge" title="Open to work">✓</span></div>';
+        return '<div class="avatar-wrapper">' . $html . '<span class="otw-badge" title="Open to work"><img src="' . htmlspecialchars($baseUrl) . 'icons/icons8-checkmark-50.png" alt="Open to work" width="14" height="14"></span></div>';
     }
     return $html;
 }

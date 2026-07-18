@@ -199,18 +199,18 @@ if (isset($_SESSION['user_id'])) {
                             <div class="composer-actions">
                                 <div class="composer-tools">
                                     <button type="button" class="icon-btn" title="Ajouter une image" onclick="document.getElementById('home-video-input').value='';document.getElementById('home-image-input').click()">
-                                        <img src="<?php echo $baseUrl; ?>icons/icons8-picture-50.png" alt="Image" width="20" height="20">
+                                        <img src="<?php echo $baseUrl; ?>icons/icons8-picture-50.png" alt="Image" width="26" height="26">
                                     </button>
                                     <input type="file" id="home-image-input" name="image" accept="image/jpeg,image/png,image/gif" style="display:none;" onchange="var l=document.getElementById('home-media-label');l.textContent=this.files[0]?this.files[0].name:''">
                                     <button type="button" class="icon-btn" title="Ajouter une vidéo" onclick="document.getElementById('home-image-input').value='';document.getElementById('home-video-input').click()">
-                                        <img src="<?php echo $baseUrl; ?>icons/icons8-video-50.png" alt="Vidéo" width="20" height="20">
+                                        <img src="<?php echo $baseUrl; ?>icons/icons8-video-50.png" alt="Vidéo" width="26" height="26">
                                     </button>
                                     <input type="file" id="home-video-input" name="video" accept="video/mp4,video/webm,video/ogg,video/quicktime" style="display:none;" onchange="var l=document.getElementById('home-media-label');l.textContent=this.files[0]?this.files[0].name:''">
                                     <span id="home-media-label" style="font-size:0.75rem;color:var(--text-muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
                                 </div>
                                 <button type="submit" class="btn btn-primary">
                                     <span>Publier</span>
-                                    <img src="<?php echo $baseUrl; ?>icons/icons8-send-50.png" alt="" width="16" height="16">
+                                    <img src="<?php echo $baseUrl; ?>icons/icons8-send-50.png" alt="" width="18" height="18">
                                 </button>
                             </div>
                         </form>

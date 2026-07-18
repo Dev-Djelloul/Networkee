@@ -93,7 +93,7 @@ $hasResults = !empty($users) || !empty($offers);
                             <?php endif; ?>
                         </div>
                         <?php if (!empty($u['open_to_work'])): ?>
-                            <span class="otw-banner" style="margin: 0; font-size: 0.75rem;">✅ Open to work</span>
+                            <span class="otw-banner" style="margin: 0; font-size: 0.75rem;"><img src="<?php echo $baseUrl; ?>icons/icons8-open-to-work.gif" alt="" width="16" height="16" style="vertical-align: -3px; border-radius: 50%;"> Open to work</span>
                         <?php endif; ?>
                     </div>
                 </a>
