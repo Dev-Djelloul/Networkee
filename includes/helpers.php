@@ -119,6 +119,24 @@ function getComments(int $postId, PDO $pdo): array {
     return $stmt->fetchAll();
 }
 
+function isFollowing(int $followerId, int $followedId, PDO $pdo): bool {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM follows WHERE follower_id = :follower_id AND followed_id = :followed_id");
+    $stmt->execute(['follower_id' => $followerId, 'followed_id' => $followedId]);
+    return $stmt->fetchColumn() > 0;
+}
+
+function getFollowerCount(int $userId, PDO $pdo): int {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM follows WHERE followed_id = :user_id");
+    $stmt->execute(['user_id' => $userId]);
+    return (int) $stmt->fetchColumn();
+}
+
+function getFollowingCount(int $userId, PDO $pdo): int {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM follows WHERE follower_id = :user_id");
+    $stmt->execute(['user_id' => $userId]);
+    return (int) $stmt->fetchColumn();
+}
+
 function renderSkillTags(string $skills): string {
     if (empty(trim($skills))) return '';
     $tags = array_filter(array_map('trim', explode(',', $skills)));

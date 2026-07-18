@@ -59,6 +59,24 @@ if ($isOwner && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content']
     }
 }
 
+// Suivre / ne plus suivre (uniquement sur le profil d'un autre utilisateur)
+if (!$isOwner && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_follow'])) {
+    $currentUserId = (int) $_SESSION['user_id'];
+
+    if (isFollowing($currentUserId, $profileId, $pdo)) {
+        $stmt = $pdo->prepare("DELETE FROM follows WHERE follower_id = :follower_id AND followed_id = :followed_id");
+    } else {
+        $stmt = $pdo->prepare("INSERT INTO follows (follower_id, followed_id) VALUES (:follower_id, :followed_id)");
+    }
+    $stmt->execute(['follower_id' => $currentUserId, 'followed_id' => $profileId]);
+    header('Location: profile.php?id=' . $profileId);
+    exit;
+}
+
+$isFollowing    = !$isOwner && isFollowing((int) $_SESSION['user_id'], $profileId, $pdo);
+$followerCount  = getFollowerCount($profileId, $pdo);
+$followingCount = getFollowingCount($profileId, $pdo);
+
 // Likes reçus par ce profil
 $likeCountStmt = $pdo->prepare("SELECT COUNT(*) FROM likes l JOIN posts p ON l.post_id = p.id WHERE p.user_id = :user_id");
 $likeCountStmt->execute(['user_id' => $profileId]);
@@ -105,6 +123,13 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
 
             <?php if ($isOwner): ?>
                 <a href="edit-profile.php" class="btn btn-secondary btn-sm" style="margin-top: 1rem;">Modifier le profil</a>
+            <?php else: ?>
+                <form method="POST" action="profile.php?id=<?php echo $profileId; ?>" style="margin-top: 1rem;">
+                    <input type="hidden" name="toggle_follow" value="1">
+                    <button type="submit" class="btn <?php echo $isFollowing ? 'btn-secondary' : 'btn-primary'; ?> btn-sm">
+                        <?php echo $isFollowing ? 'Abonné ✓' : '+ Suivre'; ?>
+                    </button>
+                </form>
             <?php endif; ?>
 
             <div class="profile-stats">
@@ -115,6 +140,14 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
                 <div class="stat">
                     <div class="stat-value"><?php echo $likesReceived; ?></div>
                     <div class="stat-label">Likes reçus</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value"><?php echo $followerCount; ?></div>
+                    <div class="stat-label">Abonnés</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value"><?php echo $followingCount; ?></div>
+                    <div class="stat-label">Abonnements</div>
                 </div>
             </div>
         </div>

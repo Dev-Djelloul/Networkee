@@ -766,6 +766,7 @@ a {
 .profile-stats {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 2rem;
   margin-top: 1rem;
   padding-top: 1rem;
@@ -994,7 +995,7 @@ footer .brand {
 
 .h-stat-val {
   font-size: 1.5rem;
-  font-weight: 800;
+  font-weight: 100;
   color: var(--text);
   line-height: 1;
 }
@@ -1612,7 +1613,7 @@ body.dark .type-stage     { background: #1e293b; color: #94a3b8; }
     padding: 0.85rem 1.5rem;
     font-size: 1rem;
     font-weight: 500;
-    color: var(--text);
+    color: var(--accent);
   }
 
   .nav-links a:hover,
