@@ -100,7 +100,7 @@ include __DIR__ . '/../includes/head.php';
                     <?php echo renderIcon('briefcase', 16); ?> Publier une offre
                 </button>
             <?php else: ?>
-                <a href="login.php" class="btn btn-secondary">Se connecter pour publier</a>
+                <button type="button" class="btn btn-secondary" onclick="openLoginModal('publish')">Se connecter pour publier</button>
             <?php endif; ?>
         </div>
 
@@ -186,7 +186,7 @@ include __DIR__ . '/../includes/head.php';
         <?php else: ?>
             <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1rem;">
                 <?php foreach ($offers as $offer): ?>
-                <article class="job-card card">
+                <article class="job-card card" id="job-<?php echo (int) $offer['id']; ?>">
                     <div class="card-body">
                         <div style="display: flex; gap: 1rem; align-items: flex-start;">
                             <!-- Logo entreprise placeholder -->
@@ -244,7 +244,7 @@ include __DIR__ . '/../includes/head.php';
                         <!-- Candidature -->
                         <?php if (!isset($_SESSION['user_id'])): ?>
                             <div style="margin-top: 0.875rem;">
-                                <a href="login.php" class="btn btn-secondary btn-sm">Se connecter pour postuler</a>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="openLoginModal('apply', <?php echo (int) $offer['id']; ?>)">Se connecter pour postuler</button>
                             </div>
                         <?php elseif ((int) $offer['user_id'] === (int) $_SESSION['user_id']): ?>
                             <?php $appCount = getApplicationCount((int) $offer['id'], $pdo); ?>
@@ -278,7 +278,93 @@ include __DIR__ . '/../includes/head.php';
         <?php endif; ?>
     </main>
 
+    <!-- Connexion en overlay (déclenchée depuis "Postuler" / "Publier" quand déconnecté) -->
+    <div id="login-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <button type="button" class="modal-close" aria-label="Fermer" onclick="closeLoginModal()">
+                <?php echo renderIcon('close', 20); ?>
+            </button>
+            <h2 style="margin-top: 0;">Connexion</h2>
+            <p style="color: var(--text-muted); margin-top: -0.5rem;">Connecte-toi pour continuer.</p>
+            <div id="login-modal-message"></div>
+            <form id="loginModalForm">
+                <div class="form-group">
+                    <label class="form-label" for="modal-email">Email</label>
+                    <input type="email" id="modal-email" name="email" class="form-input" required placeholder="ton@email.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="modal-password">Mot de passe</label>
+                    <input type="password" id="modal-password" name="password" class="form-input" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Je me connecte</button>
+            </form>
+            <p style="margin-top: 1.25rem; font-size: 0.875rem; color: var(--text-muted);">
+                Pas encore de compte ? <a href="register.php" style="color: var(--accent); font-weight: 500;">Inscris-toi</a>
+            </p>
+        </div>
+    </div>
+
     <script>
+    let loginModalIntent = null;
+
+    function openLoginModal(action, jobId) {
+        loginModalIntent = { action: action, jobId: jobId || null };
+        document.getElementById('login-modal').classList.remove('hidden');
+        document.getElementById('modal-email').focus();
+    }
+
+    function closeLoginModal() {
+        document.getElementById('login-modal').classList.add('hidden');
+        document.getElementById('login-modal-message').innerHTML = '';
+        loginModalIntent = null;
+    }
+
+    document.getElementById('login-modal').addEventListener('click', function (e) {
+        if (e.target === this) closeLoginModal();
+    });
+
+    document.getElementById('loginModalForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const formData = new URLSearchParams(new FormData(this));
+        formData.append('ajax', 'true');
+        const messageDiv = document.getElementById('login-modal-message');
+
+        fetch('login.php', { method: 'POST', body: formData })
+            .then(function (r) { return r.json(); })
+            .then(function (response) {
+                if (response.success) {
+                    messageDiv.innerHTML = '<div class="alert alert-success">' + response.message + '</div>';
+                    if (loginModalIntent) {
+                        sessionStorage.setItem('networkee_after_login', JSON.stringify(loginModalIntent));
+                    }
+                    setTimeout(function () { window.location.reload(); }, 500);
+                } else {
+                    messageDiv.innerHTML = '<div class="alert alert-danger">' + response.message + '</div>';
+                }
+            })
+            .catch(function () {
+                messageDiv.innerHTML = '<div class="alert alert-danger">Une erreur est survenue. Veuillez réessayer.</div>';
+            });
+    });
+
+    // Reprend l'action interrompue (postuler / publier) après une connexion via la modale.
+    document.addEventListener('DOMContentLoaded', function () {
+        const raw = sessionStorage.getItem('networkee_after_login');
+        if (!raw) return;
+        sessionStorage.removeItem('networkee_after_login');
+        const intent = JSON.parse(raw);
+
+        if (intent.action === 'publish') {
+            toggleForm();
+        } else if (intent.action === 'apply' && intent.jobId) {
+            const card = document.getElementById('job-' + intent.jobId);
+            if (card) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                toggleApply(intent.jobId);
+            }
+        }
+    });
+
     function toggleForm() {
         const form = document.getElementById('new-offer-form');
         if (!form) return;
