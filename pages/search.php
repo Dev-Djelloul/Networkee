@@ -10,12 +10,14 @@ $users = [];
 $offers = [];
 
 if ($q !== '') {
-    $like = '%' . $q . '%';
+    // LOWER() des deux côtés : LIKE est insensible à la casse sous MySQL mais
+    // sensible sous PostgreSQL (Railway) — ce wrapping rend le comportement identique.
+    $like = '%' . mb_strtolower($q) . '%';
 
     $stmt = $pdo->prepare(
         "SELECT id, username, profile_image, job_title, location, skills, open_to_work
          FROM users
-         WHERE username LIKE :q1 OR job_title LIKE :q2 OR skills LIKE :q3 OR location LIKE :q4
+         WHERE LOWER(username) LIKE :q1 OR LOWER(job_title) LIKE :q2 OR LOWER(skills) LIKE :q3 OR LOWER(location) LIKE :q4
          ORDER BY username ASC"
     );
     $stmt->execute(['q1' => $like, 'q2' => $like, 'q3' => $like, 'q4' => $like]);
@@ -25,7 +27,7 @@ if ($q !== '') {
         "SELECT jo.*, u.username, u.profile_image
          FROM job_offers jo
          JOIN users u ON jo.user_id = u.id
-         WHERE jo.title LIKE :q1 OR jo.company LIKE :q2 OR jo.description LIKE :q3 OR jo.location LIKE :q4
+         WHERE LOWER(jo.title) LIKE :q1 OR LOWER(jo.company) LIKE :q2 OR LOWER(jo.description) LIKE :q3 OR LOWER(jo.location) LIKE :q4
          ORDER BY jo.created_at DESC"
     );
     $stmt->execute(['q1' => $like, 'q2' => $like, 'q3' => $like, 'q4' => $like]);
