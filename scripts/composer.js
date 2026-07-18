@@ -78,6 +78,12 @@
         });
     }
 
+    // Doit rester ≤ à la limite serveur réelle (uploads.ini / nginx.conf : 40 Mo).
+    // Sans ce garde-fou, le navigateur tente d'envoyer tout le fichier avant que
+    // le serveur ne le rejette : sur un gros fichier (ex. 342 Mo), la page reste
+    // figée pendant tout l'upload avant d'échouer brutalement.
+    const MAX_FILE_MB = 40;
+
     function initWidget(widget) {
         const textarea = widget.querySelector('textarea');
         const imageBtn = widget.querySelector('.composer-image-btn');
@@ -91,6 +97,32 @@
         const previewVideo = widget.querySelector('.composer-preview-video');
         const removeBtn = widget.querySelector('.composer-media-remove');
         const label = widget.querySelector('.composer-media-label');
+        const error = widget.querySelector('.composer-media-error');
+
+        function showError(message) {
+            if (!error) {
+                window.alert(message);
+                return;
+            }
+            error.textContent = message;
+            error.hidden = false;
+        }
+
+        function clearError() {
+            if (error) {
+                error.textContent = '';
+                error.hidden = true;
+            }
+        }
+
+        function isTooLarge(file) {
+            const sizeMB = file.size / (1024 * 1024);
+            if (sizeMB > MAX_FILE_MB) {
+                showError('Fichier trop volumineux (' + sizeMB.toFixed(0) + ' Mo, max ' + MAX_FILE_MB + ' Mo).');
+                return true;
+            }
+            return false;
+        }
 
         // display en plus de hidden : ceinture et bretelles, pour ne jamais
         // avoir les deux aperçus visibles en même temps quoi qu'il arrive.
@@ -100,6 +132,7 @@
         }
 
         function showPreview(file, type) {
+            clearError();
             const url = URL.createObjectURL(file);
             if (type === 'image') {
                 previewImg.src = url;
@@ -125,6 +158,7 @@
             previewVideo.removeAttribute('src');
             if (label) label.textContent = '';
             setVisible(preview, false);
+            clearError();
         }
 
         if (imageBtn && imageInput) {
@@ -133,7 +167,13 @@
                 imageInput.click();
             });
             imageInput.addEventListener('change', () => {
-                if (imageInput.files[0]) showPreview(imageInput.files[0], 'image');
+                const file = imageInput.files[0];
+                if (!file) return;
+                if (isTooLarge(file)) {
+                    imageInput.value = '';
+                    return;
+                }
+                showPreview(file, 'image');
             });
         }
 
@@ -143,7 +183,13 @@
                 videoInput.click();
             });
             videoInput.addEventListener('change', () => {
-                if (videoInput.files[0]) showPreview(videoInput.files[0], 'video');
+                const file = videoInput.files[0];
+                if (!file) return;
+                if (isTooLarge(file)) {
+                    videoInput.value = '';
+                    return;
+                }
+                showPreview(file, 'video');
             });
         }
 

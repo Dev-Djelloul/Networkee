@@ -275,30 +275,6 @@ function renderHoverList(array $items, string $emptyText, string $baseUrl): stri
 }
 
 /**
- * Rend la liste au survol (extraits de publications) pour le hover-stat "Posts".
- * $posts : lignes avec au minimum id/content, les plus récentes en premier.
- */
-function renderPostsHoverList(array $posts, string $emptyText, int $limit = 5): string {
-    if (empty($posts)) {
-        return '<p class="hover-popover-empty">' . htmlspecialchars($emptyText) . '</p>';
-    }
-    $html = '<ul class="hover-popover-list hover-popover-list-posts">';
-    foreach (array_slice($posts, 0, $limit) as $post) {
-        // Le contenu est déjà échappé en base : on le décode avant de le ré-échapper
-        // pour éviter un double encodage (ex. "&#039;" affiché tel quel).
-        $plain = html_entity_decode($post['content'], ENT_QUOTES, 'UTF-8');
-        $text = $plain !== '' ? $plain : 'Publication sans texte';
-        // Pas de troncature manuelle : le CSS (line-clamp + fondu) gère l'ellipse
-        // sur 2 lignes quel que soit le contenu, plus propre qu'un "…" coupé au caractère.
-        $html .= '<li><a href="#post-' . (int) $post['id'] . '"><span class="post-hover-snippet">'
-            . htmlspecialchars($text)
-            . '</span></a></li>';
-    }
-    $html .= '</ul>';
-    return $html;
-}
-
-/**
  * Crée une notification, sauf si l'acteur et le destinataire sont la même personne.
  */
 function createNotification(int $userId, int $actorId, string $type, ?int $postId, PDO $pdo): void {

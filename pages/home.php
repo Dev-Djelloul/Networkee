@@ -222,6 +222,7 @@ if (isset($_SESSION['user_id'])) {
                                 <button type="button" class="composer-media-remove" aria-label="Retirer le média">✕</button>
                                 <div class="composer-media-label"></div>
                             </div>
+                            <p class="composer-media-error" hidden></p>
 
                             <div class="composer-actions">
                                 <div class="composer-tools">

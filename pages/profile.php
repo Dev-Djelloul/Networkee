@@ -182,12 +182,9 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
             <?php endif; ?>
 
             <div class="profile-stats">
-                <div class="stat hover-stat">
+                <div class="stat">
                     <div class="stat-value"><?php echo count($posts); ?></div>
                     <div class="stat-label">Posts</div>
-                    <div class="hover-popover">
-                        <?php echo renderPostsHoverList($posts, 'Aucune publication pour le moment.'); ?>
-                    </div>
                 </div>
                 <div class="stat hover-stat">
                     <div class="stat-value"><?php echo $likesReceived; ?></div>
@@ -226,6 +223,7 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
                         <button type="button" class="composer-media-remove" aria-label="Retirer le média">✕</button>
                         <div class="composer-media-label"></div>
                     </div>
+                    <p class="composer-media-error" hidden></p>
 
                     <div class="composer-actions">
                         <div class="composer-tools">
