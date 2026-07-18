@@ -250,13 +250,13 @@ if (isset($_SESSION['user_id'])) {
                         </button>
                         <div class="post-menu-dropdown">
                             <button type="button" class="post-menu-item" onclick="copyPostLink(<?php echo $post['id']; ?>)">
-                                <img src="<?php echo $baseUrl; ?>icons/icons8-link-50.png" alt="" width="16" height="16"> Copier le lien
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-link-50.png" alt="" width="26" height="26"> Copier le lien
                             </button>
                             <?php if (isset($_SESSION['user_id']) && (int) $post['user_id'] === (int) $_SESSION['user_id']): ?>
                                 <form method="POST" action="home.php?page=<?php echo $page; ?>" class="confirm-form" data-confirm-message="Supprimer définitivement cette publication ? Cette action est irréversible.">
                                     <input type="hidden" name="delete_post" value="<?php echo $post['id']; ?>">
                                     <button type="submit" class="post-menu-item post-menu-item-danger">
-                                        <img src="<?php echo $baseUrl; ?>icons/icons8-delete-50.png" alt="" width="16" height="16"> Supprimer
+                                        <img src="<?php echo $baseUrl; ?>icons/icons8-delete-50.png" alt="" width="26" height="26"> Supprimer
                                     </button>
                                 </form>
                             <?php endif; ?>

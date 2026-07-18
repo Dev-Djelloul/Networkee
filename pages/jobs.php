@@ -251,7 +251,7 @@ include __DIR__ . '/../includes/head.php';
                             <div style="margin-top: 0.875rem;">
                                 <span class="hover-stat" style="display: inline-flex;">
                                     <a href="applicants.php?job_id=<?php echo (int) $offer['id']; ?>" class="btn btn-secondary btn-sm">
-                                        <?php echo renderIcon('users', 15); ?>
+                                        <img src="<?php echo $baseUrl; ?>icons/icons8-users-50.png" alt="" width="30" height="30" style="vertical-align: -8px;">
                                         <?php echo $appCount; ?> candidature<?php echo $appCount > 1 ? 's' : ''; ?>
                                     </a>
                                     <div class="hover-popover">
