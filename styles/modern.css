@@ -163,7 +163,7 @@ a {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 100;
   color: var(--accent);
 }
@@ -630,6 +630,7 @@ a {
 .composer-widget {
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
+  border-color: var(--accent);
   background: var(--composer-bg);
   overflow: hidden;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -733,19 +734,12 @@ a {
   box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.2);
 }
 
-.btn-primary:hover {
-  background: var(--accent-hover);
-  transform: translateY(-1px);
-}
 
 .btn-secondary {
   background: rgba(239, 124, 86, 0.86);
   color: #f8fafc;
 }
 
-.btn-secondary:hover {
-  background: var(--accent-hover);
-}
 
 .btn-danger {
   background: var(--alert-danger-bg);
@@ -1326,6 +1320,25 @@ a {
   border-width: 1px;
 }
 
+/* Extraits de publications (hover-stat "Posts") : 2 lignes avec fondu en
+   dégradé plutôt qu'une troncature "…" coupée au caractère. */
+.hover-popover-list-posts li a {
+  align-items: flex-start;
+}
+
+.post-hover-snippet {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  max-height: 2.6em;
+  line-height: 1.3;
+  font-weight: 400;
+  color: var(--text-soft);
+  -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
+}
+
 .hover-popover-empty {
   margin: 0;
   padding: 0.625rem 0.5rem;
@@ -1891,7 +1904,7 @@ footer .brand {
   gap: 0.3rem;
   margin: 0 auto 0.5rem;
   font-size: 0.875rem;
-  color: var(--text-muted);
+  color: var(--text);
 }
 
 .otw-banner {

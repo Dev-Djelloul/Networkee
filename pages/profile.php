@@ -149,7 +149,7 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
             <h2><?php echo htmlspecialchars($user['username']); ?></h2>
 
             <?php if ($isOwner): ?>
-                <p style="margin: 0.125rem 0 0; font-size: 0.8125rem; color: var(--text-muted);">
+                <p style="margin: 0.125rem 0 0; font-size: 0.8125rem; color: rgba(239, 124, 86, 0.86);">
                     <?php echo htmlspecialchars($user['email']); ?>
                 </p>
             <?php endif; ?>
