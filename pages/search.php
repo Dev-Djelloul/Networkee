@@ -56,7 +56,7 @@ $hasResults = !empty($users) || !empty($offers);
         <h2 style="margin-bottom: 1.25rem;">Rechercher</h2>
 
         <form method="GET" action="search.php" class="search-form">
-            <?php echo renderIcon('search', 18); ?>
+            <img src="<?php echo $baseUrl; ?>icons/icons8-search-50.png" alt="" width="30" height="30">
             <input type="text" name="q" class="form-input" placeholder="Utilisateurs, compétences, offres, entreprises..."
                    value="<?php echo htmlspecialchars($q); ?>" autofocus>
             <button type="submit" class="btn btn-primary">Rechercher</button>

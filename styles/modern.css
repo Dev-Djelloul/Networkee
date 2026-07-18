@@ -277,7 +277,8 @@ a {
   padding: 0.625rem 1rem;
 }
 
-.search-form svg {
+.search-form svg,
+.search-form img {
   color: var(--text-muted);
   flex-shrink: 0;
 }
