@@ -92,32 +92,39 @@
         const removeBtn = widget.querySelector('.composer-media-remove');
         const label = widget.querySelector('.composer-media-label');
 
+        // display en plus de hidden : ceinture et bretelles, pour ne jamais
+        // avoir les deux aperçus visibles en même temps quoi qu'il arrive.
+        function setVisible(el, visible) {
+            el.hidden = !visible;
+            el.style.display = visible ? '' : 'none';
+        }
+
         function showPreview(file, type) {
             const url = URL.createObjectURL(file);
             if (type === 'image') {
                 previewImg.src = url;
-                previewImg.hidden = false;
-                previewVideo.hidden = true;
+                setVisible(previewImg, true);
+                setVisible(previewVideo, false);
                 previewVideo.removeAttribute('src');
             } else {
                 previewVideo.src = url;
-                previewVideo.hidden = false;
-                previewImg.hidden = true;
+                setVisible(previewVideo, true);
+                setVisible(previewImg, false);
                 previewImg.removeAttribute('src');
             }
             if (label) label.textContent = file.name;
-            preview.hidden = false;
+            setVisible(preview, true);
         }
 
         function clearMedia() {
             if (imageInput) imageInput.value = '';
             if (videoInput) videoInput.value = '';
-            previewImg.hidden = true;
-            previewVideo.hidden = true;
+            setVisible(previewImg, false);
+            setVisible(previewVideo, false);
             previewImg.removeAttribute('src');
             previewVideo.removeAttribute('src');
             if (label) label.textContent = '';
-            preview.hidden = true;
+            setVisible(preview, false);
         }
 
         if (imageBtn && imageInput) {
