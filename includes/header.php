@@ -23,6 +23,10 @@
             <?php endif; ?>
         </div>
 
+        <a href="<?php echo $baseUrl; ?>pages/search.php" class="notif-bell" aria-label="Rechercher" title="Rechercher">
+            <?php echo renderIcon('search', 20); ?>
+        </a>
+
         <?php if (isset($_SESSION['user_id'])): ?>
             <?php $unreadCount = getUnreadNotificationCount((int) $_SESSION['user_id'], $pdo); ?>
             <a href="<?php echo $baseUrl; ?>pages/notifications.php" class="notif-bell" aria-label="Notifications" title="Notifications">
