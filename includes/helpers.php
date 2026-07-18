@@ -83,6 +83,8 @@ function renderIcon(string $name, int $size = 20): string {
         'close'        => '<svg xmlns="http://www.w3.org/2000/svg" width="' . $size . '" height="' . $size . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>',
         'link'         => '<svg xmlns="http://www.w3.org/2000/svg" width="' . $size . '" height="' . $size . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
         'trash'        => '<svg xmlns="http://www.w3.org/2000/svg" width="' . $size . '" height="' . $size . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>',
+        'repeat'       => '<svg xmlns="http://www.w3.org/2000/svg" width="' . $size . '" height="' . $size . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>',
+        'share'        => '<svg xmlns="http://www.w3.org/2000/svg" width="' . $size . '" height="' . $size . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" x2="12" y1="2" y2="15"/></svg>',
     ];
     return $icons[$name] ?? '';
 }
@@ -109,6 +111,18 @@ function hasUserLikedPost(int $postId, int $userId, PDO $pdo): bool {
 
 function getLikeCount(int $postId, PDO $pdo): int {
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE post_id = :post_id");
+    $stmt->execute(['post_id' => $postId]);
+    return (int) $stmt->fetchColumn();
+}
+
+function hasUserReposted(int $postId, int $userId, PDO $pdo): bool {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM reposts WHERE post_id = :post_id AND user_id = :user_id");
+    $stmt->execute(['post_id' => $postId, 'user_id' => $userId]);
+    return $stmt->fetchColumn() > 0;
+}
+
+function getRepostCount(int $postId, PDO $pdo): int {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM reposts WHERE post_id = :post_id");
     $stmt->execute(['post_id' => $postId]);
     return (int) $stmt->fetchColumn();
 }
@@ -250,6 +264,7 @@ function notificationText(array $n): string {
         'follow'      => 'a commencé à te suivre.',
         'like'        => 'a aimé ta publication.',
         'comment'     => 'a commenté ta publication.',
+        'repost'      => 'a repartagé ta publication.',
         'application' => 'a postulé à ton offre' . (!empty($n['job_title']) ? ' « ' . $n['job_title'] . ' »' : '') . '.',
         default       => 'a interagi avec ton compte.',
     };

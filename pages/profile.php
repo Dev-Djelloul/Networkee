@@ -231,7 +231,7 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
                                 <?php echo renderIcon('link', 16); ?> Copier le lien
                             </button>
                             <?php if ($isOwner): ?>
-                                <form method="POST" action="profile.php" onsubmit="return confirm('Supprimer définitivement cette publication ?');">
+                                <form method="POST" action="profile.php" class="confirm-form" data-confirm-message="Supprimer définitivement cette publication ? Cette action est irréversible.">
                                     <input type="hidden" name="delete_post" value="<?php echo $post['id']; ?>">
                                     <button type="submit" class="post-menu-item post-menu-item-danger">
                                         <?php echo renderIcon('trash', 16); ?> Supprimer
@@ -278,6 +278,8 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
             <?php endif; ?>
         </div>
     </main>
+
+    <?php include __DIR__ . '/../includes/confirm-modal.php'; ?>
 
     <?php include(__DIR__ . '/../includes/footer.php'); ?>
 </body>

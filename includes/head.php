@@ -17,5 +17,6 @@
     <script src="<?php echo $baseUrl; ?>scripts/theme.js" defer></script>
     <script src="<?php echo $baseUrl; ?>scripts/hover-popover.js" defer></script>
     <script src="<?php echo $baseUrl; ?>scripts/post-menu.js" defer></script>
+    <script src="<?php echo $baseUrl; ?>scripts/confirm-modal.js" defer></script>
     <title><?php echo $pageTitle ?? 'Networkee'; ?></title>
 </head>

@@ -32,6 +32,7 @@ $icons = [
     'like'        => 'heart',
     'comment'     => 'message',
     'application' => 'briefcase',
+    'repost'      => 'repeat',
 ];
 ?>
 <?php include __DIR__ . '/../includes/head.php'; ?>

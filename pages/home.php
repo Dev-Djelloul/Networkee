@@ -78,6 +78,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['like'], $_SESSION['us
     exit;
 }
 
+// Repartager / annuler le repartage
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['repost'], $_SESSION['user_id'])) {
+    $postId = (int) $_POST['repost'];
+    $userId = (int) $_SESSION['user_id'];
+
+    if (hasUserReposted($postId, $userId, $pdo)) {
+        $pdo->prepare("DELETE FROM reposts WHERE post_id = :post_id AND user_id = :user_id")
+            ->execute(['post_id' => $postId, 'user_id' => $userId]);
+    } else {
+        $pdo->prepare("INSERT INTO reposts (post_id, user_id) VALUES (:post_id, :user_id)")
+            ->execute(['post_id' => $postId, 'user_id' => $userId]);
+
+        $authorStmt = $pdo->prepare("SELECT user_id FROM posts WHERE id = :id");
+        $authorStmt->execute(['id' => $postId]);
+        $postAuthorId = (int) $authorStmt->fetchColumn();
+        if ($postAuthorId) {
+            createNotification($postAuthorId, $userId, 'repost', $postId, $pdo);
+        }
+    }
+    header("Location: home.php?page=$page");
+    exit;
+}
+
 // Suppression d'un post (auteur uniquement)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_post'], $_SESSION['user_id'])) {
     $deleteId = (int) $_POST['delete_post'];
@@ -195,7 +218,7 @@ if (isset($_SESSION['user_id'])) {
                                 <?php echo renderIcon('link', 16); ?> Copier le lien
                             </button>
                             <?php if (isset($_SESSION['user_id']) && (int) $post['user_id'] === (int) $_SESSION['user_id']): ?>
-                                <form method="POST" action="home.php?page=<?php echo $page; ?>" onsubmit="return confirm('Supprimer définitivement cette publication ?');">
+                                <form method="POST" action="home.php?page=<?php echo $page; ?>" class="confirm-form" data-confirm-message="Supprimer définitivement cette publication ? Cette action est irréversible.">
                                     <input type="hidden" name="delete_post" value="<?php echo $post['id']; ?>">
                                     <button type="submit" class="post-menu-item post-menu-item-danger">
                                         <?php echo renderIcon('trash', 16); ?> Supprimer
@@ -237,11 +260,72 @@ if (isset($_SESSION['user_id'])) {
                         <?php echo renderIcon('message', 20); ?>
                         <span><?php echo count($comments); ?></span>
                     </button>
+                    <?php $userReposted = isset($_SESSION['user_id']) && hasUserReposted((int) $post['id'], (int) $_SESSION['user_id'], $pdo); ?>
+                    <?php if (isset($_SESSION['user_id'])): ?>
+                        <form id="repost-form-<?php echo $post['id']; ?>" method="POST" action="home.php?page=<?php echo $page; ?>" style="display: inline;">
+                            <button type="submit" name="repost" value="<?php echo $post['id']; ?>" class="action-btn <?php echo $userReposted ? 'active' : ''; ?>" title="<?php echo $userReposted ? 'Annuler le repartage' : 'Repartager'; ?>">
+                                <?php echo renderIcon('repeat', 20); ?>
+                                <span><?php echo getRepostCount((int) $post['id'], $pdo); ?></span>
+                            </button>
+                        </form>
+                    <?php else: ?>
+                        <button type="button" class="action-btn" onclick="openLoginModal('repost', <?php echo $post['id']; ?>)" title="Repartager">
+                            <?php echo renderIcon('repeat', 20); ?>
+                            <span><?php echo getRepostCount((int) $post['id'], $pdo); ?></span>
+                        </button>
+                    <?php endif; ?>
+                    <div class="post-menu-wrapper" style="margin-left: auto;">
+                        <button type="button" class="action-btn" aria-label="Partager" onclick="togglePostMenu(this)">
+                            <?php echo renderIcon('share', 20); ?>
+                        </button>
+                        <div class="post-menu-dropdown post-share-dropdown">
+                            <?php
+                                $shareUrl = urlencode((!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . '#post-' . $post['id']);
+                                $shareText = urlencode(mb_substr($post['content'], 0, 100));
+                            ?>
+                            <a class="post-menu-item" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?url=<?php echo $shareUrl; ?>&text=<?php echo $shareText; ?>">
+                                <?php echo renderIcon('share', 16); ?> X (Twitter)
+                            </a>
+                            <a class="post-menu-item" target="_blank" rel="noopener" href="https://www.linkedin.com/sharing/share-offsite/?url=<?php echo $shareUrl; ?>">
+                                <?php echo renderIcon('share', 16); ?> LinkedIn
+                            </a>
+                            <a class="post-menu-item" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $shareUrl; ?>">
+                                <?php echo renderIcon('share', 16); ?> Facebook
+                            </a>
+                            <a class="post-menu-item" target="_blank" rel="noopener" href="https://wa.me/?text=<?php echo $shareText . '%20' . $shareUrl; ?>">
+                                <?php echo renderIcon('share', 16); ?> WhatsApp
+                            </a>
+                            <button type="button" class="post-menu-item" onclick="copyPostLink(<?php echo $post['id']; ?>)">
+                                <?php echo renderIcon('link', 16); ?> Copier le lien
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <?php if (count($comments) > 0 || isset($_SESSION['user_id'])): ?>
                 <div class="comments-section">
-                    <?php foreach ($comments as $comment): ?>
+                    <?php
+                        $commentTotal = count($comments);
+                        $visibleComments = $commentTotal > 2 ? array_slice($comments, -2) : $comments;
+                        $hiddenComments = $commentTotal > 2 ? array_slice($comments, 0, $commentTotal - 2) : [];
+                    ?>
+                    <?php if (!empty($hiddenComments)): ?>
+                    <button type="button" class="comments-toggle" onclick="toggleComments(<?php echo $post['id']; ?>)">
+                        Voir les <?php echo count($hiddenComments); ?> commentaire<?php echo count($hiddenComments) > 1 ? 's' : ''; ?> précédent<?php echo count($hiddenComments) > 1 ? 's' : ''; ?>
+                    </button>
+                    <div id="comments-hidden-<?php echo $post['id']; ?>" class="comments-hidden">
+                        <?php foreach ($hiddenComments as $comment): ?>
+                        <div class="comment">
+                            <?php echo renderAvatar($comment['username'], 'sm', avatarUrl($comment['profile_image'], $baseUrl)); ?>
+                            <div class="comment-bubble">
+                                <p class="comment-author"><?php echo htmlspecialchars($comment['username']); ?></p>
+                                <p class="comment-text"><?php echo htmlspecialchars($comment['content']); ?></p>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                    <?php endif; ?>
+                    <?php foreach ($visibleComments as $comment): ?>
                     <div class="comment">
                         <?php echo renderAvatar($comment['username'], 'sm', avatarUrl($comment['profile_image'], $baseUrl)); ?>
                         <div class="comment-bubble">
@@ -306,6 +390,7 @@ if (isset($_SESSION['user_id'])) {
     </main>
 
     <?php include __DIR__ . '/../includes/auth-modal.php'; ?>
+    <?php include __DIR__ . '/../includes/confirm-modal.php'; ?>
 
     <script src="<?php echo $baseUrl; ?>scripts/auth-modal.js"></script>
     <script>
@@ -314,6 +399,11 @@ if (isset($_SESSION['user_id'])) {
         if (!textarea) return;
         textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
         textarea.focus();
+    }
+
+    function toggleComments(postId) {
+        const hidden = document.getElementById('comments-hidden-' + postId);
+        if (hidden) hidden.classList.toggle('is-visible');
     }
 
     // Reprend l'action interrompue (liker / commenter) après une connexion via la modale.
@@ -334,6 +424,9 @@ if (isset($_SESSION['user_id'])) {
             if (likeButton) likeButton.click();
         } else if (intent.action === 'comment') {
             focusComment(intent.id);
+        } else if (intent.action === 'repost') {
+            const repostButton = document.querySelector('#repost-form-' + intent.id + ' button[type=submit]');
+            if (repostButton) repostButton.click();
         }
     });
     </script>
