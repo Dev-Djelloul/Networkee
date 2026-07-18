@@ -155,11 +155,11 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
             <?php endif; ?>
 
             <?php if (!empty($user['job_title'])): ?>
-                <p class="profile-job-title"><img src="<?php echo $baseUrl; ?>icons/icons8-job-seeker-100.png" alt="" width="25" height="25" style="vertical-align: -4px;"> <?php echo htmlspecialchars($user['job_title']); ?></p>
+                <p class="profile-job-title"><img src="<?php echo $baseUrl; ?>icons/icons8-job-seeker-100.png" alt="" width="35" height="35" style="vertical-align: -4px;"> <?php echo htmlspecialchars($user['job_title']); ?></p>
             <?php endif; ?>
 
             <?php if (!empty($user['location'])): ?>
-                <p class="profile-location"><img src="<?php echo $baseUrl; ?>icons/icons8-location-50.png" alt="" width="25" height="25" style="vertical-align: -4px;"> <?php echo htmlspecialchars($user['location']); ?></p>
+                <p class="profile-location"><img src="<?php echo $baseUrl; ?>icons/icons8-location-50.png" alt="" width="35" height="35" style="vertical-align: -4px;"> <?php echo htmlspecialchars($user['location']); ?></p>
             <?php endif; ?>
 
             <?php if (!empty($user['bio'])): ?>

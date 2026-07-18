@@ -66,17 +66,17 @@ $customIcons = [
                         <?php if ($n['type'] === 'follow'): ?>
                             <?php $alreadyFollowing = isFollowing($userId, (int) $n['actor_id'], $pdo); ?>
                             <?php if ($alreadyFollowing): ?>
-                                <span class="notif-type-icon" title="Tu suis déjà cette personne"><img src="<?php echo $baseUrl; ?>icons/icons8-add-user-50.png" alt="" width="30" height="30"></span>
+                                <span class="notif-type-icon" title="Tu suis déjà cette personne"><img src="<?php echo $baseUrl; ?>icons/icons8-add-user-50.png" alt="" width="35" height="35"></span>
                             <?php else: ?>
                                 <form method="POST" action="notifications.php">
                                     <input type="hidden" name="follow_back_id" value="<?php echo (int) $n['actor_id']; ?>">
                                     <button type="submit" class="notif-type-icon notif-follow-back" title="Suivre en retour">
-                                        <img src="<?php echo $baseUrl; ?>icons/icons8-add-user-50.png" alt="" width="30" height="30">
+                                        <img src="<?php echo $baseUrl; ?>icons/icons8-add-user-50.png" alt="" width="35" height="35">
                                     </button>
                                 </form>
                             <?php endif; ?>
                         <?php elseif (isset($customIcons[$n['type']])): ?>
-                            <span class="notif-type-icon"><img src="<?php echo $baseUrl; ?>icons/<?php echo $customIcons[$n['type']]; ?>" alt="" width="30" height="30"></span>
+                            <span class="notif-type-icon"><img src="<?php echo $baseUrl; ?>icons/<?php echo $customIcons[$n['type']]; ?>" alt="" width="35" height="35"></span>
                         <?php else: ?>
                             <span class="notif-type-icon"><?php echo renderIcon('bell', 30); ?></span>
                         <?php endif; ?>
