@@ -527,6 +527,11 @@ a {
   background: #000;
 }
 
+.composer-preview-img[hidden],
+.composer-preview-video[hidden] {
+  display: none;
+}
+
 .composer-media-remove {
   position: absolute;
   top: 0.5rem;
