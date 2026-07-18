@@ -194,19 +194,32 @@ if (isset($_SESSION['user_id'])) {
                 <div class="composer-row">
                     <?php echo renderAvatar($currentUser, '', avatarUrl($currentUserImage, $baseUrl)); ?>
                     <div class="composer-main">
-                        <form action="home.php" method="post" enctype="multipart/form-data">
+                        <form action="home.php" method="post" enctype="multipart/form-data" class="composer-widget">
                             <textarea name="content" rows="2" placeholder="Quoi de neuf aujourd'hui ?"></textarea>
+
+                            <div class="composer-media-preview" hidden>
+                                <img class="composer-preview-img" alt="Aperçu de l'image" hidden>
+                                <video class="composer-preview-video" controls hidden></video>
+                                <button type="button" class="composer-media-remove" aria-label="Retirer le média">✕</button>
+                                <div class="composer-media-label"></div>
+                            </div>
+
                             <div class="composer-actions">
                                 <div class="composer-tools">
-                                    <button type="button" class="icon-btn" title="Ajouter une image" onclick="document.getElementById('home-video-input').value='';document.getElementById('home-image-input').click()">
+                                    <button type="button" class="icon-btn composer-image-btn" title="Ajouter une image">
                                         <img src="<?php echo $baseUrl; ?>icons/icons8-picture-50.png" alt="Image" width="26" height="26">
                                     </button>
-                                    <input type="file" id="home-image-input" name="image" accept="image/jpeg,image/png,image/gif" style="display:none;" onchange="var l=document.getElementById('home-media-label');l.textContent=this.files[0]?this.files[0].name:''">
-                                    <button type="button" class="icon-btn" title="Ajouter une vidéo" onclick="document.getElementById('home-image-input').value='';document.getElementById('home-video-input').click()">
+                                    <input type="file" class="composer-image-input" name="image" accept="image/jpeg,image/png,image/gif" hidden>
+
+                                    <button type="button" class="icon-btn composer-video-btn" title="Ajouter une vidéo">
                                         <img src="<?php echo $baseUrl; ?>icons/icons8-video-50.png" alt="Vidéo" width="26" height="26">
                                     </button>
-                                    <input type="file" id="home-video-input" name="video" accept="video/mp4,video/webm,video/ogg,video/quicktime" style="display:none;" onchange="var l=document.getElementById('home-media-label');l.textContent=this.files[0]?this.files[0].name:''">
-                                    <span id="home-media-label" style="font-size:0.75rem;color:var(--text-muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+                                    <input type="file" class="composer-video-input" name="video" accept="video/mp4,video/webm,video/ogg,video/quicktime" hidden>
+
+                                    <div class="composer-emoji-wrapper">
+                                        <button type="button" class="icon-btn composer-emoji-btn" title="Ajouter un emoji">😊</button>
+                                        <div class="emoji-picker"></div>
+                                    </div>
                                 </div>
                                 <button type="submit" class="btn btn-primary">
                                     <span>Publier</span>

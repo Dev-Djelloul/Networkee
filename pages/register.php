@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax'])) {
         <div class="card auth-card">
             <div class="card-body">
                 <h2>Créer un compte</h2>
-                <p>Rejoins la communauté Networkee en quelques secondes <img src="<?php echo $baseUrl; ?>icons/icons8-star-50.png" alt="" width="20" height="20" style="vertical-align: -5px;"></p>
+                <p>Rejoins la communauté Networkee en quelques secondes <img src="<?php echo $baseUrl; ?>icons/icons8-star-50.png" alt="" width="30" height="30" style="vertical-align: -5px;"></p>
 
                 <div id="message"></div>
 

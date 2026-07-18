@@ -150,11 +150,11 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
             <?php endif; ?>
 
             <?php if (!empty($user['job_title'])): ?>
-                <p class="profile-job-title"><img src="<?php echo $baseUrl; ?>icons/icons8-job-seeker-100.png" alt="" width="18" height="18" style="vertical-align: -4px;"> <?php echo htmlspecialchars($user['job_title']); ?></p>
+                <p class="profile-job-title"><img src="<?php echo $baseUrl; ?>icons/icons8-job-seeker-100.png" alt="" width="25" height="25" style="vertical-align: -4px;"> <?php echo htmlspecialchars($user['job_title']); ?></p>
             <?php endif; ?>
 
             <?php if (!empty($user['location'])): ?>
-                <p class="profile-location"><img src="<?php echo $baseUrl; ?>icons/icons8-location-50.png" alt="" width="18" height="18" style="vertical-align: -4px;"> <?php echo htmlspecialchars($user['location']); ?></p>
+                <p class="profile-location"><img src="<?php echo $baseUrl; ?>icons/icons8-location-50.png" alt="" width="25" height="25" style="vertical-align: -4px;"> <?php echo htmlspecialchars($user['location']); ?></p>
             <?php endif; ?>
 
             <?php if (!empty($user['open_to_work'])): ?>
@@ -216,15 +216,28 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
         <div class="card" style="margin-bottom: 1.5rem;">
             <div class="card-body">
                 <h3 style="margin-top: 0; margin-bottom: 1rem; font-size: 1.125rem;">Nouvelle publication</h3>
-                <form action="profile.php" method="post" enctype="multipart/form-data">
+                <form action="profile.php" method="post" enctype="multipart/form-data" class="composer-widget">
                     <textarea name="content" rows="3" placeholder="Quoi de neuf ?" class="form-input" style="resize: vertical; margin-bottom: 0.75rem;"></textarea>
+
+                    <div class="composer-media-preview" hidden>
+                        <img class="composer-preview-img" alt="Aperçu de l'image" hidden>
+                        <video class="composer-preview-video" controls hidden></video>
+                        <button type="button" class="composer-media-remove" aria-label="Retirer le média">✕</button>
+                        <div class="composer-media-label"></div>
+                    </div>
+
                     <div class="composer-actions">
                         <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('profile-post-video').value='';document.getElementById('profile-post-image').click()"><img src="<?php echo $baseUrl; ?>icons/icons8-picture-50.png" alt="" width="26" height="26" style="vertical-align: -8px;"> Ajouter une image</button>
-                            <input type="file" id="profile-post-image" name="image" accept="image/jpeg,image/png,image/gif" style="display: none;" onchange="document.getElementById('profile-post-label').textContent = this.files[0] ? this.files[0].name : ''">
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('profile-post-image').value='';document.getElementById('profile-post-video').click()"><img src="<?php echo $baseUrl; ?>icons/icons8-video-50.png" alt="" width="26" height="26" style="vertical-align: -8px;"> Ajouter une vidéo</button>
-                            <input type="file" id="profile-post-video" name="video" accept="video/mp4,video/webm,video/ogg,video/quicktime" style="display: none;" onchange="document.getElementById('profile-post-label').textContent = this.files[0] ? this.files[0].name : ''">
-                            <span id="profile-post-label" style="font-size: 0.8125rem; color: var(--text-muted);"></span>
+                            <button type="button" class="btn btn-secondary btn-sm composer-image-btn"><img src="<?php echo $baseUrl; ?>icons/icons8-picture-50.png" alt="" width="26" height="26" style="vertical-align: -8px;"> Ajouter une image</button>
+                            <input type="file" class="composer-image-input" name="image" accept="image/jpeg,image/png,image/gif" hidden>
+
+                            <button type="button" class="btn btn-secondary btn-sm composer-video-btn"><img src="<?php echo $baseUrl; ?>icons/icons8-video-50.png" alt="" width="26" height="26" style="vertical-align: -8px;"> Ajouter une vidéo</button>
+                            <input type="file" class="composer-video-input" name="video" accept="video/mp4,video/webm,video/ogg,video/quicktime" hidden>
+
+                            <div class="composer-emoji-wrapper">
+                                <button type="button" class="btn btn-secondary btn-sm composer-emoji-btn">😊 Emoji</button>
+                                <div class="emoji-picker"></div>
+                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary"><img src="<?php echo $baseUrl; ?>icons/icons8-send-50.png" alt="" width="26" height="26" style="vertical-align: -8px;"> Publier</button>
                     </div>
