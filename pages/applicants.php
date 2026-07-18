@@ -50,7 +50,7 @@ $applicants = getApplicants($jobId, $pdo);
                             </a>
                             <div style="flex: 1; min-width: 0;">
                                 <p style="margin: 0;">
-                                    <a href="profile.php?id=<?php echo (int) $a['user_id']; ?>" style="font-weight: 600; color: var(--text);">
+                                    <a href="profile.php?id=<?php echo (int) $a['user_id']; ?>" style="font-weight: 500; color: var(--text);">
                                         <?php echo htmlspecialchars($a['username']); ?>
                                     </a>
                                 </p>

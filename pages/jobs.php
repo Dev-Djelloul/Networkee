@@ -92,7 +92,7 @@ include __DIR__ . '/../includes/head.php';
         <!-- En-tête page -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
             <div>
-                <h1 style="margin: 0; font-size: 1.5rem; font-weight: 550; color:rgba(239, 124, 86, 0.86); letter-spacing: -0.025em;">Offres d'emploi</h1>
+                <h1 style="margin: 0; font-size: 1.5rem; font-weight: 450; color:rgba(239, 124, 86, 0.86); letter-spacing: -0.025em;">Offres d'emploi</h1>
                 <p style="margin: 0.25rem 0 0; color: var(--text-muted); font-size: 0.9375rem;">Opportunités dans le digital</p>
             </div>
             <?php if (isset($_SESSION['user_id'])): ?>
@@ -152,7 +152,7 @@ include __DIR__ . '/../includes/head.php';
                     </div>
                     <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 0.5rem;">
                         <button type="button" class="btn btn-secondary" onclick="toggleForm()">Annuler</button>
-                        <button type="submit" class="btn btn-primary"><?php echo renderIcon('send', 16); ?> Publier</button>
+                        <button type="submit" class="btn btn-primary"><img src="<?php echo $baseUrl; ?>icons/icons8-send-50.png" alt="" width="16" height="16"> Publier</button>
                     </div>
                 </form>
             </div>
@@ -208,10 +208,10 @@ include __DIR__ . '/../includes/head.php';
                                 </div>
 
                                 <!-- Titre & Entreprise -->
-                                <h3 style="margin: 0 0 0.125rem; font-size: 1.0625rem; font-weight: 700; line-height: 1.3;">
+                                <h3 style="margin: 0 0 0.125rem; font-size: 1.0625rem; font-weight: 500; line-height: 1.3;">
                                     <?php echo htmlspecialchars($offer['title']); ?>
                                 </h3>
-                                <p style="margin: 0 0 0.875rem; font-size: 0.9375rem; color: var(--accent); font-weight: 600;">
+                                <p style="margin: 0 0 0.875rem; font-size: 0.9375rem; color: var(--accent); font-weight: 500;">
                                     <?php echo htmlspecialchars($offer['company']); ?>
                                 </p>
 

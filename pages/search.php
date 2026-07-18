@@ -82,7 +82,7 @@ $hasResults = !empty($users) || !empty($offers);
                     <div class="card-body" style="display: flex; align-items: center; gap: 0.875rem;">
                         <?php echo renderAvatar($u['username'], 'sm', avatarUrl($u['profile_image'], $baseUrl), !empty($u['open_to_work'])); ?>
                         <div style="flex: 1; min-width: 0;">
-                            <p style="margin: 0; font-weight: 600; color: var(--text);">
+                            <p style="margin: 0; font-weight: 500; color: var(--text);">
                                 <?php echo htmlspecialchars($u['username']); ?>
                             </p>
                             <?php if (!empty($u['job_title'])): ?>
@@ -125,10 +125,10 @@ $hasResults = !empty($users) || !empty($offers);
                                         </span>
                                     <?php endif; ?>
                                 </div>
-                                <h3 style="margin: 0 0 0.125rem; font-size: 1.0625rem; font-weight: 700; line-height: 1.3;">
+                                <h3 style="margin: 0 0 0.125rem; font-size: 1.0625rem; font-weight: 500; line-height: 1.3;">
                                     <?php echo htmlspecialchars($offer['title']); ?>
                                 </h3>
-                                <p style="margin: 0 0 0.875rem; font-size: 0.9375rem; color: var(--accent); font-weight: 600;">
+                                <p style="margin: 0 0 0.875rem; font-size: 0.9375rem; color: var(--accent); font-weight: 500;">
                                     <?php echo htmlspecialchars($offer['company']); ?>
                                 </p>
                                 <p style="margin: 0; font-size: 0.875rem; color: var(--text-soft); line-height: 1.65;">

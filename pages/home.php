@@ -184,14 +184,14 @@ if (isset($_SESSION['user_id'])) {
                             <div class="composer-actions">
                                 <div class="composer-tools">
                                     <button type="button" class="icon-btn" title="Ajouter une image" onclick="document.getElementById('home-image-input').click()">
-                                        <?php echo renderIcon('image', 20); ?>
+                                        <img src="<?php echo $baseUrl; ?>icons/icons8-picture-50.png" alt="Image" width="20" height="20">
                                     </button>
                                     <input type="file" id="home-image-input" name="image" accept="image/jpeg,image/png,image/gif" style="display:none;" onchange="var l=document.getElementById('home-image-label');l.textContent=this.files[0]?this.files[0].name:''">
                                     <span id="home-image-label" style="font-size:0.75rem;color:var(--text-muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
                                 </div>
                                 <button type="submit" class="btn btn-primary">
                                     <span>Publier</span>
-                                    <?php echo renderIcon('send', 16); ?>
+                                    <img src="<?php echo $baseUrl; ?>icons/icons8-send-50.png" alt="" width="16" height="16">
                                 </button>
                             </div>
                         </form>
@@ -213,7 +213,7 @@ if (isset($_SESSION['user_id'])) {
             <article class="post" id="post-<?php echo $post['id']; ?>">
                 <?php if (!empty($post['repost_username'])): ?>
                 <div class="post-repost-banner">
-                    <?php echo renderIcon('repeat', 14); ?>
+                    <img src="<?php echo $baseUrl; ?>icons/icons8-repost-64.png" alt="" width="14" height="14">
                     <a href="profile.php?id=<?php echo (int) $post['repost_user_id']; ?>"><?php echo htmlspecialchars($post['repost_username']); ?></a> a repartagé
                 </div>
                 <?php endif; ?>
@@ -231,13 +231,13 @@ if (isset($_SESSION['user_id'])) {
                         </button>
                         <div class="post-menu-dropdown">
                             <button type="button" class="post-menu-item" onclick="copyPostLink(<?php echo $post['id']; ?>)">
-                                <?php echo renderIcon('link', 16); ?> Copier le lien
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-link-50.png" alt="" width="16" height="16"> Copier le lien
                             </button>
                             <?php if (isset($_SESSION['user_id']) && (int) $post['user_id'] === (int) $_SESSION['user_id']): ?>
                                 <form method="POST" action="home.php?page=<?php echo $page; ?>" class="confirm-form" data-confirm-message="Supprimer définitivement cette publication ? Cette action est irréversible.">
                                     <input type="hidden" name="delete_post" value="<?php echo $post['id']; ?>">
                                     <button type="submit" class="post-menu-item post-menu-item-danger">
-                                        <?php echo renderIcon('trash', 16); ?> Supprimer
+                                        <img src="<?php echo $baseUrl; ?>icons/icons8-delete-50.png" alt="" width="16" height="16"> Supprimer
                                     </button>
                                 </form>
                             <?php endif; ?>
@@ -258,13 +258,13 @@ if (isset($_SESSION['user_id'])) {
                         <?php if (isset($_SESSION['user_id'])): ?>
                             <form id="like-form-<?php echo $post['id']; ?>" method="POST" action="home.php?page=<?php echo $page; ?>" style="display: inline;">
                                 <button type="submit" name="like" value="<?php echo $post['id']; ?>" class="action-btn <?php echo $userLiked ? 'active' : ''; ?>">
-                                    <?php echo renderIcon('heart', 20); ?>
+                                    <img src="<?php echo $baseUrl; ?>icons/icons8-like-heart-50.png" alt="" width="20" height="20">
                                     <span><?php echo $likeCount; ?></span>
                                 </button>
                             </form>
                         <?php else: ?>
                             <button type="button" class="action-btn" onclick="openLoginModal('like', <?php echo $post['id']; ?>)">
-                                <?php echo renderIcon('heart', 20); ?>
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-like-heart-50.png" alt="" width="20" height="20">
                                 <span><?php echo $likeCount; ?></span>
                             </button>
                         <?php endif; ?>
@@ -273,20 +273,20 @@ if (isset($_SESSION['user_id'])) {
                         </div>
                     </span>
                     <button type="button" class="action-btn" onclick="<?php echo isset($_SESSION['user_id']) ? "focusComment({$post['id']})" : "openLoginModal('comment', {$post['id']})"; ?>">
-                        <?php echo renderIcon('message', 20); ?>
+                        <img src="<?php echo $baseUrl; ?>icons/icons8-comment-50.png" alt="" width="20" height="20">
                         <span><?php echo count($comments); ?></span>
                     </button>
                     <?php $userReposted = isset($_SESSION['user_id']) && hasUserReposted((int) $post['id'], (int) $_SESSION['user_id'], $pdo); ?>
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <form id="repost-form-<?php echo $post['id']; ?>" method="POST" action="home.php?page=<?php echo $page; ?>" style="display: inline;">
                             <button type="submit" name="repost" value="<?php echo $post['id']; ?>" class="action-btn <?php echo $userReposted ? 'active' : ''; ?>" title="<?php echo $userReposted ? 'Annuler le repartage' : 'Repartager'; ?>">
-                                <?php echo renderIcon('repeat', 20); ?>
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-repost-64.png" alt="" width="20" height="20">
                                 <span><?php echo getRepostCount((int) $post['id'], $pdo); ?></span>
                             </button>
                         </form>
                     <?php else: ?>
                         <button type="button" class="action-btn" onclick="openLoginModal('repost', <?php echo $post['id']; ?>)" title="Repartager">
-                            <?php echo renderIcon('repeat', 20); ?>
+                            <img src="<?php echo $baseUrl; ?>icons/icons8-repost-64.png" alt="" width="20" height="20">
                             <span><?php echo getRepostCount((int) $post['id'], $pdo); ?></span>
                         </button>
                     <?php endif; ?>
@@ -300,22 +300,22 @@ if (isset($_SESSION['user_id'])) {
                                 $shareText = urlencode(mb_substr($post['content'], 0, 100));
                             ?>
                             <a class="post-menu-item" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?url=<?php echo $shareUrl; ?>&text=<?php echo $shareText; ?>">
-                                <img src="<?php echo $baseUrl; ?>icons/icons8-x-50.png" alt="" width="16" height="16"> X (Twitter)
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-x-50.png" alt="" width="28" height="28"> X (Twitter)
                             </a>
                             <a class="post-menu-item" target="_blank" rel="noopener" href="https://www.linkedin.com/sharing/share-offsite/?url=<?php echo $shareUrl; ?>">
-                                <img src="<?php echo $baseUrl; ?>icons/icons8-linkedin-50.png" alt="" width="16" height="16"> LinkedIn
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-linkedin-50.png" alt="" width="28" height="28"> LinkedIn
                             </a>
                             <a class="post-menu-item" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $shareUrl; ?>">
-                                <img src="<?php echo $baseUrl; ?>icons/icons8-facebook-50.png" alt="" width="16" height="16"> Facebook
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-facebook-50.png" alt="" width="28" height="28"> Facebook
                             </a>
                             <a class="post-menu-item" target="_blank" rel="noopener" href="https://wa.me/?text=<?php echo $shareText . '%20' . $shareUrl; ?>">
-                                <img src="<?php echo $baseUrl; ?>icons/icons8-whatsapp-50.png" alt="" width="16" height="16"> WhatsApp
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-whatsapp-50.png" alt="" width="28" height="28"> WhatsApp
                             </a>
                             <a class="post-menu-item" href="mailto:?subject=<?php echo $shareText; ?>&body=<?php echo $shareUrl; ?>">
-                                <img src="<?php echo $baseUrl; ?>icons/icons8-email-50.png" alt="" width="16" height="16"> E-mail
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-email-50.png" alt="" width="28" height="28"> E-mail
                             </a>
                             <button type="button" class="post-menu-item" onclick="copyPostLink(<?php echo $post['id']; ?>)">
-                                <?php echo renderIcon('link', 16); ?> Copier le lien
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-link-50.png" alt="" width="16" height="16"> Copier le lien
                             </button>
                         </div>
                     </div>

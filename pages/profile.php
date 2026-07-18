@@ -196,11 +196,11 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
                     <textarea name="content" rows="3" placeholder="Quoi de neuf ?" class="form-input" style="resize: vertical; margin-bottom: 0.75rem;"></textarea>
                     <div class="composer-actions">
                         <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('profile-post-image').click()">📎 Ajouter une image</button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('profile-post-image').click()"><img src="<?php echo $baseUrl; ?>icons/icons8-picture-50.png" alt="" width="16" height="16" style="vertical-align: -3px;"> Ajouter une image</button>
                             <input type="file" id="profile-post-image" name="image" accept="image/jpeg,image/png,image/gif" style="display: none;" onchange="document.getElementById('profile-post-label').textContent = this.files[0] ? this.files[0].name : ''">
                             <span id="profile-post-label" style="font-size: 0.8125rem; color: var(--text-muted);"></span>
                         </div>
-                        <button type="submit" class="btn btn-primary">Publier</button>
+                        <button type="submit" class="btn btn-primary"><img src="<?php echo $baseUrl; ?>icons/icons8-send-50.png" alt="" width="16" height="16" style="vertical-align: -3px;"> Publier</button>
                     </div>
                 </form>
             </div>
@@ -228,13 +228,13 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
                         </button>
                         <div class="post-menu-dropdown">
                             <button type="button" class="post-menu-item" onclick="copyPostLink(<?php echo $post['id']; ?>)">
-                                <?php echo renderIcon('link', 16); ?> Copier le lien
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-link-50.png" alt="" width="16" height="16"> Copier le lien
                             </button>
                             <?php if ($isOwner): ?>
                                 <form method="POST" action="profile.php" class="confirm-form" data-confirm-message="Supprimer définitivement cette publication ? Cette action est irréversible.">
                                     <input type="hidden" name="delete_post" value="<?php echo $post['id']; ?>">
                                     <button type="submit" class="post-menu-item post-menu-item-danger">
-                                        <?php echo renderIcon('trash', 16); ?> Supprimer
+                                        <img src="<?php echo $baseUrl; ?>icons/icons8-delete-50.png" alt="" width="16" height="16"> Supprimer
                                     </button>
                                 </form>
                             <?php endif; ?>
@@ -249,14 +249,14 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
                 <?php endif; ?>
                 <div class="post-actions">
                     <span class="action-btn hover-stat">
-                        <?php echo renderIcon('heart', 20); ?>
+                        <img src="<?php echo $baseUrl; ?>icons/icons8-like-heart-50.png" alt="" width="20" height="20">
                         <span><?php echo getLikeCount($post['id'], $pdo); ?></span>
                         <div class="hover-popover">
                             <?php echo renderHoverList(getPostLikers((int) $post['id'], $pdo), 'Aucun like pour le moment.', $baseUrl); ?>
                         </div>
                     </span>
                     <span class="action-btn">
-                        <?php echo renderIcon('message', 20); ?>
+                        <img src="<?php echo $baseUrl; ?>icons/icons8-comment-50.png" alt="" width="20" height="20">
                         <span><?php echo count(getComments($post['id'], $pdo)); ?></span>
                     </span>
                     <span class="action-btn" style="margin-left: auto; font-size: 0.75rem; color: var(--text-muted);">

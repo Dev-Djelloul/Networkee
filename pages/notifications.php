@@ -54,7 +54,7 @@ $icons = [
                         <?php echo renderAvatar($n['actor_username'], 'sm', avatarUrl($n['actor_image'], $baseUrl)); ?>
                         <div style="flex: 1;">
                             <p style="margin: 0; font-size: 0.9375rem;">
-                                <a href="profile.php?id=<?php echo (int) $n['actor_id']; ?>" style="font-weight: 600;">
+                                <a href="profile.php?id=<?php echo (int) $n['actor_id']; ?>" style="font-weight: 500;">
                                     <?php echo htmlspecialchars($n['actor_username']); ?>
                                 </a>
                                 <?php echo notificationText($n); ?>

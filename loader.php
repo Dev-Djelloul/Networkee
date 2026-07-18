@@ -25,7 +25,7 @@
             align-items: center;
             gap: 0.75rem;
             font-size: 1.5rem;
-            font-weight: 700;
+            font-weight: 500;
             color: #0f172a;
             margin-bottom: 1.5rem;
         }
