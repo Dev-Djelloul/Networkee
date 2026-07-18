@@ -201,7 +201,7 @@ include __DIR__ . '/../includes/head.php';
                                     </span>
                                     <?php if (!empty($offer['location'])): ?>
                                         <span class="job-location">
-                                            <img src="<?php echo $baseUrl; ?>icons/icons8-location-50.png" alt="" width="20" height="20">
+                                            <img src="<?php echo $baseUrl; ?>icons/icons8-location-50.png" alt="" width="30" height="30">
                                             <?php echo htmlspecialchars($offer['location']); ?>
                                         </span>
                                     <?php endif; ?>
