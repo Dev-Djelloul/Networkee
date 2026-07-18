@@ -217,7 +217,7 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
             <div class="card-body">
                 <h3 style="margin-top: 0; margin-bottom: 1rem; font-size: 1.125rem;">Nouvelle publication</h3>
                 <form action="profile.php" method="post" enctype="multipart/form-data" class="composer-widget">
-                    <textarea name="content" rows="3" placeholder="Quoi de neuf ?" class="form-input" style="resize: vertical; margin-bottom: 0.75rem;"></textarea>
+                    <textarea name="content" rows="3" placeholder="Quoi de neuf ?"></textarea>
 
                     <div class="composer-media-preview" hidden>
                         <img class="composer-preview-img" alt="Aperçu de l'image" hidden>
@@ -227,19 +227,23 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
                     </div>
 
                     <div class="composer-actions">
-                        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-                            <button type="button" class="btn btn-secondary btn-sm composer-image-btn"><img src="<?php echo $baseUrl; ?>icons/icons8-picture-50.png" alt="" width="26" height="26" style="vertical-align: -8px;"> Ajouter une image</button>
+                        <div class="composer-tools">
+                            <button type="button" class="icon-btn composer-image-btn" title="Ajouter une image">
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-picture-50.png" alt="Image" width="20" height="20">
+                            </button>
                             <input type="file" class="composer-image-input" name="image" accept="image/jpeg,image/png,image/gif" hidden>
 
-                            <button type="button" class="btn btn-secondary btn-sm composer-video-btn"><img src="<?php echo $baseUrl; ?>icons/icons8-video-50.png" alt="" width="26" height="26" style="vertical-align: -8px;"> Ajouter une vidéo</button>
+                            <button type="button" class="icon-btn composer-video-btn" title="Ajouter une vidéo">
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-video-50.png" alt="Vidéo" width="20" height="20">
+                            </button>
                             <input type="file" class="composer-video-input" name="video" accept="video/mp4,video/webm,video/ogg,video/quicktime" hidden>
 
                             <div class="composer-emoji-wrapper">
-                                <button type="button" class="btn btn-secondary btn-sm composer-emoji-btn">😊 Emoji</button>
+                                <button type="button" class="icon-btn composer-emoji-btn" title="Ajouter un emoji">😊</button>
                                 <div class="emoji-picker"></div>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary"><img src="<?php echo $baseUrl; ?>icons/icons8-send-50.png" alt="" width="26" height="26" style="vertical-align: -8px;"> Publier</button>
+                        <button type="submit" class="btn btn-primary"><span>Publier</span><img src="<?php echo $baseUrl; ?>icons/icons8-send-50.png" alt="" width="16" height="16"></button>
                     </div>
                 </form>
             </div>

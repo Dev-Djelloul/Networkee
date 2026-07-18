@@ -619,6 +619,82 @@ a {
   background: var(--hover-bg);
 }
 
+/* Composer : une seule "fenêtre" bordée (façon LinkedIn) qui contient le texte,
+   l'aperçu média et la barre d'outils (image / vidéo / emoji / publier), au
+   lieu d'un textarea et des boutons séparés avec un espace entre les deux. */
+.composer-widget {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--composer-bg);
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.composer-widget:focus-within {
+  border-color: var(--accent-light);
+  box-shadow: 0 0 0 4px rgba(13, 148, 136, 0.08);
+}
+
+.composer-widget textarea {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0;
+  padding: 0.875rem 1rem;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  color: var(--text-soft);
+  resize: vertical;
+  min-height: 60px;
+  outline: none;
+}
+
+.composer-widget textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.composer-widget .composer-media-preview {
+  margin: 0 0.75rem 0.75rem;
+  border-radius: 0.625rem;
+}
+
+.composer-widget .composer-actions {
+  margin-top: 0;
+  padding: 0.5rem 0.625rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.composer-widget .composer-tools {
+  gap: 0.125rem;
+}
+
+.composer-widget .icon-btn {
+  padding: 0.4rem;
+  border-radius: 999px;
+}
+
+.composer-widget .icon-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+.composer-widget .composer-emoji-btn {
+  font-size: 1.25rem;
+  padding: 0.3rem 0.45rem;
+}
+
+.composer-widget .btn-primary {
+  padding: 0.4rem 1rem;
+  font-size: 0.875rem;
+}
+
+.composer-widget .btn-primary img {
+  width: 16px;
+  height: 16px;
+}
+
 /* Buttons */
 .btn {
   display: inline-flex;
@@ -1816,6 +1892,37 @@ body.dark .otw-banner {
   background: #14532d;
   color: #4ade80;
   border-color: #166534;
+}
+
+/* Badge "open to work" collé directement sur la photo de profil (coin bas-droit) */
+.avatar-wrapper {
+  position: relative;
+  display: inline-block;
+  line-height: 0;
+}
+
+.otw-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--surface);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.avatar-lg + .otw-badge {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.otw-badge img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 /* Skills */
