@@ -10,10 +10,20 @@ $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] :
 $offset = ($page - 1) * $postsPerPage;
 
 $stmt = $pdo->prepare("
-    SELECT posts.*, users.username, users.id AS user_id, users.profile_image
+    SELECT posts.id, posts.user_id, posts.content, posts.image, posts.created_at,
+           users.username, users.profile_image,
+           NULL AS repost_username, NULL AS repost_user_id, posts.created_at AS sort_date
     FROM posts
     JOIN users ON posts.user_id = users.id
-    ORDER BY created_at DESC
+    UNION ALL
+    SELECT posts.id, posts.user_id, posts.content, posts.image, posts.created_at,
+           users.username, users.profile_image,
+           reposter.username AS repost_username, reposter.id AS repost_user_id, reposts.created_at AS sort_date
+    FROM reposts
+    JOIN posts ON reposts.post_id = posts.id
+    JOIN users ON posts.user_id = users.id
+    JOIN users reposter ON reposts.user_id = reposter.id
+    ORDER BY sort_date DESC
     LIMIT :limit OFFSET :offset
 ");
 $stmt->bindValue(':limit', $postsPerPage, PDO::PARAM_INT);
@@ -21,12 +31,12 @@ $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $posts = $stmt->fetchAll();
 
-$totalPosts = $pdo->query("SELECT COUNT(*) FROM posts")->fetchColumn();
+$totalPosts = $pdo->query("SELECT COUNT(*) FROM posts")->fetchColumn() + $pdo->query("SELECT COUNT(*) FROM reposts")->fetchColumn();
 $totalPages = max(1, ceil($totalPosts / $postsPerPage));
 
 // Ajout de commentaire
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content'], $_POST['post_id']) && isset($_SESSION['user_id'])) {
-    $comment_content = htmlspecialchars($_POST['comment_content'], ENT_QUOTES, 'UTF-8');
+    $comment_content = trim($_POST['comment_content']);
     $post_id = (int) $_POST['post_id'];
 
     if (!empty($comment_content)) {
@@ -201,6 +211,12 @@ if (isset($_SESSION['user_id'])) {
                 $postStyle = getAvatarStyle($post['username']);
             ?>
             <article class="post" id="post-<?php echo $post['id']; ?>">
+                <?php if (!empty($post['repost_username'])): ?>
+                <div class="post-repost-banner">
+                    <?php echo renderIcon('repeat', 14); ?>
+                    <a href="profile.php?id=<?php echo (int) $post['repost_user_id']; ?>"><?php echo htmlspecialchars($post['repost_username']); ?></a> a repartagé
+                </div>
+                <?php endif; ?>
                 <div class="post-header">
                     <div class="post-author">
                         <?php echo renderAvatar($post['username'], '', avatarUrl($post['profile_image'], $baseUrl)); ?>
@@ -284,16 +300,19 @@ if (isset($_SESSION['user_id'])) {
                                 $shareText = urlencode(mb_substr($post['content'], 0, 100));
                             ?>
                             <a class="post-menu-item" target="_blank" rel="noopener" href="https://twitter.com/intent/tweet?url=<?php echo $shareUrl; ?>&text=<?php echo $shareText; ?>">
-                                <?php echo renderIcon('share', 16); ?> X (Twitter)
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-x-50.png" alt="" width="16" height="16"> X (Twitter)
                             </a>
                             <a class="post-menu-item" target="_blank" rel="noopener" href="https://www.linkedin.com/sharing/share-offsite/?url=<?php echo $shareUrl; ?>">
-                                <?php echo renderIcon('share', 16); ?> LinkedIn
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-linkedin-50.png" alt="" width="16" height="16"> LinkedIn
                             </a>
                             <a class="post-menu-item" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $shareUrl; ?>">
-                                <?php echo renderIcon('share', 16); ?> Facebook
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-facebook-50.png" alt="" width="16" height="16"> Facebook
                             </a>
                             <a class="post-menu-item" target="_blank" rel="noopener" href="https://wa.me/?text=<?php echo $shareText . '%20' . $shareUrl; ?>">
-                                <?php echo renderIcon('share', 16); ?> WhatsApp
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-whatsapp-50.png" alt="" width="16" height="16"> WhatsApp
+                            </a>
+                            <a class="post-menu-item" href="mailto:?subject=<?php echo $shareText; ?>&body=<?php echo $shareUrl; ?>">
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-email-50.png" alt="" width="16" height="16"> E-mail
                             </a>
                             <button type="button" class="post-menu-item" onclick="copyPostLink(<?php echo $post['id']; ?>)">
                                 <?php echo renderIcon('link', 16); ?> Copier le lien

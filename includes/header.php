@@ -24,13 +24,13 @@
         </div>
 
         <a href="<?php echo $baseUrl; ?>pages/search.php" class="notif-bell" aria-label="Rechercher" title="Rechercher">
-            <?php echo renderIcon('search', 20); ?>
+            <img src="<?php echo $baseUrl; ?>icons/icons8-search-50.png" alt="Rechercher" width="20" height="20">
         </a>
 
         <?php if (isset($_SESSION['user_id'])): ?>
             <?php $unreadCount = getUnreadNotificationCount((int) $_SESSION['user_id'], $pdo); ?>
             <a href="<?php echo $baseUrl; ?>pages/notifications.php" class="notif-bell" aria-label="Notifications" title="Notifications">
-                <?php echo renderIcon('bell', 20); ?>
+                <img src="<?php echo $baseUrl; ?>icons/icons8-notification-50.png" alt="Notifications" width="20" height="20">
                 <?php if ($unreadCount > 0): ?>
                     <span class="notif-badge"><?php echo $unreadCount > 9 ? '9+' : $unreadCount; ?></span>
                 <?php endif; ?>

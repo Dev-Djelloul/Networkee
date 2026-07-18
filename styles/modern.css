@@ -451,7 +451,7 @@ a {
   padding: 0.875rem 1rem;
   font-family: inherit;
   font-size: 0.9375rem;
-  color: var(--text);
+  color: var(--text-soft);
   resize: vertical;
   min-height: 80px;
   outline: none;
@@ -566,6 +566,30 @@ a {
   box-shadow: var(--shadow-hover);
 }
 
+.post-repost-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.625rem 1.25rem 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.post-repost-banner a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.post-repost-banner a:hover {
+  text-decoration: underline;
+}
+
+.post-menu-item img {
+  display: block;
+  border-radius: 3px;
+}
+
 .post-header {
   display: flex;
   justify-content: space-between;
@@ -616,9 +640,7 @@ a {
 
 .post-menu-dropdown {
   display: none;
-  position: absolute;
-  top: calc(100% + 0.25rem);
-  right: 0;
+  position: fixed;
   min-width: 190px;
   background: var(--surface);
   border: 1px solid var(--border-light);
@@ -868,6 +890,7 @@ a {
   padding: 0.625rem 1rem;
   font-family: inherit;
   font-size: 0.875rem;
+  color: var(--text-soft);
   resize: vertical;
   min-height: 44px;
   outline: none;
