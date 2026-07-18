@@ -101,6 +101,7 @@ a {
   top: 0;
   z-index: 100;
   background: var(--navbar-bg);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   transition: background-color 0.2s ease, border-color 0.2s ease;
@@ -152,10 +153,10 @@ a {
   filter: brightness(0) invert(1);
 }
 
-/* Police du wordmark du header — Poppins (Google Fonts) */
+/* Police du wordmark du header — Plus Jakarta Sans (Google Fonts) */
 .logo span {
-  font-family: 'Poppins', var(--font);
-  font-weight: 200;
+  font-family: 'Plus Jakarta Sans', var(--font);
+  font-weight: 300;
 }
 
 .nav-links {
