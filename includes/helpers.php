@@ -196,6 +196,22 @@ function getPostLikers(int $postId, PDO $pdo, int $limit = 20): array {
     return $stmt->fetchAll();
 }
 
+/** Utilisateurs distincts ayant liké au moins un post de $userId (le like le plus récent en premier). */
+function getLikersOfUserPosts(int $userId, PDO $pdo, int $limit = 20): array {
+    $stmt = $pdo->prepare(
+        "SELECT u.id, u.username, u.profile_image, MAX(l.created_at) AS last_liked_at
+         FROM likes l
+         JOIN posts p ON l.post_id = p.id
+         JOIN users u ON l.user_id = u.id
+         WHERE p.user_id = :user_id
+         GROUP BY u.id, u.username, u.profile_image
+         ORDER BY last_liked_at DESC
+         LIMIT $limit"
+    );
+    $stmt->execute(['user_id' => $userId]);
+    return $stmt->fetchAll();
+}
+
 /**
  * Rend la liste au survol (avatar + nom) utilisée par les popovers hover-stat.
  * $items : lignes avec au minimum id/username/profile_image.
@@ -210,6 +226,28 @@ function renderHoverList(array $items, string $emptyText, string $baseUrl): stri
             . renderAvatar($item['username'], 'sm', avatarUrl($item['profile_image'], $baseUrl))
             . '<span>' . htmlspecialchars($item['username']) . '</span>'
             . '</a></li>';
+    }
+    $html .= '</ul>';
+    return $html;
+}
+
+/**
+ * Rend la liste au survol (extraits de publications) pour le hover-stat "Posts".
+ * $posts : lignes avec au minimum id/content, les plus récentes en premier.
+ */
+function renderPostsHoverList(array $posts, string $emptyText, int $limit = 5): string {
+    if (empty($posts)) {
+        return '<p class="hover-popover-empty">' . htmlspecialchars($emptyText) . '</p>';
+    }
+    $html = '<ul class="hover-popover-list">';
+    foreach (array_slice($posts, 0, $limit) as $post) {
+        // Le contenu est déjà échappé en base : on le décode avant de le ré-échapper
+        // pour éviter un double encodage (ex. "&#039;" affiché tel quel).
+        $plain = html_entity_decode($post['content'], ENT_QUOTES, 'UTF-8');
+        $snippet = mb_substr($plain, 0, 60) . (mb_strlen($plain) > 60 ? '…' : '');
+        $html .= '<li><a href="#post-' . (int) $post['id'] . '"><span>'
+            . htmlspecialchars($snippet !== '' ? $snippet : 'Publication sans texte')
+            . '</span></a></li>';
     }
     $html .= '</ul>';
     return $html;

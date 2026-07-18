@@ -122,6 +122,7 @@ $followingList  = getFollowingList($profileId, $pdo);
 $likeCountStmt = $pdo->prepare("SELECT COUNT(*) FROM likes l JOIN posts p ON l.post_id = p.id WHERE p.user_id = :user_id");
 $likeCountStmt->execute(['user_id' => $profileId]);
 $likesReceived = (int) $likeCountStmt->fetchColumn();
+$postLikers    = getLikersOfUserPosts($profileId, $pdo);
 
 // Publications du profil
 $stmt = $pdo->prepare("SELECT * FROM posts WHERE user_id = :user_id ORDER BY created_at DESC");
@@ -149,11 +150,11 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
             <?php endif; ?>
 
             <?php if (!empty($user['job_title'])): ?>
-                <p class="profile-job-title"><?php echo renderIcon('briefcase', 15); ?> <?php echo htmlspecialchars($user['job_title']); ?></p>
+                <p class="profile-job-title"><img src="<?php echo $baseUrl; ?>icons/icons8-job-seeker-100.png" alt="" width="18" height="18" style="vertical-align: -4px;"> <?php echo htmlspecialchars($user['job_title']); ?></p>
             <?php endif; ?>
 
             <?php if (!empty($user['location'])): ?>
-                <p class="profile-location"><?php echo renderIcon('map-pin', 14); ?> <?php echo htmlspecialchars($user['location']); ?></p>
+                <p class="profile-location"><img src="<?php echo $baseUrl; ?>icons/icons8-location-50.png" alt="" width="18" height="18" style="vertical-align: -4px;"> <?php echo htmlspecialchars($user['location']); ?></p>
             <?php endif; ?>
 
             <?php if (!empty($user['open_to_work'])): ?>
@@ -180,13 +181,19 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
             <?php endif; ?>
 
             <div class="profile-stats">
-                <div class="stat">
+                <div class="stat hover-stat">
                     <div class="stat-value"><?php echo count($posts); ?></div>
                     <div class="stat-label">Posts</div>
+                    <div class="hover-popover">
+                        <?php echo renderPostsHoverList($posts, 'Aucune publication pour le moment.'); ?>
+                    </div>
                 </div>
-                <div class="stat">
+                <div class="stat hover-stat">
                     <div class="stat-value"><?php echo $likesReceived; ?></div>
                     <div class="stat-label">Likes reçus</div>
+                    <div class="hover-popover">
+                        <?php echo renderHoverList($postLikers, 'Aucun like reçu pour le moment.', $baseUrl); ?>
+                    </div>
                 </div>
                 <div class="stat hover-stat">
                     <div class="stat-value"><?php echo $followerCount; ?></div>
@@ -213,13 +220,13 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
                     <textarea name="content" rows="3" placeholder="Quoi de neuf ?" class="form-input" style="resize: vertical; margin-bottom: 0.75rem;"></textarea>
                     <div class="composer-actions">
                         <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('profile-post-video').value='';document.getElementById('profile-post-image').click()"><img src="<?php echo $baseUrl; ?>icons/icons8-picture-50.png" alt="" width="16" height="16" style="vertical-align: -3px;"> Ajouter une image</button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('profile-post-video').value='';document.getElementById('profile-post-image').click()"><img src="<?php echo $baseUrl; ?>icons/icons8-picture-50.png" alt="" width="26" height="26" style="vertical-align: -8px;"> Ajouter une image</button>
                             <input type="file" id="profile-post-image" name="image" accept="image/jpeg,image/png,image/gif" style="display: none;" onchange="document.getElementById('profile-post-label').textContent = this.files[0] ? this.files[0].name : ''">
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('profile-post-image').value='';document.getElementById('profile-post-video').click()"><img src="<?php echo $baseUrl; ?>icons/icons8-video-50.png" alt="" width="16" height="16" style="vertical-align: -3px;"> Ajouter une vidéo</button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('profile-post-image').value='';document.getElementById('profile-post-video').click()"><img src="<?php echo $baseUrl; ?>icons/icons8-video-50.png" alt="" width="26" height="26" style="vertical-align: -8px;"> Ajouter une vidéo</button>
                             <input type="file" id="profile-post-video" name="video" accept="video/mp4,video/webm,video/ogg,video/quicktime" style="display: none;" onchange="document.getElementById('profile-post-label').textContent = this.files[0] ? this.files[0].name : ''">
                             <span id="profile-post-label" style="font-size: 0.8125rem; color: var(--text-muted);"></span>
                         </div>
-                        <button type="submit" class="btn btn-primary"><img src="<?php echo $baseUrl; ?>icons/icons8-send-50.png" alt="" width="16" height="16" style="vertical-align: -3px;"> Publier</button>
+                        <button type="submit" class="btn btn-primary"><img src="<?php echo $baseUrl; ?>icons/icons8-send-50.png" alt="" width="26" height="26" style="vertical-align: -8px;"> Publier</button>
                     </div>
                 </form>
             </div>
@@ -232,7 +239,7 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
         <div class="feed">
             <?php $profileAvatar = avatarUrl($user['profile_image'], $baseUrl); ?>
             <?php foreach ($posts as $post): ?>
-            <article class="post">
+            <article class="post" id="post-<?php echo $post['id']; ?>">
                 <div class="post-header">
                     <div class="post-author">
                         <?php echo renderAvatar($user['username'], '', $profileAvatar); ?>

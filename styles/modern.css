@@ -153,9 +153,10 @@ a {
   filter: brightness(0) invert(1);
 }
 
-/* Wordmark du header : un peu plus fin que le reste du texte (hérite de --font) */
+/* Police du wordmark du header — Poppins (Google Fonts) */
 .logo span {
-  font-weight: 300;
+  font-family: 'Poppins', var(--font);
+  font-weight: 200;
 }
 
 .nav-links {
