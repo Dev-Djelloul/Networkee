@@ -194,6 +194,15 @@ a {
   color: var(--danger);
 }
 
+/* Regroupe recherche / notifications / thème / burger : garde ces icônes
+   ensemble et bien espacées du logo et des liens, à toutes les tailles. */
+.navbar-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+
 .notif-bell {
   position: relative;
   display: inline-flex;
@@ -203,7 +212,6 @@ a {
   border-radius: 0.5rem;
   color: var(--text-soft);
   transition: all 0.2s ease;
-  margin-right: 0.25rem;
 }
 
 .notif-bell:hover {
@@ -1907,10 +1915,9 @@ body.dark .type-stage     { background: #1e293b; color: #94a3b8; }
     row-gap: 0;
   }
 
-  /* Regroupe thème + hamburger à droite */
-  .theme-toggle {
+  /* Regroupe recherche/notifications/thème/hamburger à droite, groupés et espacés */
+  .navbar-toolbar {
     margin-left: auto;
-    margin-right: 0.25rem;
   }
 
   .mobile-menu-btn {

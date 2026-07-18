@@ -23,26 +23,28 @@
             <?php endif; ?>
         </div>
 
-        <a href="<?php echo $baseUrl; ?>pages/search.php" class="notif-bell" aria-label="Rechercher" title="Rechercher">
-            <img src="<?php echo $baseUrl; ?>icons/icons8-search-50.png" alt="Rechercher" width="30" height="30">
-        </a>
-
-        <?php if (isset($_SESSION['user_id'])): ?>
-            <?php $unreadCount = getUnreadNotificationCount((int) $_SESSION['user_id'], $pdo); ?>
-            <a href="<?php echo $baseUrl; ?>pages/notifications.php" class="notif-bell" aria-label="Notifications" title="Notifications">
-                <img src="<?php echo $baseUrl; ?>icons/icons8-notification-50.png" alt="Notifications" width="30" height="30">
-                <?php if ($unreadCount > 0): ?>
-                    <span class="notif-badge"><?php echo $unreadCount > 9 ? '9+' : $unreadCount; ?></span>
-                <?php endif; ?>
+        <div class="navbar-toolbar">
+            <a href="<?php echo $baseUrl; ?>pages/search.php" class="notif-bell" aria-label="Rechercher" title="Rechercher">
+                <img src="<?php echo $baseUrl; ?>icons/icons8-search-50.png" alt="Rechercher" width="30" height="30">
             </a>
-        <?php endif; ?>
 
-        <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Changer de thème" title="Changer de thème">
-            <img src="<?php echo $baseUrl; ?>icons/icons8-moon-100.png" alt="" width="30" height="30">
-        </button>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <?php $unreadCount = getUnreadNotificationCount((int) $_SESSION['user_id'], $pdo); ?>
+                <a href="<?php echo $baseUrl; ?>pages/notifications.php" class="notif-bell" aria-label="Notifications" title="Notifications">
+                    <img src="<?php echo $baseUrl; ?>icons/icons8-notification-50.png" alt="Notifications" width="30" height="30">
+                    <?php if ($unreadCount > 0): ?>
+                        <span class="notif-badge"><?php echo $unreadCount > 9 ? '9+' : $unreadCount; ?></span>
+                    <?php endif; ?>
+                </a>
+            <?php endif; ?>
 
-        <button class="mobile-menu-btn" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
-        </button>
+            <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Changer de thème" title="Changer de thème">
+                <img src="<?php echo $baseUrl; ?>icons/icons8-moon-100.png" alt="" width="30" height="30">
+            </button>
+
+            <button class="mobile-menu-btn" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            </button>
+        </div>
     </div>
 </nav>
