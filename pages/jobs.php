@@ -97,7 +97,7 @@ include __DIR__ . '/../includes/head.php';
             </div>
             <?php if (isset($_SESSION['user_id'])): ?>
                 <button class="btn btn-primary" onclick="toggleForm()">
-                    <?php echo renderIcon('briefcase', 16); ?> Publier une offre
+                    <img src="<?php echo $baseUrl; ?>icons/icons8-job-seeker-100.png" alt="" width="30" height="30" style="vertical-align: -8px;"> Publier une offre
                 </button>
             <?php else: ?>
                 <button type="button" class="btn btn-secondary" onclick="openLoginModal('publish')">Se connecter pour publier</button>
@@ -201,7 +201,7 @@ include __DIR__ . '/../includes/head.php';
                                     </span>
                                     <?php if (!empty($offer['location'])): ?>
                                         <span class="job-location">
-                                            <?php echo renderIcon('map-pin', 13); ?>
+                                            <img src="<?php echo $baseUrl; ?>icons/icons8-location-64.png" alt="" width="30" height="30">
                                             <?php echo htmlspecialchars($offer['location']); ?>
                                         </span>
                                     <?php endif; ?>

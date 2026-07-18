@@ -210,7 +210,7 @@ if (isset($_SESSION['user_id'])) {
                                 </div>
                                 <button type="submit" class="btn btn-primary">
                                     <span>Publier</span>
-                                    <img src="<?php echo $baseUrl; ?>icons/icons8-send-50.png" alt="" width="18" height="18">
+                                    <img src="<?php echo $baseUrl; ?>icons/icons8-send-50.png" alt="" width="30" height="30">
                                 </button>
                             </div>
                         </form>

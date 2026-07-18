@@ -139,7 +139,7 @@ include __DIR__ . '/../includes/head.php';
                                style="display: none;"
                                onchange="document.getElementById('profile-image-label').textContent = this.files[0] ? this.files[0].name : 'Aucun fichier choisi'">
                         <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('profile_image').click()">
-                            <img src="<?php echo $baseUrl; ?>icons/icons8-file-50.png" alt="" width="16" height="16" style="vertical-align: -3px;"> Choisir un fichier
+                            <img src="<?php echo $baseUrl; ?>icons/icons8-file-50.png" alt="" width="30" height="30" style="vertical-align: -3px;"> Choisir un fichier
                         </button>
                         <span id="profile-image-label" style="font-size: 0.8125rem; color: var(--text-muted); margin-left: 0.5rem;">Aucun fichier choisi</span>
                         <p style="font-size: 0.8125rem; color: var(--text-muted); margin: 0.375rem 0 0;">JPG, PNG ou GIF — max 40 Mo</p>

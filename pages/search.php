@@ -120,7 +120,7 @@ $hasResults = !empty($users) || !empty($offers);
                                     </span>
                                     <?php if (!empty($offer['location'])): ?>
                                         <span class="job-location">
-                                            <?php echo renderIcon('map-pin', 13); ?>
+                                            <img src="<?php echo $baseUrl; ?>icons/icons8-location-64.png" alt="" width="30" height="30">
                                             <?php echo htmlspecialchars($offer['location']); ?>
                                         </span>
                                     <?php endif; ?>
