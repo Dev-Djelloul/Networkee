@@ -11,13 +11,13 @@ $offset = ($page - 1) * $postsPerPage;
 
 $stmt = $pdo->prepare("
     SELECT posts.id, posts.user_id, posts.content, posts.image, posts.video, posts.created_at,
-           users.username, users.profile_image,
+           users.username, users.profile_image, users.job_title, users.open_to_work,
            NULL AS repost_username, NULL AS repost_user_id, posts.created_at AS sort_date
     FROM posts
     JOIN users ON posts.user_id = users.id
     UNION ALL
     SELECT posts.id, posts.user_id, posts.content, posts.image, posts.video, posts.created_at,
-           users.username, users.profile_image,
+           users.username, users.profile_image, users.job_title, users.open_to_work,
            reposter.username AS repost_username, reposter.id AS repost_user_id, reposts.created_at AS sort_date
     FROM reposts
     JOIN posts ON reposts.post_id = posts.id
@@ -105,6 +105,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['repost'], $_SESSION['
         $postAuthorId = (int) $authorStmt->fetchColumn();
         if ($postAuthorId) {
             createNotification($postAuthorId, $userId, 'repost', $postId, $pdo);
+        }
+    }
+    header("Location: home.php?page=$page");
+    exit;
+}
+
+// Suivre / ne plus suivre un auteur, depuis la carte de survol du fil
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_follow_id'], $_SESSION['user_id'])) {
+    $targetId = (int) $_POST['toggle_follow_id'];
+    $currentUserId = (int) $_SESSION['user_id'];
+
+    if ($targetId && $targetId !== $currentUserId) {
+        if (isFollowing($currentUserId, $targetId, $pdo)) {
+            $pdo->prepare("DELETE FROM follows WHERE follower_id = :follower_id AND followed_id = :followed_id")
+                ->execute(['follower_id' => $currentUserId, 'followed_id' => $targetId]);
+        } else {
+            $pdo->prepare("INSERT INTO follows (follower_id, followed_id) VALUES (:follower_id, :followed_id)")
+                ->execute(['follower_id' => $currentUserId, 'followed_id' => $targetId]);
+            createNotification($targetId, $currentUserId, 'follow', null, $pdo);
         }
     }
     header("Location: home.php?page=$page");
@@ -243,6 +262,11 @@ if (isset($_SESSION['user_id'])) {
                 $likeCount = getLikeCount($post['id'], $pdo);
                 $userLiked = isset($_SESSION['user_id']) && hasUserLikedPost($post['id'], $_SESSION['user_id'], $pdo);
                 $postStyle = getAvatarStyle($post['username']);
+
+                $authorId = (int) $post['user_id'];
+                $authorIsSelf = isset($_SESSION['user_id']) && (int) $_SESSION['user_id'] === $authorId;
+                $authorIsFollowing = isset($_SESSION['user_id']) && !$authorIsSelf && isFollowing((int) $_SESSION['user_id'], $authorId, $pdo);
+                $authorFollowerCount = getFollowerCount($authorId, $pdo);
             ?>
             <article class="post" id="post-<?php echo $post['id']; ?>">
                 <?php if (!empty($post['repost_username'])): ?>
@@ -255,7 +279,26 @@ if (isset($_SESSION['user_id'])) {
                     <div class="post-author">
                         <?php echo renderAvatar($post['username'], '', avatarUrl($post['profile_image'], $baseUrl)); ?>
                         <div class="post-meta">
-                            <h3><a href="profile.php?id=<?php echo $post['user_id']; ?>"><?php echo htmlspecialchars($post['username']); ?></a></h3>
+                            <h3>
+                                <span class="hover-stat author-hover-trigger">
+                                    <a href="profile.php?id=<?php echo $post['user_id']; ?>"><?php echo htmlspecialchars($post['username']); ?></a>
+                                    <div class="hover-popover">
+                                        <?php echo renderProfileHoverCard(
+                                            $authorId,
+                                            $post['username'],
+                                            $post['profile_image'],
+                                            $post['job_title'],
+                                            !empty($post['open_to_work']),
+                                            $authorFollowerCount,
+                                            $authorIsSelf,
+                                            isset($_SESSION['user_id']),
+                                            $authorIsFollowing,
+                                            $page,
+                                            $baseUrl
+                                        ); ?>
+                                    </div>
+                                </span>
+                            </h3>
                             <time><?php echo timeAgo($post['created_at']); ?></time>
                         </div>
                     </div>

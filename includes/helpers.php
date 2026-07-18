@@ -212,6 +212,50 @@ function getLikersOfUserPosts(int $userId, PDO $pdo, int $limit = 20): array {
 }
 
 /**
+ * Carte de profil au survol du nom d'un auteur dans le fil (façon LinkedIn) :
+ * avatar, nom, poste, nombre d'abonnés, bouton Suivre/Abonné.
+ */
+function renderProfileHoverCard(
+    int $authorId,
+    string $username,
+    ?string $profileImage,
+    ?string $jobTitle,
+    bool $openToWork,
+    int $followerCount,
+    bool $isSelf,
+    bool $isLoggedIn,
+    bool $isFollowingAuthor,
+    int $page,
+    string $baseUrl
+): string {
+    $avatar = renderAvatar($username, 'sm', avatarUrl($profileImage, $baseUrl));
+
+    $html = '<div class="profile-hover-card">';
+    $html .= '<div class="profile-hover-card-header">' . $avatar . '<div>';
+    $html .= '<a class="profile-hover-card-name" href="' . $baseUrl . 'pages/profile.php?id=' . $authorId . '">' . htmlspecialchars($username) . '</a>';
+    if ($openToWork) {
+        $html .= ' <img src="' . htmlspecialchars($baseUrl) . 'icons/icons8-open-to-work.gif" alt="Open to work" width="14" height="14" style="vertical-align:-2px;border-radius:50%;">';
+    }
+    $html .= '</div></div>';
+
+    if (!empty($jobTitle)) {
+        $html .= '<p class="profile-hover-card-headline">' . htmlspecialchars($jobTitle) . '</p>';
+    }
+
+    $html .= '<p class="profile-hover-card-stats">' . $followerCount . ' abonné' . ($followerCount > 1 ? 's' : '') . '</p>';
+
+    if ($isLoggedIn && !$isSelf) {
+        $html .= '<form method="POST" action="home.php?page=' . (int) $page . '" class="profile-hover-card-follow">'
+            . '<input type="hidden" name="toggle_follow_id" value="' . $authorId . '">'
+            . '<button type="submit" class="btn btn-sm ' . ($isFollowingAuthor ? 'btn-secondary' : 'btn-primary') . '">'
+            . ($isFollowingAuthor ? 'Abonné ✓' : '+ Suivre') . '</button></form>';
+    }
+
+    $html .= '</div>';
+    return $html;
+}
+
+/**
  * Rend la liste au survol (avatar + nom) utilisée par les popovers hover-stat.
  * $items : lignes avec au minimum id/username/profile_image.
  */
