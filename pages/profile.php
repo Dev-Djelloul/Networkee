@@ -229,20 +229,22 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
 
                     <div class="composer-actions">
                         <div class="composer-tools">
+                            <div class="composer-emoji-wrapper">
+                                <button type="button" class="icon-btn composer-emoji-btn" title="Ajouter un emoji">
+                                    <img src="<?php echo $baseUrl; ?>icons/icons8-smiley-50.png" alt="Emoji" width="28" height="28">
+                                </button>
+                                <div class="emoji-picker"></div>
+                            </div>
+
                             <button type="button" class="icon-btn composer-image-btn" title="Ajouter une image">
-                                <img src="<?php echo $baseUrl; ?>icons/icons8-picture-50.png" alt="Image" width="20" height="20">
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-picture-50.png" alt="Image" width="28" height="28">
                             </button>
                             <input type="file" class="composer-image-input" name="image" accept="image/jpeg,image/png,image/gif" hidden>
 
                             <button type="button" class="icon-btn composer-video-btn" title="Ajouter une vidéo">
-                                <img src="<?php echo $baseUrl; ?>icons/icons8-video-50.png" alt="Vidéo" width="20" height="20">
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-video-50.png" alt="Vidéo" width="28" height="28">
                             </button>
                             <input type="file" class="composer-video-input" name="video" accept="video/mp4,video/webm,video/ogg,video/quicktime" hidden>
-
-                            <div class="composer-emoji-wrapper">
-                                <button type="button" class="icon-btn composer-emoji-btn" title="Ajouter un emoji">😊</button>
-                                <div class="emoji-picker"></div>
-                            </div>
                         </div>
                         <button type="submit" class="btn btn-primary"><span>Publier</span><img src="<?php echo $baseUrl; ?>icons/icons8-send-50.png" alt="" width="16" height="16"></button>
                     </div>
