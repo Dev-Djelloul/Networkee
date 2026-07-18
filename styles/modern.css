@@ -502,8 +502,8 @@ a {
 }
 
 .btn-primary {
-  background: var(--accent);
-  color: white;
+  background: rgba(239, 124, 86, 0.86);
+  color: var(--text);
   box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.2);
 }
 
@@ -514,11 +514,11 @@ a {
 
 .btn-secondary {
   background: rgba(239, 124, 86, 0.86);
-  color: var(--text-soft);
+  color: var(--text);
 }
 
 .btn-secondary:hover {
-  background: var(--hover-bg-strong);
+  background: var(--accent-hover);
 }
 
 .btn-danger {
