@@ -36,7 +36,7 @@ include __DIR__ . '/../includes/head.php';
         <div class="card auth-card">
             <div class="card-body">
                 <h2>Connexion</h2>
-                <p>Content de te revoir sur Networkee <img src="<?php echo $baseUrl; ?>icons/icons8-calendar-app-50.png" alt="" width="35" height="35" style="vertical-align: -5px;"></p>
+                <p>Content de te revoir sur Networkee <img src="<?php echo $baseUrl; ?>icons/icons8-calendar-app-50.png" alt="" width="30" height="30" style="vertical-align: -10px;"></p>
 
                 <div id="message"></div>
 
