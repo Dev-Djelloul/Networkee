@@ -96,6 +96,20 @@ INSERT INTO `likes` (`id`, `post_id`, `user_id`, `created_at`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `password_resets`
+--
+
+CREATE TABLE `password_resets` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `token_hash` varchar(64) NOT NULL,
+  `expires_at` timestamp NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `posts`
 --
 
@@ -213,6 +227,14 @@ ALTER TABLE `likes`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Index pour la table `password_resets`
+--
+ALTER TABLE `password_resets`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `token_hash` (`token_hash`);
+
+--
 -- Index pour la table `posts`
 --
 ALTER TABLE `posts`
@@ -271,6 +293,12 @@ ALTER TABLE `likes`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
+-- AUTO_INCREMENT pour la table `password_resets`
+--
+ALTER TABLE `password_resets`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT pour la table `posts`
 --
 ALTER TABLE `posts`
@@ -325,6 +353,12 @@ ALTER TABLE `notifications`
 ALTER TABLE `likes`
   ADD CONSTRAINT `likes_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`),
   ADD CONSTRAINT `likes_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+--
+-- Contraintes pour la table `password_resets`
+--
+ALTER TABLE `password_resets`
+  ADD CONSTRAINT `password_resets_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `posts`

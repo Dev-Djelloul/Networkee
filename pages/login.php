@@ -46,7 +46,10 @@ include __DIR__ . '/../includes/head.php';
                         <input type="email" id="email" name="email" class="form-input" required placeholder="ton@email.com">
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="password">Mot de passe</label>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <label class="form-label" for="password" style="margin-bottom: 0;">Mot de passe</label>
+                            <a href="forgot-password.php" style="font-size: 0.8125rem; color: var(--text-muted);">Mot de passe oublié ?</a>
+                        </div>
                         <input type="password" id="password" name="password" class="form-input" required placeholder="••••••••">
                     </div>
                     <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Je me connecte</button>

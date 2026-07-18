@@ -258,6 +258,87 @@ function getApplicants(int $jobOfferId, PDO $pdo): array {
     return $stmt->fetchAll();
 }
 
+/**
+ * Crée une demande de réinitialisation de mot de passe et retourne le token brut
+ * (à insérer dans le lien envoyé par email). Seul son hash est stocké en base.
+ * Invalide les demandes précédentes de cet utilisateur au passage.
+ */
+function createPasswordReset(int $userId, PDO $pdo): string {
+    $pdo->prepare("DELETE FROM password_resets WHERE user_id = :user_id")->execute(['user_id' => $userId]);
+
+    $rawToken = bin2hex(random_bytes(32));
+    $stmt = $pdo->prepare(
+        "INSERT INTO password_resets (user_id, token_hash, expires_at, created_at)
+         VALUES (:user_id, :token_hash, :expires_at, NOW())"
+    );
+    $stmt->execute([
+        'user_id'    => $userId,
+        'token_hash' => hash('sha256', $rawToken),
+        'expires_at' => date('Y-m-d H:i:s', time() + 3600),
+    ]);
+
+    return $rawToken;
+}
+
+/**
+ * Retourne l'id utilisateur associé à un token de reset valide (non expiré), ou null.
+ */
+function validatePasswordResetToken(string $rawToken, PDO $pdo): ?int {
+    $stmt = $pdo->prepare(
+        "SELECT user_id FROM password_resets WHERE token_hash = :token_hash AND expires_at > NOW()"
+    );
+    $stmt->execute(['token_hash' => hash('sha256', $rawToken)]);
+    $userId = $stmt->fetchColumn();
+    return $userId !== false ? (int) $userId : null;
+}
+
+function invalidatePasswordResetToken(string $rawToken, PDO $pdo): void {
+    $stmt = $pdo->prepare("DELETE FROM password_resets WHERE token_hash = :token_hash");
+    $stmt->execute(['token_hash' => hash('sha256', $rawToken)]);
+}
+
+/**
+ * Envoie un email via l'API REST de Resend (https://resend.com). Nécessite la variable
+ * d'environnement RESEND_API_KEY. Retourne true si Resend a accepté l'envoi.
+ * RESEND_FROM_EMAIL permet de personnaliser l'expéditeur une fois un domaine vérifié
+ * sur Resend ; par défaut on utilise leur adresse de test partagée.
+ */
+function sendEmail(string $to, string $subject, string $html): bool {
+    $apiKey = getenv('RESEND_API_KEY');
+    if (!$apiKey) {
+        error_log('[sendEmail] RESEND_API_KEY manquante, email non envoyé à ' . $to);
+        return false;
+    }
+
+    $from = getenv('RESEND_FROM_EMAIL') ?: 'Networkee <onboarding@resend.dev>';
+
+    $ch = curl_init('https://api.resend.com/emails');
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST           => true,
+        CURLOPT_HTTPHEADER     => [
+            'Authorization: Bearer ' . $apiKey,
+            'Content-Type: application/json',
+        ],
+        CURLOPT_POSTFIELDS => json_encode([
+            'from'    => $from,
+            'to'      => [$to],
+            'subject' => $subject,
+            'html'    => $html,
+        ]),
+        CURLOPT_TIMEOUT => 10,
+    ]);
+    $response = curl_exec($ch);
+    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($status < 200 || $status >= 300) {
+        error_log('[sendEmail] Échec Resend (HTTP ' . $status . ') : ' . $response);
+        return false;
+    }
+    return true;
+}
+
 function renderSkillTags(string $skills): string {
     if (empty(trim($skills))) return '';
     $tags = array_filter(array_map('trim', explode(',', $skills)));

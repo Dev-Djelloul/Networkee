@@ -278,142 +278,10 @@ include __DIR__ . '/../includes/head.php';
         <?php endif; ?>
     </main>
 
-    <!-- Connexion / inscription en overlay (déclenchée depuis "Postuler" / "Publier" quand déconnecté) -->
-    <div id="login-modal" class="modal-overlay hidden">
-        <div class="modal-card">
-            <button type="button" class="modal-close" aria-label="Fermer" onclick="closeLoginModal()">
-                <?php echo renderIcon('close', 20); ?>
-            </button>
+    <?php include __DIR__ . '/../includes/auth-modal.php'; ?>
 
-            <!-- Vue connexion -->
-            <div id="modal-view-login">
-                <h2 style="margin-top: 0;">Connexion</h2>
-                <p style="color: var(--text-muted); margin-top: -0.5rem;">Connecte-toi pour continuer.</p>
-                <div id="login-modal-message"></div>
-                <form id="loginModalForm">
-                    <div class="form-group">
-                        <label class="form-label" for="modal-email">Email</label>
-                        <input type="email" id="modal-email" name="email" class="form-input" required placeholder="ton@email.com">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="modal-password">Mot de passe</label>
-                        <input type="password" id="modal-password" name="password" class="form-input" required placeholder="••••••••">
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">Je me connecte</button>
-                </form>
-                <p style="margin-top: 1.25rem; font-size: 0.875rem; color: var(--text-muted);">
-                    Pas encore de compte ? <a href="#" onclick="switchModalView('register'); return false;" style="color: var(--accent); font-weight: 500;">Inscris-toi</a>
-                </p>
-            </div>
-
-            <!-- Vue inscription -->
-            <div id="modal-view-register" style="display: none;">
-                <h2 style="margin-top: 0;">Créer un compte</h2>
-                <p style="color: var(--text-muted); margin-top: -0.5rem;">Rejoins Networkee en quelques secondes 🌟</p>
-                <div id="register-modal-message"></div>
-                <form id="registerModalForm">
-                    <div class="form-group">
-                        <label class="form-label" for="modal-reg-username">Nom d'utilisateur</label>
-                        <input type="text" id="modal-reg-username" name="username" class="form-input" required placeholder="Ton pseudo">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="modal-reg-email">Email</label>
-                        <input type="email" id="modal-reg-email" name="email" class="form-input" required placeholder="ton@email.com">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="modal-reg-password">Mot de passe</label>
-                        <input type="password" id="modal-reg-password" name="password" class="form-input" required placeholder="••••••••">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="modal-reg-confirm">Confirme ton mot de passe</label>
-                        <input type="password" id="modal-reg-confirm" name="confirm_password" class="form-input" required placeholder="••••••••">
-                    </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">S'inscrire</button>
-                </form>
-                <p style="margin-top: 1.25rem; font-size: 0.875rem; color: var(--text-muted);">
-                    Déjà un compte ? <a href="#" onclick="switchModalView('login'); return false;" style="color: var(--accent); font-weight: 500;">Connecte-toi</a>
-                </p>
-            </div>
-        </div>
-    </div>
-
+    <script src="<?php echo $baseUrl; ?>scripts/auth-modal.js"></script>
     <script>
-    let loginModalIntent = null;
-
-    function openLoginModal(action, jobId) {
-        loginModalIntent = { action: action, jobId: jobId || null };
-        document.getElementById('login-modal').classList.remove('hidden');
-        switchModalView('login');
-    }
-
-    function closeLoginModal() {
-        document.getElementById('login-modal').classList.add('hidden');
-        document.getElementById('login-modal-message').innerHTML = '';
-        document.getElementById('register-modal-message').innerHTML = '';
-        loginModalIntent = null;
-    }
-
-    function switchModalView(view) {
-        const isLogin = view === 'login';
-        document.getElementById('modal-view-login').style.display = isLogin ? 'block' : 'none';
-        document.getElementById('modal-view-register').style.display = isLogin ? 'none' : 'block';
-        document.getElementById(isLogin ? 'modal-email' : 'modal-reg-username').focus();
-    }
-
-    document.getElementById('login-modal').addEventListener('click', function (e) {
-        if (e.target === this) closeLoginModal();
-    });
-
-    // Après connexion OU inscription réussie : on garde l'intention (postuler à l'offre X /
-    // ouvrir le formulaire de publication) et on recharge la page pour y revenir directement.
-    function handleAuthSuccess(messageDiv, message) {
-        messageDiv.innerHTML = '<div class="alert alert-success">' + message + '</div>';
-        if (loginModalIntent) {
-            sessionStorage.setItem('networkee_after_login', JSON.stringify(loginModalIntent));
-        }
-        setTimeout(function () { window.location.reload(); }, 500);
-    }
-
-    document.getElementById('registerModalForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        const formData = new URLSearchParams(new FormData(this));
-        formData.append('ajax', 'true');
-        const messageDiv = document.getElementById('register-modal-message');
-
-        fetch('register.php', { method: 'POST', body: formData })
-            .then(function (r) { return r.json(); })
-            .then(function (response) {
-                if (response.success) {
-                    handleAuthSuccess(messageDiv, response.message);
-                } else {
-                    messageDiv.innerHTML = '<div class="alert alert-danger">' + response.message + '</div>';
-                }
-            })
-            .catch(function () {
-                messageDiv.innerHTML = '<div class="alert alert-danger">Une erreur est survenue. Veuillez réessayer.</div>';
-            });
-    });
-
-    document.getElementById('loginModalForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        const formData = new URLSearchParams(new FormData(this));
-        formData.append('ajax', 'true');
-        const messageDiv = document.getElementById('login-modal-message');
-
-        fetch('login.php', { method: 'POST', body: formData })
-            .then(function (r) { return r.json(); })
-            .then(function (response) {
-                if (response.success) {
-                    handleAuthSuccess(messageDiv, response.message);
-                } else {
-                    messageDiv.innerHTML = '<div class="alert alert-danger">' + response.message + '</div>';
-                }
-            })
-            .catch(function () {
-                messageDiv.innerHTML = '<div class="alert alert-danger">Une erreur est survenue. Veuillez réessayer.</div>';
-            });
-    });
-
     // Reprend l'action interrompue (postuler / publier) après une connexion via la modale.
     document.addEventListener('DOMContentLoaded', function () {
         const raw = sessionStorage.getItem('networkee_after_login');
@@ -423,11 +291,11 @@ include __DIR__ . '/../includes/head.php';
 
         if (intent.action === 'publish') {
             toggleForm();
-        } else if (intent.action === 'apply' && intent.jobId) {
-            const card = document.getElementById('job-' + intent.jobId);
+        } else if (intent.action === 'apply' && intent.id) {
+            const card = document.getElementById('job-' + intent.id);
             if (card) {
                 card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                toggleApply(intent.jobId);
+                toggleApply(intent.id);
             }
         }
     });

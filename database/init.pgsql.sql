@@ -78,6 +78,14 @@ CREATE TABLE IF NOT EXISTS job_applications (
     UNIQUE (job_offer_id, user_id)
 );
 
+CREATE TABLE IF NOT EXISTS password_resets (
+    id         SERIAL PRIMARY KEY,
+    user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token_hash VARCHAR(64) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 -- ─── Données de démonstration (seed only if empty) ──────────────────────────
 -- mots de passe : Alexandre=password, Sophie=123456, Hugo=azerty, Camille=networkee
 INSERT INTO users (id, username, email, password, profile_image, bio, created_at)

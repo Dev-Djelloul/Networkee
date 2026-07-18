@@ -157,7 +157,7 @@ if (isset($_SESSION['user_id'])) {
                 $userLiked = isset($_SESSION['user_id']) && hasUserLikedPost($post['id'], $_SESSION['user_id'], $pdo);
                 $postStyle = getAvatarStyle($post['username']);
             ?>
-            <article class="post">
+            <article class="post" id="post-<?php echo $post['id']; ?>">
                 <div class="post-header">
                     <div class="post-author">
                         <?php echo renderAvatar($post['username'], '', avatarUrl($post['profile_image'], $baseUrl)); ?>
@@ -181,22 +181,22 @@ if (isset($_SESSION['user_id'])) {
 
                 <div class="post-actions">
                     <?php if (isset($_SESSION['user_id'])): ?>
-                        <form method="POST" action="home.php?page=<?php echo $page; ?>" style="display: inline;">
+                        <form id="like-form-<?php echo $post['id']; ?>" method="POST" action="home.php?page=<?php echo $page; ?>" style="display: inline;">
                             <button type="submit" name="like" value="<?php echo $post['id']; ?>" class="action-btn <?php echo $userLiked ? 'active' : ''; ?>">
                                 <?php echo renderIcon('heart', 20); ?>
                                 <span><?php echo $likeCount; ?></span>
                             </button>
                         </form>
                     <?php else: ?>
-                        <span class="action-btn">
+                        <button type="button" class="action-btn" onclick="openLoginModal('like', <?php echo $post['id']; ?>)">
                             <?php echo renderIcon('heart', 20); ?>
                             <span><?php echo $likeCount; ?></span>
-                        </span>
+                        </button>
                     <?php endif; ?>
-                    <span class="action-btn">
+                    <button type="button" class="action-btn" onclick="<?php echo isset($_SESSION['user_id']) ? "focusComment({$post['id']})" : "openLoginModal('comment', {$post['id']})"; ?>">
                         <?php echo renderIcon('message', 20); ?>
                         <span><?php echo count($comments); ?></span>
-                    </span>
+                    </button>
                 </div>
 
                 <?php if (count($comments) > 0 || isset($_SESSION['user_id'])): ?>
@@ -214,7 +214,7 @@ if (isset($_SESSION['user_id'])) {
                     <?php if (isset($_SESSION['user_id'])): ?>
                     <form method="POST" action="home.php?page=<?php echo $page; ?>" class="comment-form">
                         <?php echo renderAvatar($currentUser, 'sm', avatarUrl($currentUserImage, $baseUrl)); ?>
-                        <textarea name="comment_content" rows="1" placeholder="Laisse ton commentaire..."></textarea>
+                        <textarea id="comment-input-<?php echo $post['id']; ?>" name="comment_content" rows="1" placeholder="Laisse ton commentaire..."></textarea>
                         <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>">
                         <button type="submit" class="btn btn-primary btn-sm">Envoyer</button>
                     </form>
@@ -264,6 +264,39 @@ if (isset($_SESSION['user_id'])) {
         </div>
         <?php endif; ?>
     </main>
+
+    <?php include __DIR__ . '/../includes/auth-modal.php'; ?>
+
+    <script src="<?php echo $baseUrl; ?>scripts/auth-modal.js"></script>
+    <script>
+    function focusComment(postId) {
+        const textarea = document.getElementById('comment-input-' + postId);
+        if (!textarea) return;
+        textarea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        textarea.focus();
+    }
+
+    // Reprend l'action interrompue (liker / commenter) après une connexion via la modale.
+    document.addEventListener('DOMContentLoaded', function () {
+        const raw = sessionStorage.getItem('networkee_after_login');
+        if (!raw) return;
+        sessionStorage.removeItem('networkee_after_login');
+        const intent = JSON.parse(raw);
+        if (!intent.id) return;
+
+        const post = document.getElementById('post-' + intent.id);
+        if (post) post.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        if (intent.action === 'like') {
+            // .click() sur le bouton plutôt que form.requestSubmit() : plus fiable pour
+            // déclencher une vraie soumission (avec le couple name/value du bouton) sur tous les navigateurs.
+            const likeButton = document.querySelector('#like-form-' + intent.id + ' button[type=submit]');
+            if (likeButton) likeButton.click();
+        } else if (intent.action === 'comment') {
+            focusComment(intent.id);
+        }
+    });
+    </script>
 
     <?php include(__DIR__ . '/../includes/footer.php'); ?>
 </body>
