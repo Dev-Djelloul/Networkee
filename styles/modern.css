@@ -664,19 +664,29 @@ a {
   margin-top: 0;
   padding: 0.625rem;
   border-top: 2px solid var(--accent);
-  background: var(--accent-light);
 }
 
 .composer-widget .composer-tools {
+  display: flex;
+  align-items: center;
   gap: 0.25rem;
+}
+
+.composer-widget .composer-emoji-wrapper {
+  display: inline-flex;
+  align-items: center;
 }
 
 .composer-widget .icon-btn {
   padding: 0.4rem;
   border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .composer-widget .icon-btn img {
+  display: block;
   width: 28px;
   height: 28px;
   min-width: 25px;
@@ -693,8 +703,9 @@ a {
 }
 
 .composer-widget .btn-primary img {
-  width: 16px;
-  height: 16px;
+  display: block;
+  width: 32px;
+  height: 32px;
 }
 
 /* Buttons */
