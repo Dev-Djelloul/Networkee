@@ -27,8 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax'])) {
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             $stmt = $pdo->prepare("INSERT INTO users (username, email, password) VALUES (:username, :email, :password)");
             if ($stmt->execute(['username' => $username, 'email' => $email, 'password' => $hashed_password])) {
+                // Connexion automatique : évite de redemander les identifiants juste après l'inscription.
+                $_SESSION['user_id'] = (int) $pdo->lastInsertId();
+                $_SESSION['username'] = $username;
                 $response['success'] = true;
-                $response['message'] = "Inscription réussie ! Tu peux maintenant te connecter.";
+                $response['message'] = "Bienvenue sur Networkee ! Ton compte est prêt.";
             } else {
                 $response['message'] = "Une erreur s'est produite lors de l'inscription.";
             }
@@ -94,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax'])) {
                         if (response.success) {
                             messageDiv.html(`<div class='alert alert-success'>${response.message}</div>`);
                             $('#registerForm')[0].reset();
-                            setTimeout(() => window.location.href = 'login.php', 1500);
+                            setTimeout(() => window.location.href = '../main.php', 1000);
                         } else {
                             messageDiv.html(`<div class='alert alert-danger'>${response.message}</div>`);
                         }
