@@ -191,6 +191,45 @@ function notificationText(array $n): string {
     };
 }
 
+/**
+ * Normalise un texte pour la recherche : minuscules, accents retirés (table
+ * manuelle — iconv //TRANSLIT n'est pas fiable sous Alpine/musl, utilisé en
+ * production), ponctuation réduite à des espaces.
+ */
+function normalizeSearchText(string $s): string {
+    $s = mb_strtolower($s, 'UTF-8');
+    $accents = [
+        'à' => 'a', 'â' => 'a', 'ä' => 'a', 'á' => 'a', 'ã' => 'a', 'å' => 'a',
+        'ç' => 'c',
+        'é' => 'e', 'è' => 'e', 'ê' => 'e', 'ë' => 'e',
+        'î' => 'i', 'ï' => 'i', 'ì' => 'i', 'í' => 'i',
+        'ô' => 'o', 'ö' => 'o', 'ò' => 'o', 'ó' => 'o', 'õ' => 'o',
+        'ù' => 'u', 'û' => 'u', 'ü' => 'u', 'ú' => 'u',
+        'ÿ' => 'y', 'ñ' => 'n', 'œ' => 'oe', 'æ' => 'ae',
+    ];
+    $s = strtr($s, $accents);
+    $s = preg_replace('/[^a-z0-9]+/', ' ', $s);
+    return trim(preg_replace('/\s+/', ' ', $s));
+}
+
+/**
+ * Vrai si chaque mot de la requête normalisée apparaît (comme sous-chaîne)
+ * dans le texte normalisé — insensible à la casse, aux accents et à la
+ * ponctuation, tolérant sur l'ordre des mots.
+ */
+function searchTextMatches(string $normalizedHaystack, string $normalizedQuery): bool {
+    $words = array_filter(explode(' ', $normalizedQuery));
+    if (empty($words)) {
+        return false;
+    }
+    foreach ($words as $word) {
+        if (!str_contains($normalizedHaystack, $word)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 function renderSkillTags(string $skills): string {
     if (empty(trim($skills))) return '';
     $tags = array_filter(array_map('trim', explode(',', $skills)));
