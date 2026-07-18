@@ -58,6 +58,22 @@ CREATE TABLE `follows` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `notifications`
+--
+
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `actor_id` int(11) NOT NULL,
+  `type` varchar(20) NOT NULL,
+  `post_id` int(11) DEFAULT NULL,
+  `is_read` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `likes`
 --
 
@@ -146,6 +162,14 @@ ALTER TABLE `follows`
   ADD KEY `followed_id` (`followed_id`);
 
 --
+-- Index pour la table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `actor_id` (`actor_id`);
+
+--
 -- Index pour la table `likes`
 --
 ALTER TABLE `likes`
@@ -185,6 +209,12 @@ ALTER TABLE `follows`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT pour la table `notifications`
+--
+ALTER TABLE `notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT pour la table `likes`
 --
 ALTER TABLE `likes`
@@ -219,6 +249,13 @@ ALTER TABLE `comments`
 ALTER TABLE `follows`
   ADD CONSTRAINT `follows_ibfk_1` FOREIGN KEY (`follower_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `follows_ibfk_2` FOREIGN KEY (`followed_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `notifications_ibfk_2` FOREIGN KEY (`actor_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `likes`

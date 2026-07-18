@@ -3,6 +3,7 @@ $baseUrl = './';
 $pageTitle = 'Networkee — Le réseau des professionnels du digital';
 session_start();
 require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/includes/helpers.php';
 
 // Stats communauté
 try {

@@ -23,6 +23,16 @@
             <?php endif; ?>
         </div>
 
+        <?php if (isset($_SESSION['user_id'])): ?>
+            <?php $unreadCount = getUnreadNotificationCount((int) $_SESSION['user_id'], $pdo); ?>
+            <a href="<?php echo $baseUrl; ?>pages/notifications.php" class="notif-bell" aria-label="Notifications" title="Notifications">
+                <?php echo renderIcon('bell', 20); ?>
+                <?php if ($unreadCount > 0): ?>
+                    <span class="notif-badge"><?php echo $unreadCount > 9 ? '9+' : $unreadCount; ?></span>
+                <?php endif; ?>
+            </a>
+        <?php endif; ?>
+
         <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Changer de thème" title="Changer de thème">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
         </button>

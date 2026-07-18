@@ -65,10 +65,12 @@ if (!$isOwner && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_f
 
     if (isFollowing($currentUserId, $profileId, $pdo)) {
         $stmt = $pdo->prepare("DELETE FROM follows WHERE follower_id = :follower_id AND followed_id = :followed_id");
+        $stmt->execute(['follower_id' => $currentUserId, 'followed_id' => $profileId]);
     } else {
         $stmt = $pdo->prepare("INSERT INTO follows (follower_id, followed_id) VALUES (:follower_id, :followed_id)");
+        $stmt->execute(['follower_id' => $currentUserId, 'followed_id' => $profileId]);
+        createNotification($profileId, $currentUserId, 'follow', null, $pdo);
     }
-    $stmt->execute(['follower_id' => $currentUserId, 'followed_id' => $profileId]);
     header('Location: profile.php?id=' . $profileId);
     exit;
 }

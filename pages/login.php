@@ -2,6 +2,7 @@
 $baseUrl = '../';
 $pageTitle = 'Connexion — Networkee';
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../includes/helpers.php';
 session_start();
 
 $response = ['success' => false, 'message' => ''];

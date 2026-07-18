@@ -36,6 +36,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment_content'], $_
             'user_id' => $_SESSION['user_id'],
             'content' => $comment_content
         ]);
+
+        $authorStmt = $pdo->prepare("SELECT user_id FROM posts WHERE id = :id");
+        $authorStmt->execute(['id' => $post_id]);
+        $postAuthorId = (int) $authorStmt->fetchColumn();
+        if ($postAuthorId) {
+            createNotification($postAuthorId, (int) $_SESSION['user_id'], 'comment', $post_id, $pdo);
+        }
+
         header("Location: home.php?page=$page");
         exit;
     } else {
@@ -54,10 +62,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['like'], $_SESSION['us
 
     if ($liked) {
         $stmt = $pdo->prepare("DELETE FROM likes WHERE post_id = :post_id AND user_id = :user_id");
+        $stmt->execute(['post_id' => $postId, 'user_id' => $userId]);
     } else {
         $stmt = $pdo->prepare("INSERT INTO likes (post_id, user_id) VALUES (:post_id, :user_id)");
+        $stmt->execute(['post_id' => $postId, 'user_id' => $userId]);
+
+        $authorStmt = $pdo->prepare("SELECT user_id FROM posts WHERE id = :id");
+        $authorStmt->execute(['id' => $postId]);
+        $postAuthorId = (int) $authorStmt->fetchColumn();
+        if ($postAuthorId) {
+            createNotification($postAuthorId, (int) $userId, 'like', $postId, $pdo);
+        }
     }
-    $stmt->execute(['post_id' => $postId, 'user_id' => $userId]);
     header("Location: home.php?page=$page");
     exit;
 }
