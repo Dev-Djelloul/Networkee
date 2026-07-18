@@ -27,16 +27,18 @@ if (!$user) {
 // Suppression d'un post (auteur uniquement)
 if ($isOwner && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_post'])) {
     $deleteId = (int) $_POST['delete_post'];
-    $stmt = $pdo->prepare("SELECT user_id, image FROM posts WHERE id = :id");
+    $stmt = $pdo->prepare("SELECT user_id, image, video FROM posts WHERE id = :id");
     $stmt->execute(['id' => $deleteId]);
     $postToDelete = $stmt->fetch();
 
     if ($postToDelete && (int) $postToDelete['user_id'] === (int) $_SESSION['user_id']) {
         $pdo->prepare("DELETE FROM posts WHERE id = :id")->execute(['id' => $deleteId]);
-        if (!empty($postToDelete['image'])) {
-            $imagePath = __DIR__ . '/../uploads/' . $postToDelete['image'];
-            if (is_file($imagePath)) {
-                @unlink($imagePath);
+        foreach (['image', 'video'] as $mediaField) {
+            if (!empty($postToDelete[$mediaField])) {
+                $mediaPath = __DIR__ . '/../uploads/' . $postToDelete[$mediaField];
+                if (is_file($mediaPath)) {
+                    @unlink($mediaPath);
+                }
             }
         }
     }
@@ -48,31 +50,46 @@ if ($isOwner && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_po
 if ($isOwner && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'])) {
     $content = htmlspecialchars($_POST['content'], ENT_QUOTES, 'UTF-8');
     $image = null;
+    $video = null;
 
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $image = basename($_FILES['image']['name']);
+        $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
         $target_dir = __DIR__ . '/../uploads/';
-        $target_file = $target_dir . $image;
 
         $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
         if (!in_array($_FILES['image']['type'], $allowed_types)) {
             $upload_error = "Seules les images JPG, PNG ou GIF sont autorisées.";
         } elseif (!is_dir($target_dir) || !is_writable($target_dir)) {
             $upload_error = "Le dossier d'upload n'est pas accessible en écriture.";
-        } elseif (!move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-            $upload_error = "Erreur lors du déplacement de l'image (vérifier les permissions du dossier uploads/).";
-            $image = null;
+        } else {
+            $image = uniqid('post_') . '.' . $ext;
+            if (!move_uploaded_file($_FILES['image']['tmp_name'], $target_dir . $image)) {
+                $upload_error = "Erreur lors du déplacement de l'image (vérifier les permissions du dossier uploads/).";
+                $image = null;
+            }
         }
     } elseif (isset($_FILES['image']) && $_FILES['image']['error'] !== UPLOAD_ERR_NO_FILE) {
         $upload_error = "Erreur upload (code " . $_FILES['image']['error'] . ").";
     }
 
-    if ($content !== '' || $image !== null) {
-        $stmt = $pdo->prepare("INSERT INTO posts (user_id, content, image, created_at) VALUES (:user_id, :content, :image, NOW())");
+    if (isset($_FILES['video']) && $_FILES['video']['error'] === UPLOAD_ERR_OK) {
+        $ext = strtolower(pathinfo($_FILES['video']['name'], PATHINFO_EXTENSION));
+        $allowed = ['mp4' => 'video/mp4', 'webm' => 'video/webm', 'ogg' => 'video/ogg', 'mov' => 'video/quicktime'];
+        if (array_key_exists($ext, $allowed) && $_FILES['video']['type'] === $allowed[$ext]) {
+            $name = uniqid('post_') . '.' . $ext;
+            if (move_uploaded_file($_FILES['video']['tmp_name'], __DIR__ . '/../uploads/' . $name)) {
+                $video = $name;
+            }
+        }
+    }
+
+    if ($content !== '' || $image !== null || $video !== null) {
+        $stmt = $pdo->prepare("INSERT INTO posts (user_id, content, image, video, created_at) VALUES (:user_id, :content, :image, :video, NOW())");
         $stmt->execute([
             'user_id' => $_SESSION['user_id'],
             'content' => $content,
-            'image' => $image
+            'image' => $image,
+            'video' => $video
         ]);
         header('Location: profile.php');
         exit;
@@ -196,8 +213,10 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
                     <textarea name="content" rows="3" placeholder="Quoi de neuf ?" class="form-input" style="resize: vertical; margin-bottom: 0.75rem;"></textarea>
                     <div class="composer-actions">
                         <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('profile-post-image').click()"><img src="<?php echo $baseUrl; ?>icons/icons8-picture-50.png" alt="" width="16" height="16" style="vertical-align: -3px;"> Ajouter une image</button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('profile-post-video').value='';document.getElementById('profile-post-image').click()"><img src="<?php echo $baseUrl; ?>icons/icons8-picture-50.png" alt="" width="16" height="16" style="vertical-align: -3px;"> Ajouter une image</button>
                             <input type="file" id="profile-post-image" name="image" accept="image/jpeg,image/png,image/gif" style="display: none;" onchange="document.getElementById('profile-post-label').textContent = this.files[0] ? this.files[0].name : ''">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('profile-post-image').value='';document.getElementById('profile-post-video').click()"><img src="<?php echo $baseUrl; ?>icons/icons8-video-50.png" alt="" width="16" height="16" style="vertical-align: -3px;"> Ajouter une vidéo</button>
+                            <input type="file" id="profile-post-video" name="video" accept="video/mp4,video/webm,video/ogg,video/quicktime" style="display: none;" onchange="document.getElementById('profile-post-label').textContent = this.files[0] ? this.files[0].name : ''">
                             <span id="profile-post-label" style="font-size: 0.8125rem; color: var(--text-muted);"></span>
                         </div>
                         <button type="submit" class="btn btn-primary"><img src="<?php echo $baseUrl; ?>icons/icons8-send-50.png" alt="" width="16" height="16" style="vertical-align: -3px;"> Publier</button>
@@ -246,6 +265,8 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
                 </div>
                 <?php if ($post['image']): ?>
                     <img src="<?php echo $baseUrl; ?>uploads/<?php echo htmlspecialchars($post['image']); ?>" alt="Image du post" class="post-image">
+                <?php elseif (!empty($post['video'])): ?>
+                    <video src="<?php echo $baseUrl; ?>uploads/<?php echo htmlspecialchars($post['video']); ?>" class="post-image" controls></video>
                 <?php endif; ?>
                 <div class="post-actions">
                     <span class="action-btn hover-stat">

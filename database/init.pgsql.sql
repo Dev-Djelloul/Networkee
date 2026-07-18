@@ -21,8 +21,12 @@ CREATE TABLE IF NOT EXISTS posts (
     user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     content    TEXT    NOT NULL,
     image      VARCHAR(255) DEFAULT NULL,
+    video      VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Ajout rétroactif de la colonne video sur les bases déjà initialisées avant son introduction.
+ALTER TABLE posts ADD COLUMN IF NOT EXISTS video VARCHAR(255) DEFAULT NULL;
 
 CREATE TABLE IF NOT EXISTS likes (
     id         SERIAL PRIMARY KEY,

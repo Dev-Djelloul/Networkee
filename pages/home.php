@@ -10,13 +10,13 @@ $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] :
 $offset = ($page - 1) * $postsPerPage;
 
 $stmt = $pdo->prepare("
-    SELECT posts.id, posts.user_id, posts.content, posts.image, posts.created_at,
+    SELECT posts.id, posts.user_id, posts.content, posts.image, posts.video, posts.created_at,
            users.username, users.profile_image,
            NULL AS repost_username, NULL AS repost_user_id, posts.created_at AS sort_date
     FROM posts
     JOIN users ON posts.user_id = users.id
     UNION ALL
-    SELECT posts.id, posts.user_id, posts.content, posts.image, posts.created_at,
+    SELECT posts.id, posts.user_id, posts.content, posts.image, posts.video, posts.created_at,
            users.username, users.profile_image,
            reposter.username AS repost_username, reposter.id AS repost_user_id, reposts.created_at AS sort_date
     FROM reposts
@@ -114,16 +114,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['repost'], $_SESSION['
 // Suppression d'un post (auteur uniquement)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_post'], $_SESSION['user_id'])) {
     $deleteId = (int) $_POST['delete_post'];
-    $stmt = $pdo->prepare("SELECT user_id, image FROM posts WHERE id = :id");
+    $stmt = $pdo->prepare("SELECT user_id, image, video FROM posts WHERE id = :id");
     $stmt->execute(['id' => $deleteId]);
     $postToDelete = $stmt->fetch();
 
     if ($postToDelete && (int) $postToDelete['user_id'] === (int) $_SESSION['user_id']) {
         $pdo->prepare("DELETE FROM posts WHERE id = :id")->execute(['id' => $deleteId]);
-        if (!empty($postToDelete['image'])) {
-            $imagePath = __DIR__ . '/../uploads/' . $postToDelete['image'];
-            if (is_file($imagePath)) {
-                @unlink($imagePath);
+        foreach (['image', 'video'] as $mediaField) {
+            if (!empty($postToDelete[$mediaField])) {
+                $mediaPath = __DIR__ . '/../uploads/' . $postToDelete[$mediaField];
+                if (is_file($mediaPath)) {
+                    @unlink($mediaPath);
+                }
             }
         }
     }
@@ -135,6 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_post'], $_SESS
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'], $_SESSION['user_id']) && !isset($_POST['comment_content']) && !isset($_POST['like'])) {
     $content = htmlspecialchars(trim($_POST['content']), ENT_QUOTES, 'UTF-8');
     $image = null;
+    $video = null;
 
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
@@ -148,10 +151,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'], $_SESSION[
         }
     }
 
-    // Un post est valide s'il contient du texte OU une image
-    if ($content !== '' || $image !== null) {
-        $stmt = $pdo->prepare("INSERT INTO posts (user_id, content, image, created_at) VALUES (:user_id, :content, :image, NOW())");
-        $stmt->execute(['user_id' => $_SESSION['user_id'], 'content' => $content, 'image' => $image]);
+    if (isset($_FILES['video']) && $_FILES['video']['error'] === UPLOAD_ERR_OK) {
+        $ext = strtolower(pathinfo($_FILES['video']['name'], PATHINFO_EXTENSION));
+        $allowed = ['mp4' => 'video/mp4', 'webm' => 'video/webm', 'ogg' => 'video/ogg', 'mov' => 'video/quicktime'];
+        if (array_key_exists($ext, $allowed) && $_FILES['video']['type'] === $allowed[$ext]) {
+            $name = uniqid('post_') . '.' . $ext;
+            $target = __DIR__ . '/../uploads/' . $name;
+            if (move_uploaded_file($_FILES['video']['tmp_name'], $target)) {
+                $video = $name;
+            }
+        }
+    }
+
+    // Un post est valide s'il contient du texte OU un média
+    if ($content !== '' || $image !== null || $video !== null) {
+        $stmt = $pdo->prepare("INSERT INTO posts (user_id, content, image, video, created_at) VALUES (:user_id, :content, :image, :video, NOW())");
+        $stmt->execute(['user_id' => $_SESSION['user_id'], 'content' => $content, 'image' => $image, 'video' => $video]);
     }
     header("Location: home.php?page=1");
     exit;
@@ -183,11 +198,15 @@ if (isset($_SESSION['user_id'])) {
                             <textarea name="content" rows="2" placeholder="Quoi de neuf aujourd'hui ?"></textarea>
                             <div class="composer-actions">
                                 <div class="composer-tools">
-                                    <button type="button" class="icon-btn" title="Ajouter une image" onclick="document.getElementById('home-image-input').click()">
+                                    <button type="button" class="icon-btn" title="Ajouter une image" onclick="document.getElementById('home-video-input').value='';document.getElementById('home-image-input').click()">
                                         <img src="<?php echo $baseUrl; ?>icons/icons8-picture-50.png" alt="Image" width="20" height="20">
                                     </button>
-                                    <input type="file" id="home-image-input" name="image" accept="image/jpeg,image/png,image/gif" style="display:none;" onchange="var l=document.getElementById('home-image-label');l.textContent=this.files[0]?this.files[0].name:''">
-                                    <span id="home-image-label" style="font-size:0.75rem;color:var(--text-muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+                                    <input type="file" id="home-image-input" name="image" accept="image/jpeg,image/png,image/gif" style="display:none;" onchange="var l=document.getElementById('home-media-label');l.textContent=this.files[0]?this.files[0].name:''">
+                                    <button type="button" class="icon-btn" title="Ajouter une vidéo" onclick="document.getElementById('home-image-input').value='';document.getElementById('home-video-input').click()">
+                                        <img src="<?php echo $baseUrl; ?>icons/icons8-video-50.png" alt="Vidéo" width="20" height="20">
+                                    </button>
+                                    <input type="file" id="home-video-input" name="video" accept="video/mp4,video/webm,video/ogg,video/quicktime" style="display:none;" onchange="var l=document.getElementById('home-media-label');l.textContent=this.files[0]?this.files[0].name:''">
+                                    <span id="home-media-label" style="font-size:0.75rem;color:var(--text-muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
                                 </div>
                                 <button type="submit" class="btn btn-primary">
                                     <span>Publier</span>
@@ -251,6 +270,8 @@ if (isset($_SESSION['user_id'])) {
 
                 <?php if ($post['image']): ?>
                     <img src="<?php echo $baseUrl; ?>uploads/<?php echo htmlspecialchars($post['image']); ?>" alt="Image du post" class="post-image">
+                <?php elseif (!empty($post['video'])): ?>
+                    <video src="<?php echo $baseUrl; ?>uploads/<?php echo htmlspecialchars($post['video']); ?>" class="post-image" controls></video>
                 <?php endif; ?>
 
                 <div class="post-actions">
@@ -273,7 +294,7 @@ if (isset($_SESSION['user_id'])) {
                         </div>
                     </span>
                     <button type="button" class="action-btn" onclick="<?php echo isset($_SESSION['user_id']) ? "focusComment({$post['id']})" : "openLoginModal('comment', {$post['id']})"; ?>">
-                        <img src="<?php echo $baseUrl; ?>icons/icons8-comment-50.png" alt="" width="20" height="20">
+                        <img src="<?php echo $baseUrl; ?>icons/icons8-comment-50.png" alt="" width="" height="30">
                         <span><?php echo count($comments); ?></span>
                     </button>
                     <?php $userReposted = isset($_SESSION['user_id']) && hasUserReposted((int) $post['id'], (int) $_SESSION['user_id'], $pdo); ?>
@@ -292,7 +313,7 @@ if (isset($_SESSION['user_id'])) {
                     <?php endif; ?>
                     <div class="post-menu-wrapper" style="margin-left: auto;">
                         <button type="button" class="action-btn" aria-label="Partager" onclick="togglePostMenu(this)">
-                            <?php echo renderIcon('share', 20); ?>
+                            <img src="<?php echo $baseUrl; ?>icons/icons8-upload-50.png" alt="" width="20" height="20">
                         </button>
                         <div class="post-menu-dropdown post-share-dropdown">
                             <?php
@@ -315,7 +336,7 @@ if (isset($_SESSION['user_id'])) {
                                 <img src="<?php echo $baseUrl; ?>icons/icons8-email-50.png" alt="" width="28" height="28"> E-mail
                             </a>
                             <button type="button" class="post-menu-item" onclick="copyPostLink(<?php echo $post['id']; ?>)">
-                                <img src="<?php echo $baseUrl; ?>icons/icons8-link-50.png" alt="" width="16" height="16"> Copier le lien
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-link-50.png" alt="" width="28" height="28"> Copier le lien
                             </button>
                         </div>
                     </div>

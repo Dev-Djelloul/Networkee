@@ -27,12 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['follow_back_id'])) {
 $notifications = getNotifications($userId, $pdo);
 markNotificationsRead($userId, $pdo);
 
-$icons = [
-    'follow'      => 'user-plus',
-    'like'        => 'heart',
-    'comment'     => 'message',
-    'application' => 'briefcase',
-    'repost'      => 'repeat',
+$customIcons = [
+    'follow'  => 'icons8-add-user-50.png',
+    'like'    => 'icons8-like-heart-50.png',
+    'comment' => 'icons8-comment-50.png',
+    'repost'  => 'icons8-repost-64.png',
 ];
 ?>
 <?php include __DIR__ . '/../includes/head.php'; ?>
@@ -66,17 +65,19 @@ $icons = [
                         <?php if ($n['type'] === 'follow'): ?>
                             <?php $alreadyFollowing = isFollowing($userId, (int) $n['actor_id'], $pdo); ?>
                             <?php if ($alreadyFollowing): ?>
-                                <span class="notif-type-icon" title="Tu suis déjà cette personne"><?php echo renderIcon('user-plus', 18); ?></span>
+                                <span class="notif-type-icon" title="Tu suis déjà cette personne"><img src="<?php echo $baseUrl; ?>icons/icons8-add-user-50.png" alt="" width="18" height="18"></span>
                             <?php else: ?>
                                 <form method="POST" action="notifications.php">
                                     <input type="hidden" name="follow_back_id" value="<?php echo (int) $n['actor_id']; ?>">
                                     <button type="submit" class="notif-type-icon notif-follow-back" title="Suivre en retour">
-                                        <?php echo renderIcon('user-plus', 18); ?>
+                                        <img src="<?php echo $baseUrl; ?>icons/icons8-add-user-50.png" alt="" width="18" height="18">
                                     </button>
                                 </form>
                             <?php endif; ?>
+                        <?php elseif (isset($customIcons[$n['type']])): ?>
+                            <span class="notif-type-icon"><img src="<?php echo $baseUrl; ?>icons/<?php echo $customIcons[$n['type']]; ?>" alt="" width="18" height="18"></span>
                         <?php else: ?>
-                            <span class="notif-type-icon"><?php echo renderIcon($icons[$n['type']] ?? 'bell', 18); ?></span>
+                            <span class="notif-type-icon"><?php echo renderIcon('briefcase', 18); ?></span>
                         <?php endif; ?>
                     </div>
                 </div>
