@@ -139,8 +139,13 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
         <div class="profile-header">
             <?php
             $avatarUrl = avatarUrl($user['profile_image'], $baseUrl);
-            echo renderAvatar($user['username'], 'lg', $avatarUrl, !empty($user['open_to_work']));
+            echo renderAvatar($user['username'], 'lg', $avatarUrl);
             ?>
+
+            <?php if (!empty($user['open_to_work'])): ?>
+                <div class="otw-banner" style="margin-top: 0.625rem;"><img src="<?php echo $baseUrl; ?>icons/icons8-open-to-work.gif" alt="" width="18" height="18" style="vertical-align: -4px; border-radius: 50%;"> Open to work</div>
+            <?php endif; ?>
+
             <h2><?php echo htmlspecialchars($user['username']); ?></h2>
 
             <?php if ($isOwner): ?>
@@ -155,10 +160,6 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
 
             <?php if (!empty($user['location'])): ?>
                 <p class="profile-location"><img src="<?php echo $baseUrl; ?>icons/icons8-location-50.png" alt="" width="25" height="25" style="vertical-align: -4px;"> <?php echo htmlspecialchars($user['location']); ?></p>
-            <?php endif; ?>
-
-            <?php if (!empty($user['open_to_work'])): ?>
-                <div class="otw-banner"><img src="<?php echo $baseUrl; ?>icons/icons8-open-to-work.gif" alt="" width="18" height="18" style="vertical-align: -4px; border-radius: 50%;"> Open to work</div>
             <?php endif; ?>
 
             <?php if (!empty($user['bio'])): ?>

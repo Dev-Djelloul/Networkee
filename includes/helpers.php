@@ -46,10 +46,8 @@ function renderAvatar(string $username, string $size = '', string $imageUrl = ''
     } else {
         $html = '<div class="' . $class . ' ' . $style['gradient'] . '">' . htmlspecialchars($style['initials']) . '</div>';
     }
-    if ($openToWork) {
-        return '<div class="avatar-wrapper">' . $html
-            . '<span class="otw-badge" title="Open to work"><img src="' . htmlspecialchars($baseUrl) . 'icons/icons8-open-to-work.gif" alt="Open to work"></span></div>';
-    }
+    // Le statut "open to work" est affiché via le .otw-banner juste sous la
+    // photo (pas un badge miniature sur l'avatar).
     return $html;
 }
 
