@@ -32,7 +32,7 @@
   --radius-sm: 0.75rem;
   --shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
   --shadow-hover: 0 4px 12px rgba(15, 23, 42, 0.08);
-  --font: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 body.dark {
@@ -153,9 +153,8 @@ a {
   filter: brightness(0) invert(1);
 }
 
-/* Police du wordmark du header — Plus Jakarta Sans (Google Fonts) */
+/* Wordmark du header : un peu plus fin que le reste du texte (hérite de --font) */
 .logo span {
-  font-family: 'Plus Jakarta Sans', var(--font);
   font-weight: 300;
 }
 
