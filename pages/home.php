@@ -279,13 +279,13 @@ if (isset($_SESSION['user_id'])) {
                         <?php if (isset($_SESSION['user_id'])): ?>
                             <form id="like-form-<?php echo $post['id']; ?>" method="POST" action="home.php?page=<?php echo $page; ?>" style="display: inline;">
                                 <button type="submit" name="like" value="<?php echo $post['id']; ?>" class="action-btn <?php echo $userLiked ? 'active' : ''; ?>">
-                                    <img src="<?php echo $baseUrl; ?>icons/icons8-like-heart-50.png" alt="" width="20" height="20">
+                                    <img src="<?php echo $baseUrl; ?>icons/icons8-like-heart-50.png" alt="" width="30" height="30">
                                     <span><?php echo $likeCount; ?></span>
                                 </button>
                             </form>
                         <?php else: ?>
                             <button type="button" class="action-btn" onclick="openLoginModal('like', <?php echo $post['id']; ?>)">
-                                <img src="<?php echo $baseUrl; ?>icons/icons8-like-heart-50.png" alt="" width="20" height="20">
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-like-heart-50.png" alt="" width="30" height="30">
                                 <span><?php echo $likeCount; ?></span>
                             </button>
                         <?php endif; ?>
@@ -294,26 +294,26 @@ if (isset($_SESSION['user_id'])) {
                         </div>
                     </span>
                     <button type="button" class="action-btn" onclick="<?php echo isset($_SESSION['user_id']) ? "focusComment({$post['id']})" : "openLoginModal('comment', {$post['id']})"; ?>">
-                        <img src="<?php echo $baseUrl; ?>icons/icons8-comment-50.png" alt="" width="" height="30">
+                        <img src="<?php echo $baseUrl; ?>icons/icons8-comment-50.png" alt="" width="30" height="30">
                         <span><?php echo count($comments); ?></span>
                     </button>
                     <?php $userReposted = isset($_SESSION['user_id']) && hasUserReposted((int) $post['id'], (int) $_SESSION['user_id'], $pdo); ?>
                     <?php if (isset($_SESSION['user_id'])): ?>
                         <form id="repost-form-<?php echo $post['id']; ?>" method="POST" action="home.php?page=<?php echo $page; ?>" style="display: inline;">
                             <button type="submit" name="repost" value="<?php echo $post['id']; ?>" class="action-btn <?php echo $userReposted ? 'active' : ''; ?>" title="<?php echo $userReposted ? 'Annuler le repartage' : 'Repartager'; ?>">
-                                <img src="<?php echo $baseUrl; ?>icons/icons8-repost-64.png" alt="" width="20" height="20">
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-repost-64.png" alt="" width="30" height="30">
                                 <span><?php echo getRepostCount((int) $post['id'], $pdo); ?></span>
                             </button>
                         </form>
                     <?php else: ?>
                         <button type="button" class="action-btn" onclick="openLoginModal('repost', <?php echo $post['id']; ?>)" title="Repartager">
-                            <img src="<?php echo $baseUrl; ?>icons/icons8-repost-64.png" alt="" width="20" height="20">
+                            <img src="<?php echo $baseUrl; ?>icons/icons8-repost-64.png" alt="" width="30" height="30">
                             <span><?php echo getRepostCount((int) $post['id'], $pdo); ?></span>
                         </button>
                     <?php endif; ?>
                     <div class="post-menu-wrapper" style="margin-left: auto;">
                         <button type="button" class="action-btn" aria-label="Partager" onclick="togglePostMenu(this)">
-                            <img src="<?php echo $baseUrl; ?>icons/icons8-upload-50.png" alt="" width="20" height="20">
+                            <img src="<?php echo $baseUrl; ?>icons/icons8-upload-50.png" alt="" width="30" height="30">
                         </button>
                         <div class="post-menu-dropdown post-share-dropdown">
                             <?php

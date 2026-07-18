@@ -38,7 +38,7 @@
         <?php endif; ?>
 
         <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Changer de thème" title="Changer de thème">
-            <img src="<?php echo $baseUrl; ?>icons/icons8-moon-100.png" alt="" width="25" height="25">
+            <img src="<?php echo $baseUrl; ?>icons/icons8-moon-100.png" alt="" width="30" height="30">
         </button>
 
         <button class="mobile-menu-btn" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">

@@ -270,14 +270,14 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
                 <?php endif; ?>
                 <div class="post-actions">
                     <span class="action-btn hover-stat">
-                        <img src="<?php echo $baseUrl; ?>icons/icons8-like-heart-50.png" alt="" width="20" height="20">
+                        <img src="<?php echo $baseUrl; ?>icons/icons8-like-heart-50.png" alt="" width="30" height="30">
                         <span><?php echo getLikeCount($post['id'], $pdo); ?></span>
                         <div class="hover-popover">
                             <?php echo renderHoverList(getPostLikers((int) $post['id'], $pdo), 'Aucun like pour le moment.', $baseUrl); ?>
                         </div>
                     </span>
                     <span class="action-btn">
-                        <img src="<?php echo $baseUrl; ?>icons/icons8-comment-50.png" alt="" width="20" height="20">
+                        <img src="<?php echo $baseUrl; ?>icons/icons8-comment-50.png" alt="" width="30" height="30">
                         <span><?php echo count(getComments($post['id'], $pdo)); ?></span>
                     </span>
                     <span class="action-btn" style="margin-left: auto; font-size: 0.75rem; color: var(--text-muted);">

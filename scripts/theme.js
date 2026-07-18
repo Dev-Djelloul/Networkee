@@ -51,7 +51,7 @@
     // Icône soleil en mode sombre (clic pour repasser en clair), icône lune en mode clair (clic pour passer en sombre)
     const iconsBase = (window.NETWORKEE_BASE_URL || '') + 'icons/';
     const src = isDark ? iconsBase + 'icons8-sun-50.png' : iconsBase + 'icons8-moon-100.png';
-    button.innerHTML = '<img src="' + src + '" alt="" width="20" height="20">';
+    button.innerHTML = '<img src="' + src + '" alt="" width="30" height="30">';
   }
 
   function init() {
