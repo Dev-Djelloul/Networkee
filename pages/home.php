@@ -180,19 +180,24 @@ if (isset($_SESSION['user_id'])) {
                 <?php endif; ?>
 
                 <div class="post-actions">
-                    <?php if (isset($_SESSION['user_id'])): ?>
-                        <form id="like-form-<?php echo $post['id']; ?>" method="POST" action="home.php?page=<?php echo $page; ?>" style="display: inline;">
-                            <button type="submit" name="like" value="<?php echo $post['id']; ?>" class="action-btn <?php echo $userLiked ? 'active' : ''; ?>">
+                    <span class="hover-stat" style="display: inline-flex;">
+                        <?php if (isset($_SESSION['user_id'])): ?>
+                            <form id="like-form-<?php echo $post['id']; ?>" method="POST" action="home.php?page=<?php echo $page; ?>" style="display: inline;">
+                                <button type="submit" name="like" value="<?php echo $post['id']; ?>" class="action-btn <?php echo $userLiked ? 'active' : ''; ?>">
+                                    <?php echo renderIcon('heart', 20); ?>
+                                    <span><?php echo $likeCount; ?></span>
+                                </button>
+                            </form>
+                        <?php else: ?>
+                            <button type="button" class="action-btn" onclick="openLoginModal('like', <?php echo $post['id']; ?>)">
                                 <?php echo renderIcon('heart', 20); ?>
                                 <span><?php echo $likeCount; ?></span>
                             </button>
-                        </form>
-                    <?php else: ?>
-                        <button type="button" class="action-btn" onclick="openLoginModal('like', <?php echo $post['id']; ?>)">
-                            <?php echo renderIcon('heart', 20); ?>
-                            <span><?php echo $likeCount; ?></span>
-                        </button>
-                    <?php endif; ?>
+                        <?php endif; ?>
+                        <div class="hover-popover">
+                            <?php echo renderHoverList(getPostLikers((int) $post['id'], $pdo), 'Aucun like pour le moment.', $baseUrl); ?>
+                        </div>
+                    </span>
                     <button type="button" class="action-btn" onclick="<?php echo isset($_SESSION['user_id']) ? "focusComment({$post['id']})" : "openLoginModal('comment', {$post['id']})"; ?>">
                         <?php echo renderIcon('message', 20); ?>
                         <span><?php echo count($comments); ?></span>

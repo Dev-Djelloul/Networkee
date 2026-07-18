@@ -141,6 +141,64 @@ function getFollowingCount(int $userId, PDO $pdo): int {
     return (int) $stmt->fetchColumn();
 }
 
+/** Utilisateurs qui suivent $userId (les plus récents en premier). */
+function getFollowers(int $userId, PDO $pdo, int $limit = 20): array {
+    $stmt = $pdo->prepare(
+        "SELECT u.id, u.username, u.profile_image
+         FROM follows f JOIN users u ON f.follower_id = u.id
+         WHERE f.followed_id = :user_id
+         ORDER BY f.created_at DESC
+         LIMIT $limit"
+    );
+    $stmt->execute(['user_id' => $userId]);
+    return $stmt->fetchAll();
+}
+
+/** Utilisateurs que $userId suit (les plus récents en premier). */
+function getFollowingList(int $userId, PDO $pdo, int $limit = 20): array {
+    $stmt = $pdo->prepare(
+        "SELECT u.id, u.username, u.profile_image
+         FROM follows f JOIN users u ON f.followed_id = u.id
+         WHERE f.follower_id = :user_id
+         ORDER BY f.created_at DESC
+         LIMIT $limit"
+    );
+    $stmt->execute(['user_id' => $userId]);
+    return $stmt->fetchAll();
+}
+
+/** Utilisateurs ayant liké un post donné (les plus récents en premier). */
+function getPostLikers(int $postId, PDO $pdo, int $limit = 20): array {
+    $stmt = $pdo->prepare(
+        "SELECT u.id, u.username, u.profile_image
+         FROM likes l JOIN users u ON l.user_id = u.id
+         WHERE l.post_id = :post_id
+         ORDER BY l.created_at DESC
+         LIMIT $limit"
+    );
+    $stmt->execute(['post_id' => $postId]);
+    return $stmt->fetchAll();
+}
+
+/**
+ * Rend la liste au survol (avatar + nom) utilisée par les popovers hover-stat.
+ * $items : lignes avec au minimum id/username/profile_image.
+ */
+function renderHoverList(array $items, string $emptyText, string $baseUrl): string {
+    if (empty($items)) {
+        return '<p class="hover-popover-empty">' . htmlspecialchars($emptyText) . '</p>';
+    }
+    $html = '<ul class="hover-popover-list">';
+    foreach ($items as $item) {
+        $html .= '<li><a href="' . $baseUrl . 'pages/profile.php?id=' . (int) $item['id'] . '">'
+            . renderAvatar($item['username'], 'sm', avatarUrl($item['profile_image'], $baseUrl))
+            . '<span>' . htmlspecialchars($item['username']) . '</span>'
+            . '</a></li>';
+    }
+    $html .= '</ul>';
+    return $html;
+}
+
 /**
  * Crée une notification, sauf si l'acteur et le destinataire sont la même personne.
  */

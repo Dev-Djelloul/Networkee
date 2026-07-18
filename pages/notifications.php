@@ -11,6 +11,19 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $userId = (int) $_SESSION['user_id'];
+
+// Suivre en retour, directement depuis la notification "X a commencé à te suivre".
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['follow_back_id'])) {
+    $targetId = (int) $_POST['follow_back_id'];
+    if ($targetId && $targetId !== $userId && !isFollowing($userId, $targetId, $pdo)) {
+        $stmt = $pdo->prepare("INSERT INTO follows (follower_id, followed_id) VALUES (:follower_id, :followed_id)");
+        $stmt->execute(['follower_id' => $userId, 'followed_id' => $targetId]);
+        createNotification($targetId, $userId, 'follow', null, $pdo);
+    }
+    header('Location: notifications.php');
+    exit;
+}
+
 $notifications = getNotifications($userId, $pdo);
 markNotificationsRead($userId, $pdo);
 
@@ -49,7 +62,21 @@ $icons = [
                                 <?php echo timeAgo($n['created_at']); ?>
                             </time>
                         </div>
-                        <span class="notif-type-icon"><?php echo renderIcon($icons[$n['type']] ?? 'bell', 18); ?></span>
+                        <?php if ($n['type'] === 'follow'): ?>
+                            <?php $alreadyFollowing = isFollowing($userId, (int) $n['actor_id'], $pdo); ?>
+                            <?php if ($alreadyFollowing): ?>
+                                <span class="notif-type-icon" title="Tu suis déjà cette personne"><?php echo renderIcon('user-plus', 18); ?></span>
+                            <?php else: ?>
+                                <form method="POST" action="notifications.php">
+                                    <input type="hidden" name="follow_back_id" value="<?php echo (int) $n['actor_id']; ?>">
+                                    <button type="submit" class="notif-type-icon notif-follow-back" title="Suivre en retour">
+                                        <?php echo renderIcon('user-plus', 18); ?>
+                                    </button>
+                                </form>
+                            <?php endif; ?>
+                        <?php else: ?>
+                            <span class="notif-type-icon"><?php echo renderIcon($icons[$n['type']] ?? 'bell', 18); ?></span>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <?php endforeach; ?>

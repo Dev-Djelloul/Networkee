@@ -78,6 +78,8 @@ if (!$isOwner && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_f
 $isFollowing    = !$isOwner && isFollowing((int) $_SESSION['user_id'], $profileId, $pdo);
 $followerCount  = getFollowerCount($profileId, $pdo);
 $followingCount = getFollowingCount($profileId, $pdo);
+$followers      = getFollowers($profileId, $pdo);
+$followingList  = getFollowingList($profileId, $pdo);
 
 // Likes reçus par ce profil
 $likeCountStmt = $pdo->prepare("SELECT COUNT(*) FROM likes l JOIN posts p ON l.post_id = p.id WHERE p.user_id = :user_id");
@@ -102,6 +104,12 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
             echo renderAvatar($user['username'], 'lg', $avatarUrl, !empty($user['open_to_work']));
             ?>
             <h2><?php echo htmlspecialchars($user['username']); ?></h2>
+
+            <?php if ($isOwner): ?>
+                <p style="margin: 0.125rem 0 0; font-size: 0.8125rem; color: var(--text-muted);">
+                    <?php echo htmlspecialchars($user['email']); ?>
+                </p>
+            <?php endif; ?>
 
             <?php if (!empty($user['job_title'])): ?>
                 <p class="profile-job-title"><?php echo renderIcon('briefcase', 15); ?> <?php echo htmlspecialchars($user['job_title']); ?></p>
@@ -143,13 +151,19 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
                     <div class="stat-value"><?php echo $likesReceived; ?></div>
                     <div class="stat-label">Likes reçus</div>
                 </div>
-                <div class="stat">
+                <div class="stat hover-stat">
                     <div class="stat-value"><?php echo $followerCount; ?></div>
                     <div class="stat-label">Abonnés</div>
+                    <div class="hover-popover">
+                        <?php echo renderHoverList($followers, 'Aucun abonné pour le moment.', $baseUrl); ?>
+                    </div>
                 </div>
-                <div class="stat">
+                <div class="stat hover-stat">
                     <div class="stat-value"><?php echo $followingCount; ?></div>
                     <div class="stat-label">Abonnements</div>
+                    <div class="hover-popover">
+                        <?php echo renderHoverList($followingList, 'Ne suit personne pour le moment.', $baseUrl); ?>
+                    </div>
                 </div>
             </div>
         </div>
@@ -196,9 +210,12 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
                     <img src="<?php echo $baseUrl; ?>uploads/<?php echo htmlspecialchars($post['image']); ?>" alt="Image du post" class="post-image">
                 <?php endif; ?>
                 <div class="post-actions">
-                    <span class="action-btn">
+                    <span class="action-btn hover-stat">
                         <?php echo renderIcon('heart', 20); ?>
                         <span><?php echo getLikeCount($post['id'], $pdo); ?></span>
+                        <div class="hover-popover">
+                            <?php echo renderHoverList(getPostLikers((int) $post['id'], $pdo), 'Aucun like pour le moment.', $baseUrl); ?>
+                        </div>
                     </span>
                     <span class="action-btn">
                         <?php echo renderIcon('message', 20); ?>
