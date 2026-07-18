@@ -247,13 +247,13 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
                         </button>
                         <div class="post-menu-dropdown">
                             <button type="button" class="post-menu-item" onclick="copyPostLink(<?php echo $post['id']; ?>)">
-                                <img src="<?php echo $baseUrl; ?>icons/icons8-link-50.png" alt="" width="16" height="16"> Copier le lien
+                                <img src="<?php echo $baseUrl; ?>icons/icons8-link-50.png" alt="" width="30" height="30"> Copier le lien
                             </button>
                             <?php if ($isOwner): ?>
                                 <form method="POST" action="profile.php" class="confirm-form" data-confirm-message="Supprimer définitivement cette publication ? Cette action est irréversible.">
                                     <input type="hidden" name="delete_post" value="<?php echo $post['id']; ?>">
                                     <button type="submit" class="post-menu-item post-menu-item-danger">
-                                        <img src="<?php echo $baseUrl; ?>icons/icons8-delete-50.png" alt="" width="16" height="16"> Supprimer
+                                        <img src="<?php echo $baseUrl; ?>icons/icons8-delete-50.png" alt="" width="30" height="30"> Supprimer
                                     </button>
                                 </form>
                             <?php endif; ?>
