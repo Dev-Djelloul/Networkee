@@ -7,7 +7,7 @@
 Partager, apprendre et trouver des opportunités — un mini réseau social façon LinkedIn,
 pensé pour les métiers du web : développeurs, chefs de projet, UX designers.
 
-[Démo en ligne](https://networkee-production.up.railway.app) · [Signaler un bug](https://github.com/Dev-Djelloul/Networkee/issues)
+[Démo en ligne](https://networkee.up.railway.app) · [Signaler un bug](https://github.com/Dev-Djelloul/Networkee/issues)
 
 </div>
 
