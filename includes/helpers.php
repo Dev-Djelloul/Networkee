@@ -319,9 +319,21 @@ function getNotifications(int $userId, PDO $pdo, int $limit = 30): array {
     return $stmt->fetchAll();
 }
 
-function markNotificationsRead(int $userId, PDO $pdo): void {
-    $stmt = $pdo->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = :user_id AND is_read = 0");
-    $stmt->execute(['user_id' => $userId]);
+function markNotificationRead(int $notificationId, int $userId, PDO $pdo): void {
+    // Le filtre sur user_id empêche de marquer lue la notification de quelqu'un d'autre
+    // en bricolant l'id dans l'URL.
+    $stmt = $pdo->prepare("UPDATE notifications SET is_read = 1 WHERE id = :id AND user_id = :user_id");
+    $stmt->execute(['id' => $notificationId, 'user_id' => $userId]);
+}
+
+/** Destination d'une notification quand on clique dessus. */
+function notificationLink(array $n): string {
+    return match ($n['type']) {
+        'follow'      => 'profile.php?id=' . (int) $n['actor_id'],
+        // post_id sert de job_offer_id pour ce type (voir getNotifications).
+        'application' => 'applicants.php?job_id=' . (int) $n['post_id'],
+        default       => !empty($n['post_id']) ? 'home.php#post-' . (int) $n['post_id'] : 'home.php',
+    };
 }
 
 function notificationText(array $n): string {

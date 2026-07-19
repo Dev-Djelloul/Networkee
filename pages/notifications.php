@@ -24,8 +24,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['follow_back_id'])) {
     exit;
 }
 
+// Clic sur une notification : elle passe en "lue", puis on redirige vers sa cible.
+// Le marquage se fait ici et non au chargement de la page : ouvrir la liste ne doit
+// plus suffire à tout marquer comme lu, seul le clic sur une notification la consomme.
+if (isset($_GET['read']) && is_numeric($_GET['read'])) {
+    $notificationId = (int) $_GET['read'];
+
+    $stmt = $pdo->prepare("SELECT * FROM notifications WHERE id = :id AND user_id = :user_id");
+    $stmt->execute(['id' => $notificationId, 'user_id' => $userId]);
+    $notification = $stmt->fetch();
+
+    if (!$notification) {
+        header('Location: notifications.php');
+        exit;
+    }
+
+    markNotificationRead($notificationId, $userId, $pdo);
+
+    header('Location: ' . notificationLink($notification));
+    exit;
+}
+
 $notifications = getNotifications($userId, $pdo);
-markNotificationsRead($userId, $pdo);
 
 $customIcons = [
     'follow'      => 'icons8-add-user-50.png',
@@ -50,11 +70,14 @@ $customIcons = [
             <div class="feed">
                 <?php foreach ($notifications as $n): ?>
                 <div class="card notification-item <?php echo $n['is_read'] ? '' : 'unread'; ?>">
+                    <?php // Lien étiré : couvre toute la carte sans imbriquer de <a> dans le lien profil ou le formulaire. ?>
+                    <a class="notif-stretched-link" href="notifications.php?read=<?php echo (int) $n['id']; ?>"
+                       aria-label="Ouvrir la notification<?php echo $n['is_read'] ? '' : ' (non lue)'; ?>"></a>
                     <div class="card-body" style="display: flex; align-items: center; gap: 0.875rem;">
                         <?php echo renderAvatar($n['actor_username'], 'sm', avatarUrl($n['actor_image'], $baseUrl)); ?>
                         <div style="flex: 1;">
                             <p style="margin: 0; font-size: 0.9375rem;">
-                                <a href="profile.php?id=<?php echo (int) $n['actor_id']; ?>" style="font-weight: 500;">
+                                <a href="profile.php?id=<?php echo (int) $n['actor_id']; ?>" style="font-weight: 500;" class="notif-inline-link">
                                     <?php echo htmlspecialchars($n['actor_username']); ?>
                                 </a>
                                 <?php echo notificationText($n); ?>

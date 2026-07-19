@@ -314,9 +314,34 @@ a {
   box-shadow: var(--shadow-hover);
 }
 
+.notification-item {
+  position: relative;
+}
+
 .notification-item.unread {
   border-color: var(--accent-light);
   background: var(--accent-light);
+}
+
+.notification-item:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+/* Lien étiré : rend toute la carte cliquable sans imbriquer de <a> l'un dans
+   l'autre (la carte contient déjà le lien vers le profil et le bouton "suivre
+   en retour", qui repassent au-dessus via .notif-inline-link / .notif-type-icon). */
+.notif-stretched-link {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+.notif-inline-link,
+.notification-item .notif-type-icon,
+.notification-item form {
+  position: relative;
+  z-index: 2;
 }
 
 .notif-type-icon {
