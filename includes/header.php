@@ -29,6 +29,10 @@
             </a>
 
             <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="<?php echo $baseUrl; ?>pages/saved.php" class="notif-bell" aria-label="Posts enregistrés" title="Posts enregistrés">
+                    <img src="<?php echo $baseUrl; ?>icons/icons8-save-50.png" alt="Posts enregistrés" width="30" height="30">
+                </a>
+
                 <?php $unreadCount = getUnreadNotificationCount((int) $_SESSION['user_id'], $pdo); ?>
                 <a href="<?php echo $baseUrl; ?>pages/notifications.php" class="notif-bell" aria-label="Notifications" title="Notifications">
                     <img src="<?php echo $baseUrl; ?>icons/icons8-notification-50.png" alt="Notifications" width="30" height="30">
