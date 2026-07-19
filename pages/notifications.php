@@ -24,6 +24,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['follow_back_id'])) {
     exit;
 }
 
+// Tout marquer comme lu, sans avoir à ouvrir chaque notification une par une.
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['mark_all_read'])) {
+    markAllNotificationsRead($userId, $pdo);
+    header('Location: notifications.php');
+    exit;
+}
+
 // Clic sur une notification : elle passe en "lue", puis on redirige vers sa cible.
 // Le marquage se fait ici et non au chargement de la page : ouvrir la liste ne doit
 // plus suffire à tout marquer comme lu, seul le clic sur une notification la consomme.
@@ -47,6 +54,9 @@ if (isset($_GET['read']) && is_numeric($_GET['read'])) {
 
 $notifications = getNotifications($userId, $pdo);
 
+// Compté sur la liste affichée : le bouton n'apparaît que s'il y a matière à marquer.
+$unreadOnPage = count(array_filter($notifications, fn($n) => !$n['is_read']));
+
 $customIcons = [
     'follow'      => 'icons8-add-user-50.png',
     'like'        => 'icons8-like-heart-50.png',
@@ -60,7 +70,18 @@ $customIcons = [
     <?php include(__DIR__ . '/../includes/header.php'); ?>
 
     <main class="page-wrapper">
-        <h2 style="margin-bottom: 1.25rem;">Notifications</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.25rem;">
+            <h2 style="margin: 0;">Notifications</h2>
+            <?php if ($unreadOnPage > 0): ?>
+                <form method="POST" action="notifications.php">
+                    <input type="hidden" name="mark_all_read" value="1">
+                    <button type="submit" class="btn btn-secondary">
+                        <img src="<?php echo $baseUrl; ?>icons/icons8-checkmark-50.png" alt="" width="24" height="24" style="vertical-align: -6px;">
+                        Tout marquer comme lu (<?php echo $unreadOnPage; ?>)
+                    </button>
+                </form>
+            <?php endif; ?>
+        </div>
 
         <?php if (empty($notifications)): ?>
             <div class="card" style="text-align: center; padding: 3rem 1.5rem;">

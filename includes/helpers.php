@@ -319,6 +319,11 @@ function getNotifications(int $userId, PDO $pdo, int $limit = 30): array {
     return $stmt->fetchAll();
 }
 
+function markAllNotificationsRead(int $userId, PDO $pdo): void {
+    $stmt = $pdo->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = :user_id AND is_read = 0");
+    $stmt->execute(['user_id' => $userId]);
+}
+
 function markNotificationRead(int $notificationId, int $userId, PDO $pdo): void {
     // Le filtre sur user_id empêche de marquer lue la notification de quelqu'un d'autre
     // en bricolant l'id dans l'URL.
