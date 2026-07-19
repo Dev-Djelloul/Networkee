@@ -30,7 +30,7 @@ include __DIR__ . '/includes/head.php';
 
                 <h1 class="hero-title">
                     Connecte ton talent<br>
-                    <span class="hero-accent">au bon recruteur.</span>
+                    <span class="hero-accent">au bon recruteur</span>
                 </h1>
 
                 <p class="hero-subtitle">
