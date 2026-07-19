@@ -87,6 +87,22 @@ CREATE TABLE `reposts` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `saved_posts`
+-- (clés déclarées inline : table ajoutée après le dump initial)
+--
+
+CREATE TABLE `saved_posts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `post_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `saved_posts_unique` (`post_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `likes`
 --
 

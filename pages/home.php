@@ -111,6 +111,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['repost'], $_SESSION['
     exit;
 }
 
+// Enregistrer / retirer des enregistrements, depuis le menu "..." d'une publication
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_save'], $_SESSION['user_id'])) {
+    $postId = (int) $_POST['toggle_save'];
+    $userId = (int) $_SESSION['user_id'];
+
+    if (hasUserSaved($postId, $userId, $pdo)) {
+        $pdo->prepare("DELETE FROM saved_posts WHERE post_id = :post_id AND user_id = :user_id")
+            ->execute(['post_id' => $postId, 'user_id' => $userId]);
+    } else {
+        $pdo->prepare("INSERT INTO saved_posts (post_id, user_id) VALUES (:post_id, :user_id)")
+            ->execute(['post_id' => $postId, 'user_id' => $userId]);
+    }
+    header("Location: home.php?page=$page");
+    exit;
+}
+
 // Suivre / ne plus suivre un auteur, depuis la carte de survol du fil
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_follow_id'], $_SESSION['user_id'])) {
     $targetId = (int) $_POST['toggle_follow_id'];
@@ -311,7 +327,30 @@ if (isset($_SESSION['user_id'])) {
                             <button type="button" class="post-menu-item" onclick="copyPostLink(<?php echo $post['id']; ?>)">
                                 <img src="<?php echo $baseUrl; ?>icons/icons8-link-50.png" alt="" width="26" height="26"> Copier le lien
                             </button>
-                            <?php if (isset($_SESSION['user_id']) && (int) $post['user_id'] === (int) $_SESSION['user_id']): ?>
+                            <?php
+                                $isOwnPost = isset($_SESSION['user_id']) && (int) $post['user_id'] === (int) $_SESSION['user_id'];
+                                $postSaved = isset($_SESSION['user_id']) && hasUserSaved((int) $post['id'], (int) $_SESSION['user_id'], $pdo);
+                            ?>
+                            <?php if (isset($_SESSION['user_id'])): ?>
+                                <form method="POST" action="home.php?page=<?php echo $page; ?>">
+                                    <input type="hidden" name="toggle_save" value="<?php echo $post['id']; ?>">
+                                    <button type="submit" class="post-menu-item">
+                                        <img src="<?php echo $baseUrl; ?>icons/icons8-save-50.png" alt="" width="26" height="26">
+                                        <?php echo $postSaved ? 'Retirer des enregistrements' : 'Enregistrer le post'; ?>
+                                    </button>
+                                </form>
+                            <?php endif; ?>
+                            <?php // "Ne plus suivre" n'apparaît que sur les posts d'un auteur déjà suivi. ?>
+                            <?php if (isset($_SESSION['user_id']) && !$isOwnPost && isFollowing((int) $_SESSION['user_id'], (int) $post['user_id'], $pdo)): ?>
+                                <form method="POST" action="home.php?page=<?php echo $page; ?>">
+                                    <input type="hidden" name="toggle_follow_id" value="<?php echo $post['user_id']; ?>">
+                                    <button type="submit" class="post-menu-item">
+                                        <img src="<?php echo $baseUrl; ?>icons/icons8-delete-user-50.png" alt="" width="26" height="26">
+                                        Ne plus suivre <?php echo htmlspecialchars($post['username']); ?>
+                                    </button>
+                                </form>
+                            <?php endif; ?>
+                            <?php if ($isOwnPost): ?>
                                 <form method="POST" action="home.php?page=<?php echo $page; ?>" class="confirm-form" data-confirm-message="Supprimer définitivement cette publication ? Cette action est irréversible.">
                                     <input type="hidden" name="delete_post" value="<?php echo $post['id']; ?>">
                                     <button type="submit" class="post-menu-item post-menu-item-danger">
@@ -394,9 +433,7 @@ if (isset($_SESSION['user_id'])) {
                             <a class="post-menu-item" href="mailto:?subject=<?php echo $shareText; ?>&body=<?php echo $shareUrl; ?>">
                                 <img src="<?php echo $baseUrl; ?>icons/icons8-email-50.png" alt="" width="28" height="28"> E-mail
                             </a>
-                            <button type="button" class="post-menu-item" onclick="copyPostLink(<?php echo $post['id']; ?>)">
-                                <img src="<?php echo $baseUrl; ?>icons/icons8-link-50.png" alt="" width="28" height="28"> Copier le lien
-                            </button>
+                            <?php // Pas de "Copier le lien" ici : l'entrée existe déjà dans le menu "..." de la publication. ?>
                         </div>
                     </div>
                 </div>

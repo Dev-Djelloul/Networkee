@@ -35,11 +35,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['apply_job_id'], $_SES
 
 // ── Nouvelle offre ──────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['user_id'], $_POST['form_type']) && $_POST['form_type'] === 'create_offer') {
-    $title       = htmlspecialchars(trim($_POST['title']       ?? ''), ENT_QUOTES, 'UTF-8');
-    $company     = htmlspecialchars(trim($_POST['company']     ?? ''), ENT_QUOTES, 'UTF-8');
-    $loc         = htmlspecialchars(trim($_POST['location']    ?? ''), ENT_QUOTES, 'UTF-8');
+    // Règle du projet : on stocke le texte brut, l'échappement se fait UNIQUEMENT à
+    // l'affichage (htmlspecialchars dans les vues). Échapper ici aussi doublait
+    // l'encodage : "l'application" partait en base en "l&#039;application" puis
+    // était ré-échappé à l'affichage, d'où le "&#039;" visible à l'écran.
+    $title       = trim($_POST['title']       ?? '');
+    $company     = trim($_POST['company']     ?? '');
+    $loc         = trim($_POST['location']    ?? '');
     $type        = in_array($_POST['type'] ?? '', $types) ? $_POST['type'] : 'CDI';
-    $description = htmlspecialchars(trim($_POST['description'] ?? ''), ENT_QUOTES, 'UTF-8');
+    $description = trim($_POST['description'] ?? '');
 
     if (empty($title) || empty($company) || empty($description)) {
         $error = 'Merci de remplir au moins le titre, l\'entreprise et la description.';

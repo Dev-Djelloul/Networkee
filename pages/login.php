@@ -8,7 +8,9 @@ session_start();
 $response = ['success' => false, 'message' => ''];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax'])) {
-    $email = htmlspecialchars($_POST['email'] ?? '');
+    // Comparé brut à la valeur en base : un email échappé ici ne correspondrait
+    // plus à l'email stocké (voir pages/jobs.php pour la règle du projet).
+    $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
     $stmt = $pdo->prepare('SELECT * FROM users WHERE email = :email');

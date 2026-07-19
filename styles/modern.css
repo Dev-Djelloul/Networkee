@@ -811,6 +811,9 @@ a {
 .post-menu-item img {
   display: block;
   border-radius: 3px;
+  /* Sans flex-shrink, l'icône s'écrase quand le libellé est long
+     (ex. "Ne plus suivre <prénom>" ou "Retirer des enregistrements"). */
+  flex-shrink: 0;
 }
 
 .post-header {

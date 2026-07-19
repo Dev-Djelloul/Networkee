@@ -44,6 +44,14 @@ CREATE TABLE IF NOT EXISTS reposts (
     UNIQUE (post_id, user_id)
 );
 
+CREATE TABLE IF NOT EXISTS saved_posts (
+    id         SERIAL PRIMARY KEY,
+    post_id    INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+    user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (post_id, user_id)
+);
+
 CREATE TABLE IF NOT EXISTS comments (
     id         SERIAL PRIMARY KEY,
     post_id    INTEGER NOT NULL REFERENCES posts(id) ON DELETE CASCADE,

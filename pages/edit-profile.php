@@ -17,10 +17,11 @@ $user = $stmt->fetch();
 $upload_error = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $bio          = htmlspecialchars($_POST['bio']       ?? '', ENT_QUOTES, 'UTF-8');
-    $job_title    = htmlspecialchars(trim($_POST['job_title']  ?? ''), ENT_QUOTES, 'UTF-8');
-    $location     = htmlspecialchars(trim($_POST['location']   ?? ''), ENT_QUOTES, 'UTF-8');
-    $skills       = htmlspecialchars(trim($_POST['skills']     ?? ''), ENT_QUOTES, 'UTF-8');
+    // Stocké brut : l'échappement se fait à l'affichage (voir pages/jobs.php).
+    $bio          = $_POST['bio'] ?? '';
+    $job_title    = trim($_POST['job_title'] ?? '');
+    $location     = trim($_POST['location']  ?? '');
+    $skills       = trim($_POST['skills']    ?? '');
     $open_to_work = isset($_POST['open_to_work']) ? 1 : 0;
     $profile_image = $user['profile_image'];
 

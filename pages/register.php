@@ -8,8 +8,9 @@ session_start();
 $response = ['success' => false, 'message' => ''];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax'])) {
-    $username = htmlspecialchars($_POST['username'] ?? '');
-    $email = htmlspecialchars($_POST['email'] ?? '');
+    // Stocké brut : l'échappement se fait à l'affichage (voir pages/jobs.php).
+    $username = trim($_POST['username'] ?? '');
+    $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
 

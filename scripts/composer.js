@@ -78,11 +78,12 @@
         });
     }
 
-    // Doit rester ≤ à la limite serveur réelle (uploads.ini / nginx.conf : 40 Mo).
+    // Doivent rester ≤ à la limite serveur réelle (uploads.ini / nginx.conf : 100 Mo).
     // Sans ce garde-fou, le navigateur tente d'envoyer tout le fichier avant que
     // le serveur ne le rejette : sur un gros fichier (ex. 342 Mo), la page reste
     // figée pendant tout l'upload avant d'échouer brutalement.
-    const MAX_FILE_MB = 40;
+    const MAX_IMAGE_MB = 40;
+    const MAX_VIDEO_MB = 100;
 
     function initWidget(widget) {
         const textarea = widget.querySelector('textarea');
@@ -115,10 +116,10 @@
             }
         }
 
-        function isTooLarge(file) {
+        function isTooLarge(file, maxMB) {
             const sizeMB = file.size / (1024 * 1024);
-            if (sizeMB > MAX_FILE_MB) {
-                showError('Fichier trop volumineux (' + sizeMB.toFixed(0) + ' Mo, max ' + MAX_FILE_MB + ' Mo).');
+            if (sizeMB > maxMB) {
+                showError('Fichier trop volumineux (' + sizeMB.toFixed(0) + ' Mo, max ' + maxMB + ' Mo).');
                 return true;
             }
             return false;
@@ -169,7 +170,7 @@
             imageInput.addEventListener('change', () => {
                 const file = imageInput.files[0];
                 if (!file) return;
-                if (isTooLarge(file)) {
+                if (isTooLarge(file, MAX_IMAGE_MB)) {
                     imageInput.value = '';
                     return;
                 }
@@ -185,7 +186,7 @@
             videoInput.addEventListener('change', () => {
                 const file = videoInput.files[0];
                 if (!file) return;
-                if (isTooLarge(file)) {
+                if (isTooLarge(file, MAX_VIDEO_MB)) {
                     videoInput.value = '';
                     return;
                 }
