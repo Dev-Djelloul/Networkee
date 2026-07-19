@@ -1969,8 +1969,12 @@ footer .brand {
    PRO PROFILE
 ───────────────────────────────────────────────────────────────────────────── */
 
+/* `flex` et non `inline-flex` : en inline, le poste et le lieu se plaçaient
+   côte à côte sur une même ligne. En flex, chacun occupe sa ligne et
+   justify-content les centre. */
 .profile-job-title {
-  display: inline-flex;
+  display: flex;
+  justify-content: center;
   align-items: center;
   gap: 0.375rem;
   margin: 0.25rem auto 0.125rem;
@@ -1980,7 +1984,8 @@ footer .brand {
 }
 
 .profile-location {
-  display: inline-flex;
+  display: flex;
+  justify-content: center;
   align-items: center;
   gap: 0.3rem;
   margin: 0 auto 0.5rem;
