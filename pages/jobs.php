@@ -307,8 +307,11 @@ include __DIR__ . '/../includes/head.php';
                                 $avatarUrl = avatarUrl($offer['profile_image'], $baseUrl);
                                 echo renderAvatar($offer['username'], 'sm', $avatarUrl);
                                 ?>
-                                <span style="font-size: 0.8125rem; font-weight: 500; color: var(--text-soft);">
-                                    <?php echo htmlspecialchars($offer['username']); ?>
+                                <span style="font-size: 0.8125rem; color: var(--text-muted);">
+                                    Publié par
+                                    <a href="profile.php?id=<?php echo (int) $offer['user_id']; ?>" style="font-weight: 500; color: var(--text-soft);">
+                                        <?php echo htmlspecialchars($offer['username']); ?>
+                                    </a>
                                 </span>
                             </div>
                             <time style="font-size: 0.75rem; color: var(--text-muted);">

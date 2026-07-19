@@ -547,6 +547,15 @@ a {
   background: var(--composer-bg);
 }
 
+/* L'attribut `hidden` ne pose qu'un `display: none` de faible priorité, qu'une règle
+   de classe écrase : sans ceci l'aperçu vide (et sa croix ✕) restait affiché tant
+   qu'aucune action JS n'avait posé un style inline. */
+.composer-media-preview[hidden],
+.composer-preview-img[hidden],
+.composer-preview-video[hidden] {
+  display: none;
+}
+
 .composer-preview-img,
 .composer-preview-video {
   display: block;
