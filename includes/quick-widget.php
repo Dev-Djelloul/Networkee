@@ -7,7 +7,15 @@
  * sur une variable préparée par la page hôte — sans quoi il faudrait dupliquer cette
  * requête dans chaque page qui l'affiche. Les liens passent tous par $baseUrl, la
  * profondeur variant selon l'emplacement de la page (racine ou pages/).
+ *
+ * Une page peut s'en passer en posant $hideQuickWidget = true avant le footer : sur
+ * les écrans de connexion et d'inscription, le panneau ne ferait que reproposer
+ * l'action déjà en cours sur la page.
  */
+
+if (!empty($hideQuickWidget)) {
+    return;
+}
 
 $widgetBaseUrl = $baseUrl ?? './';
 $widgetAvatar  = '';
@@ -61,7 +69,7 @@ function widgetIconStyle(string $url): string {
             </nav>
             <a href="<?php echo $widgetBaseUrl; ?>pages/logout.php" class="widget-logout">Déconnexion</a>
         <?php else: ?>
-            <p class="widget-anon">Tu n'es pas connecté.</p>
+            <p class="widget-anon">Tu n'es pas encore connecté !</p>
             <nav class="widget-nav">
                 <a href="<?php echo $widgetBaseUrl; ?>pages/login.php" class="widget-link"><span role="img" aria-label="se connecter" style="<?php echo widgetIconStyle('https://img.icons8.com/quill/50/key.png'); ?>"></span>Se connecter</a>
                 <a href="<?php echo $widgetBaseUrl; ?>pages/register.php" class="widget-link"><span role="img" aria-label="s'inscrire" style="<?php echo widgetIconStyle($widgetBaseUrl . 'icons/icons8-sign-up-50.png'); ?>"></span>S'inscrire</a>

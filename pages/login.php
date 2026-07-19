@@ -1,6 +1,8 @@
 <?php
 $baseUrl = '../';
 $pageTitle = 'Connexion — Networkee';
+// Le panneau d'accès rapide ne proposerait ici que « Se connecter », déjà à l'écran.
+$hideQuickWidget = true;
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/helpers.php';
 session_start();
