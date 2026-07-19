@@ -14,21 +14,6 @@ try {
     $statUsers = $statPosts = $statOffers = '—';
 }
 
-// Photo de l'utilisateur connecté (pour le widget d'accès rapide)
-$widgetAvatar = '';
-if (isset($_SESSION['user_id'])) {
-    try {
-        $s = $pdo->prepare("SELECT profile_image FROM users WHERE id = :id");
-        $s->execute(['id' => $_SESSION['user_id']]);
-        $pi = $s->fetchColumn();
-        if (!empty($pi) && $pi !== 'default.png') {
-            $widgetAvatar = $baseUrl . 'uploads/' . $pi;
-        }
-    } catch (\Exception $e) {
-        $widgetAvatar = '';
-    }
-}
-
 include __DIR__ . '/includes/head.php';
 ?>
 <body>
@@ -134,57 +119,6 @@ include __DIR__ . '/includes/head.php';
 
     <?php include __DIR__ . '/includes/footer.php'; ?>
 
-    <!-- ── WIDGET FLOTTANT ───────────────────────────────────────────────── -->
-    <div id="quick-widget" class="quick-widget collapsed">
-        <!-- Tab de bascule -->
-        <button class="widget-tab" onclick="toggleWidget()" aria-label="Ouvrir/fermer le panneau rapide">
-            <svg id="widget-icon-open" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-            <svg id="widget-icon-close" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="m15 18-6-6 6-6"/></svg>
-            <span class="widget-tab-label">Accès rapide</span>
-        </button>
-
-        <!-- Contenu du widget -->
-        <div class="widget-body">
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <div class="widget-greeting">
-                    <?php if ($widgetAvatar): ?>
-                        <img class="widget-avatar" src="<?php echo htmlspecialchars($widgetAvatar); ?>" alt="<?php echo htmlspecialchars($_SESSION['username']); ?>" style="object-fit:cover;">
-                    <?php else: ?>
-                        <div class="widget-avatar"><?php echo strtoupper(substr($_SESSION['username'], 0, 1)); ?></div>
-                    <?php endif; ?>
-                    <div>
-                        <div class="widget-name"><?php echo htmlspecialchars($_SESSION['username']); ?></div>
-                        <div class="widget-status">Connecté ✓</div>
-                    </div>
-                </div>
-                <nav class="widget-nav">
-                    <a href="pages/home.php"    class="widget-link"><span role="img" aria-label="rss" style="display:inline-block;width:24px;height:24px;vertical-align:middle;background-color:var(--accent);-webkit-mask:url('https://img.icons8.com/quill/100/rss.png') center / contain no-repeat;mask:url('https://img.icons8.com/quill/100/rss.png') center / contain no-repeat;"></span>Le fil</a>
-                    <a href="pages/profile.php" class="widget-link"><span role="img" aria-label="conference-call" style="display:inline-block;width:24px;height:24px;vertical-align:middle;background-color:var(--accent);-webkit-mask:url('https://img.icons8.com/quill/50/conference-call.png') center / contain no-repeat;mask:url('https://img.icons8.com/quill/50/conference-call.png') center / contain no-repeat;"></span>Mon profil</a>
-                    <a href="pages/jobs.php"    class="widget-link"><span role="img" aria-label="teacher-hirring" style="display:inline-block;width:24px;height:24px;vertical-align:middle;background-color:var(--accent);-webkit-mask:url('https://img.icons8.com/quill/50/teacher-hirring.png') center / contain no-repeat;mask:url('https://img.icons8.com/quill/50/teacher-hirring.png') center / contain no-repeat;"></span>Offres d'emploi</a>
-                    <a href="pages/saved.php" class="widget-link"><span role="img" aria-label="favoris" style="display:inline-block;width:24px;height:24px;vertical-align:middle;background-color:var(--accent);-webkit-mask:url('<?php echo $baseUrl; ?>icons/icons8-bookmark-50.png') center / contain no-repeat;mask:url('<?php echo $baseUrl; ?>icons/icons8-bookmark-50.png') center / contain no-repeat;"></span>Favoris</a>
-                </nav>
-                <a href="pages/logout.php" class="widget-logout">Déconnexion</a>
-            <?php else: ?>
-                <p class="widget-anon">Tu n'es pas connecté.</p>
-                <nav class="widget-nav">
-                    <a href="pages/login.php"    class="widget-link"><span role="img" aria-label="se connecter" style="display:inline-block;width:24px;height:24px;vertical-align:middle;background-color:var(--accent);-webkit-mask:url('https://img.icons8.com/quill/50/key.png') center / contain no-repeat;mask:url('https://img.icons8.com/quill/50/key.png') center / contain no-repeat;"></span>Se connecter</a>
-                    <a href="pages/register.php" class="widget-link"><span role="img" aria-label="s'inscrire" style="display:inline-block;width:24px;height:24px;vertical-align:middle;background-color:var(--accent);-webkit-mask:url('<?php echo $baseUrl; ?>icons/icons8-sign-up-50.png') center / contain no-repeat;mask:url('<?php echo $baseUrl; ?>icons/icons8-sign-up-50.png') center / contain no-repeat;"></span>S'inscrire</a>
-                    <a href="pages/jobs.php"     class="widget-link"><span role="img" aria-label="offres d'emploi" style="display:inline-block;width:24px;height:24px;vertical-align:middle;background-color:var(--accent);-webkit-mask:url('https://img.icons8.com/quill/50/teacher-hirring.png') center / contain no-repeat;mask:url('https://img.icons8.com/quill/50/teacher-hirring.png') center / contain no-repeat;"></span>Offres d'emploi</a>
-                </nav>
-            <?php endif; ?>
-        </div>
-    </div>
-
-    <script>
-    function toggleWidget() {
-        const w = document.getElementById('quick-widget');
-        const open  = document.getElementById('widget-icon-open');
-        const close = document.getElementById('widget-icon-close');
-        const isOpen = !w.classList.contains('collapsed');
-        w.classList.toggle('collapsed', isOpen);
-        open.style.display  = isOpen ? '' : 'none';
-        close.style.display = isOpen ? 'none' : '';
-    }
-    </script>
+    <?php // Le panneau « Accès rapide » et son script sont rendus par includes/footer.php. ?>
 </body>
 </html>
