@@ -124,6 +124,7 @@ a {
   font-weight: 500;
   font-size: 1.25rem;
   letter-spacing: -0.025em;
+  color: #ef7c56db;
 }
 
 .logo-mark {
@@ -414,7 +415,7 @@ a {
   width: 100%;
   max-width: 680px;
   margin: 0 auto;
-  padding: 2rem 2rem 3rem;
+  padding: 2rem 2.5rem 3rem;
 }
 
 /* Cards */
@@ -1852,8 +1853,7 @@ footer .brand {
   background: var(--surface);
   border: 1px solid var(--border);
   border-right: none;
-  border-radius: 0.75rem 0 0 0.75rem;
-  width: 220px;
+  width: 235px;
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
