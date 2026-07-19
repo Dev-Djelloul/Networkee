@@ -105,6 +105,24 @@ CREATE TABLE `saved_posts` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `saved_jobs`
+-- (clés déclarées inline : table ajoutée après le dump initial)
+--
+
+CREATE TABLE `saved_jobs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `job_offer_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `saved_jobs_unique` (`job_offer_id`,`user_id`),
+  CONSTRAINT `saved_jobs_offer_fk` FOREIGN KEY (`job_offer_id`) REFERENCES `job_offers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `saved_jobs_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `likes`
 --
 

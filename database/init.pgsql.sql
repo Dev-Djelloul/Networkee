@@ -98,6 +98,14 @@ CREATE TABLE IF NOT EXISTS job_applications (
     UNIQUE (job_offer_id, user_id)
 );
 
+CREATE TABLE IF NOT EXISTS saved_jobs (
+    id           SERIAL PRIMARY KEY,
+    job_offer_id INTEGER NOT NULL REFERENCES job_offers(id) ON DELETE CASCADE,
+    user_id      INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (job_offer_id, user_id)
+);
+
 CREATE TABLE IF NOT EXISTS password_resets (
     id         SERIAL PRIMARY KEY,
     user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,

@@ -33,6 +33,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['apply_job_id'], $_SES
     exit;
 }
 
+// ── Enregistrer / retirer une offre ─────────────────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_save_job'], $_SESSION['user_id'])) {
+    $offerId = (int) $_POST['toggle_save_job'];
+    $userId  = (int) $_SESSION['user_id'];
+
+    if (hasUserSavedJob($offerId, $userId, $pdo)) {
+        $pdo->prepare("DELETE FROM saved_jobs WHERE job_offer_id = :job_offer_id AND user_id = :user_id")
+            ->execute(['job_offer_id' => $offerId, 'user_id' => $userId]);
+    } else {
+        $pdo->prepare("INSERT INTO saved_jobs (job_offer_id, user_id) VALUES (:job_offer_id, :user_id)")
+            ->execute(['job_offer_id' => $offerId, 'user_id' => $userId]);
+    }
+
+    header('Location: jobs.php');
+    exit;
+}
+
+// ── Suppression d'une offre (auteur uniquement) ─────────────────────────────
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_offer'], $_SESSION['user_id'])) {
+    $offerId = (int) $_POST['delete_offer'];
+
+    $ownerStmt = $pdo->prepare("SELECT user_id FROM job_offers WHERE id = :id");
+    $ownerStmt->execute(['id' => $offerId]);
+    $ownerId = (int) $ownerStmt->fetchColumn();
+
+    if ($ownerId && $ownerId === (int) $_SESSION['user_id']) {
+        // Les candidatures et les enregistrements partent en cascade (contraintes FK),
+        // mais pas les notifications : leur post_id sert de job_offer_id sans clé
+        // étrangère, elles pointeraient donc vers une offre disparue.
+        $pdo->prepare("DELETE FROM notifications WHERE type = 'application' AND post_id = :id")
+            ->execute(['id' => $offerId]);
+        $pdo->prepare("DELETE FROM job_offers WHERE id = :id")->execute(['id' => $offerId]);
+    }
+
+    header('Location: jobs.php?deleted=1');
+    exit;
+}
+
 // ── Nouvelle offre ──────────────────────────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['user_id'], $_POST['form_type']) && $_POST['form_type'] === 'create_offer') {
     // Règle du projet : on stocke le texte brut, l'échappement se fait UNIQUEMENT à
@@ -114,6 +152,9 @@ include __DIR__ . '/../includes/head.php';
         <?php endif; ?>
         <?php if (isset($_GET['applied'])): ?>
             <div class="alert alert-success" style="margin-bottom: 1rem;">✅ Ta candidature a bien été envoyée !</div>
+        <?php endif; ?>
+        <?php if (isset($_GET['deleted'])): ?>
+            <div class="alert alert-success" style="margin-bottom: 1rem;">🗑️ Offre supprimée.</div>
         <?php endif; ?>
         <?php if ($error): ?>
             <div class="alert alert-danger" style="margin-bottom: 1rem;"><?php echo $error; ?></div>
@@ -209,6 +250,36 @@ include __DIR__ . '/../includes/head.php';
                                             <?php echo htmlspecialchars($offer['location']); ?>
                                         </span>
                                     <?php endif; ?>
+
+                                    <?php $offerIsMine = isset($_SESSION['user_id']) && (int) $offer['user_id'] === (int) $_SESSION['user_id']; ?>
+                                    <div class="post-menu-wrapper" style="margin-left: auto;">
+                                        <button type="button" class="post-menu" aria-label="Options de l'offre" onclick="togglePostMenu(this)">
+                                            <?php echo renderIcon('more', 20); ?>
+                                        </button>
+                                        <div class="post-menu-dropdown">
+                                            <button type="button" class="post-menu-item" onclick="copyJobLink(<?php echo (int) $offer['id']; ?>)">
+                                                <img src="<?php echo $baseUrl; ?>icons/icons8-link-50.png" alt="" width="26" height="26"> Copier le lien
+                                            </button>
+                                            <?php if (isset($_SESSION['user_id'])): ?>
+                                                <?php $offerSaved = hasUserSavedJob((int) $offer['id'], (int) $_SESSION['user_id'], $pdo); ?>
+                                                <form method="POST" action="jobs.php">
+                                                    <input type="hidden" name="toggle_save_job" value="<?php echo (int) $offer['id']; ?>">
+                                                    <button type="submit" class="post-menu-item">
+                                                        <img src="<?php echo $baseUrl; ?>icons/icons8-save-50.png" alt="" width="26" height="26">
+                                                        <?php echo $offerSaved ? 'Retirer des enregistrements' : "Enregistrer l'offre"; ?>
+                                                    </button>
+                                                </form>
+                                            <?php endif; ?>
+                                            <?php if ($offerIsMine): ?>
+                                                <form method="POST" action="jobs.php" class="confirm-form" data-confirm-message="Supprimer définitivement cette offre ? Les candidatures reçues seront perdues.">
+                                                    <input type="hidden" name="delete_offer" value="<?php echo (int) $offer['id']; ?>">
+                                                    <button type="submit" class="post-menu-item post-menu-item-danger">
+                                                        <img src="<?php echo $baseUrl; ?>icons/icons8-delete-50.png" alt="" width="26" height="26"> Supprimer
+                                                    </button>
+                                                </form>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <!-- Titre & Entreprise -->

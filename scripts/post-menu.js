@@ -56,10 +56,19 @@
         positionDropdown(button, dropdown);
     };
 
-    window.copyPostLink = function (postId) {
-        const url = window.location.origin + window.location.pathname + '#post-' + postId;
+    function copyAnchorLink(anchor) {
+        const url = window.location.origin + window.location.pathname + '#' + anchor;
         navigator.clipboard.writeText(url).catch(function () {});
         closeAll();
+    }
+
+    window.copyPostLink = function (postId) {
+        copyAnchorLink('post-' + postId);
+    };
+
+    // Les offres d'emploi portent une ancre #job-<id> (voir pages/jobs.php).
+    window.copyJobLink = function (offerId) {
+        copyAnchorLink('job-' + offerId);
     };
 
     document.addEventListener('click', function (e) {

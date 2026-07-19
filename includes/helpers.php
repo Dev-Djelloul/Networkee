@@ -126,6 +126,12 @@ function hasUserSaved(int $postId, int $userId, PDO $pdo): bool {
     return $stmt->fetchColumn() > 0;
 }
 
+function hasUserSavedJob(int $jobOfferId, int $userId, PDO $pdo): bool {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM saved_jobs WHERE job_offer_id = :job_offer_id AND user_id = :user_id");
+    $stmt->execute(['job_offer_id' => $jobOfferId, 'user_id' => $userId]);
+    return $stmt->fetchColumn() > 0;
+}
+
 function getRepostCount(int $postId, PDO $pdo): int {
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM reposts WHERE post_id = :post_id");
     $stmt->execute(['post_id' => $postId]);
