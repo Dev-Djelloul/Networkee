@@ -32,9 +32,18 @@ $published = false;
 // Publication (session requise).
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['content'], $_SESSION['user_id'])) {
     $content = trim($_POST['content']);
+    // Image de l'article (og:image), transmise en champ caché et revalidée http(s).
+    $postImage = trim($_POST['shared_image'] ?? '');
+    if ($postImage !== '' && !preg_match('#^https?://#i', $postImage)) {
+        $postImage = '';
+    }
     if ($content !== '') {
-        $stmt = $pdo->prepare("INSERT INTO posts (user_id, content, created_at) VALUES (:user_id, :content, NOW())");
-        $stmt->execute(['user_id' => $_SESSION['user_id'], 'content' => $content]);
+        $stmt = $pdo->prepare("INSERT INTO posts (user_id, content, image, created_at) VALUES (:user_id, :content, :image, NOW())");
+        $stmt->execute([
+            'user_id' => $_SESSION['user_id'],
+            'content' => $content,
+            'image'   => $postImage !== '' ? $postImage : null,
+        ]);
         $published = true;
     }
 }
@@ -107,6 +116,7 @@ include __DIR__ . '/../includes/head.php';
                         <?php echo renderAvatar($currentUser, '', avatarUrl($currentUserImage, $baseUrl)); ?>
                         <div class="composer-main" style="flex: 1;">
                             <form method="post" class="composer-widget">
+                                <input type="hidden" name="shared_image" value="<?php echo htmlspecialchars($sharedImage); ?>">
                                 <textarea name="content" rows="4" placeholder="Ajoute un mot..."><?php echo htmlspecialchars($prefill); ?></textarea>
 
                                 <?php echo $previewCard; ?>

@@ -367,7 +367,7 @@ if (isset($_SESSION['user_id'])) {
                 </div>
 
                 <?php if ($post['image']): ?>
-                    <img src="<?php echo $baseUrl; ?>uploads/<?php echo htmlspecialchars($post['image']); ?>" alt="Image du post" class="post-image">
+                    <img src="<?php echo htmlspecialchars(postMediaUrl($post['image'], $baseUrl)); ?>" alt="Image du post" class="post-image">
                 <?php elseif (!empty($post['video'])): ?>
                     <video src="<?php echo $baseUrl; ?>uploads/<?php echo htmlspecialchars($post['video']); ?>" class="post-image" controls></video>
                 <?php endif; ?>

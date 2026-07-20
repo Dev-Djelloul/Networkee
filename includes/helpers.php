@@ -555,6 +555,18 @@ function sendEmail(string $to, string $subject, string $html): bool {
     return true;
 }
 
+/**
+ * URL d'affichage d'un média de post. Un média uploadé est un simple nom de
+ * fichier servi depuis uploads/ ; un média partagé depuis l'extérieur (aperçu
+ * d'article) est déjà une URL absolue http(s) et est renvoyé tel quel.
+ */
+function postMediaUrl(string $file, string $baseUrl): string {
+    if (preg_match('#^https?://#i', $file)) {
+        return $file;
+    }
+    return $baseUrl . 'uploads/' . $file;
+}
+
 function renderSkillTags(string $skills): string {
     if (empty(trim($skills))) return '';
     $tags = array_filter(array_map('trim', explode(',', $skills)));
