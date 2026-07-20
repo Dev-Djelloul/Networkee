@@ -15,6 +15,11 @@ session_start();
 // Paramètres reçus du site externe (stockés bruts, échappés à l'affichage).
 $sharedUrl   = trim($_GET['url'] ?? $_POST['shared_url'] ?? '');
 $sharedTitle = trim($_GET['title'] ?? $_POST['shared_title'] ?? '');
+$sharedImage = trim($_GET['image'] ?? $_POST['shared_image'] ?? '');
+// N'accepte qu'une image http(s) pour l'aperçu (évite les URI javascript:/data:).
+if ($sharedImage !== '' && !preg_match('#^https?://#i', $sharedImage)) {
+    $sharedImage = '';
+}
 
 // Texte pré-rempli du post.
 $prefill = $sharedTitle !== '' ? $sharedTitle . ' 📖' : '';
@@ -46,6 +51,24 @@ if ($isLoggedIn) {
 // Domaine affiché dans l'aperçu.
 $sharedHost = $sharedUrl !== '' ? (parse_url($sharedUrl, PHP_URL_HOST) ?: '') : '';
 
+// Carte d'aperçu de l'article (image + titre + domaine), façon LinkedIn.
+$previewCard = '';
+if ($sharedTitle !== '' || $sharedUrl !== '' || $sharedImage !== '') {
+    $previewCard = '<div class="share-preview-card">';
+    if ($sharedImage !== '') {
+        $previewCard .= '<img class="share-preview-img" src="' . htmlspecialchars($sharedImage)
+            . '" alt="" onerror="this.style.display=\'none\'">';
+    }
+    $previewCard .= '<div class="share-preview-body">';
+    if ($sharedTitle !== '') {
+        $previewCard .= '<div class="share-preview-title">' . htmlspecialchars($sharedTitle) . '</div>';
+    }
+    if ($sharedHost !== '') {
+        $previewCard .= '<div class="share-preview-host">' . htmlspecialchars($sharedHost) . '</div>';
+    }
+    $previewCard .= '</div></div>';
+}
+
 include __DIR__ . '/../includes/head.php';
 ?>
 <body>
@@ -73,13 +96,8 @@ include __DIR__ . '/../includes/head.php';
                 <?php elseif (!$isLoggedIn): ?>
                     <h2 style="margin-top: 0;">Partager sur Networkee</h2>
                     <p style="color: var(--text-muted);">Connecte-toi pour partager cet article sur ton fil.</p>
-                    <?php if ($sharedTitle !== ''): ?>
-                        <div class="share-preview-card">
-                            <div class="share-preview-title"><?php echo htmlspecialchars($sharedTitle); ?></div>
-                            <?php if ($sharedHost !== ''): ?><div class="share-preview-host"><?php echo htmlspecialchars($sharedHost); ?></div><?php endif; ?>
-                        </div>
-                    <?php endif; ?>
-                    <a href="login.php?redirect=<?php echo urlencode('share.php?url=' . urlencode($sharedUrl) . '&title=' . urlencode($sharedTitle)); ?>"
+                    <?php echo $previewCard; ?>
+                    <a href="login.php?redirect=<?php echo urlencode('share.php?url=' . urlencode($sharedUrl) . '&title=' . urlencode($sharedTitle) . '&image=' . urlencode($sharedImage)); ?>"
                        class="btn btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">Se connecter</a>
 
                 <?php else: ?>
@@ -91,12 +109,7 @@ include __DIR__ . '/../includes/head.php';
                             <form method="post" class="composer-widget">
                                 <textarea name="content" rows="4" placeholder="Ajoute un mot..."><?php echo htmlspecialchars($prefill); ?></textarea>
 
-                                <?php if ($sharedTitle !== '' || $sharedUrl !== ''): ?>
-                                    <div class="share-preview-card">
-                                        <?php if ($sharedTitle !== ''): ?><div class="share-preview-title"><?php echo htmlspecialchars($sharedTitle); ?></div><?php endif; ?>
-                                        <?php if ($sharedHost !== ''): ?><div class="share-preview-host"><?php echo htmlspecialchars($sharedHost); ?></div><?php endif; ?>
-                                    </div>
-                                <?php endif; ?>
+                                <?php echo $previewCard; ?>
 
                                 <div class="composer-actions" style="margin-top: 1rem;">
                                     <button type="button" class="btn btn-secondary" onclick="window.close()">Annuler</button>
@@ -119,11 +132,19 @@ include __DIR__ . '/../includes/head.php';
     <style>
         .share-preview-card {
             margin-top: 0.75rem;
-            padding: 0.875rem 1rem;
             border: 1px solid var(--border);
             border-radius: 0.75rem;
+            overflow: hidden;
             background: var(--bg-secondary, rgb(255 255 255 / 4%));
         }
+        .share-preview-img {
+            display: block;
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            background: rgb(255 255 255 / 4%);
+        }
+        .share-preview-body { padding: 0.875rem 1rem; }
         .share-preview-title { font-weight: 600; line-height: 1.35; }
         .share-preview-host { margin-top: 0.25rem; font-size: 0.8125rem; color: var(--text-muted); }
     </style>
