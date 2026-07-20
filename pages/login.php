@@ -9,6 +9,14 @@ session_start();
 
 $response = ['success' => false, 'message' => ''];
 
+// Redirection après connexion. On n'accepte qu'un chemin relatif simple
+// (une page du dossier pages/) pour éviter toute redirection ouverte vers
+// un domaine externe.
+$redirect = $_GET['redirect'] ?? $_POST['redirect'] ?? '';
+if ($redirect !== '' && !preg_match('#^[a-zA-Z0-9_\-]+\.php(\?.*)?$#', $redirect)) {
+    $redirect = '';
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax'])) {
     // Comparé brut à la valeur en base : un email échappé ici ne correspondrait
     // plus à l'email stocké (voir pages/jobs.php pour la règle du projet).
@@ -81,7 +89,9 @@ include __DIR__ . '/../includes/head.php';
                         const messageDiv = $('#message');
                         if (response.success) {
                             messageDiv.html(`<div class='alert alert-success'>${response.message}</div>`);
-                            setTimeout(() => window.location.href = '../main.php', 800);
+                            const redirect = <?php echo json_encode($redirect); ?>;
+                            const target = redirect ? redirect : '../main.php';
+                            setTimeout(() => window.location.href = target, 800);
                         } else {
                             messageDiv.html(`<div class='alert alert-danger'>${response.message}</div>`);
                         }
