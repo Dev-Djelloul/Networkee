@@ -157,7 +157,7 @@ $totalSaved = count($savedPosts) + count($savedJobs);
                     </div>
 
                     <div class="post-content">
-                        <?php echo nl2br(htmlspecialchars($post['content'])); ?>
+                        <?php echo renderPostContent($post['content']); ?>
                     </div>
 
                     <?php if ($post['image']): ?>

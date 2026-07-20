@@ -21,8 +21,8 @@ if ($sharedImage !== '' && !preg_match('#^https?://#i', $sharedImage)) {
     $sharedImage = '';
 }
 
-// Texte pré-rempli du post.
-$prefill = $sharedTitle !== '' ? $sharedTitle . ' 📖' : '';
+// Texte pré-rempli du post (titre puis lien, sans emoji indicateur).
+$prefill = $sharedTitle;
 if ($sharedUrl !== '') {
     $prefill .= ($prefill !== '' ? "\n" : '') . $sharedUrl;
 }
@@ -93,14 +93,10 @@ include __DIR__ . '/../includes/head.php';
                         <h2 style="margin: 0.5rem 0;">Publié sur ton fil !</h2>
                         <p style="color: var(--text-muted);">Ton partage est en ligne sur Networkee.</p>
                         <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem;">
-                            <a href="home.php" class="btn btn-primary" target="_blank">Voir mon fil</a>
+                            <a href="home.php" class="btn btn-primary">Voir mon fil</a>
                             <button type="button" class="btn btn-secondary" onclick="window.close()">Fermer</button>
                         </div>
                     </div>
-                    <script>
-                        // Ferme automatiquement la popup après un court délai (si ouverte via window.open).
-                        setTimeout(() => { window.close(); }, 2500);
-                    </script>
 
                 <?php elseif (!$isLoggedIn): ?>
                     <h2 style="margin-top: 0;">Partager sur Networkee</h2>

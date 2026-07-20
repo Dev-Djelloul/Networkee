@@ -286,7 +286,7 @@ $pageTitle = htmlspecialchars($user['username']) . ' — Networkee';
                     </div>
                 </div>
                 <div class="post-content" style="padding: 1.25rem;">
-                    <?php echo nl2br(htmlspecialchars($post['content'])); ?>
+                    <?php echo renderPostContent($post['content']); ?>
                 </div>
                 <?php if ($post['image']): ?>
                     <img src="<?php echo htmlspecialchars(postMediaUrl($post['image'], $baseUrl)); ?>" alt="Image du post" class="post-image">

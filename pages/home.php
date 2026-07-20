@@ -363,7 +363,7 @@ if (isset($_SESSION['user_id'])) {
                 </div>
 
                 <div class="post-content">
-                    <?php echo nl2br(htmlspecialchars($post['content'])); ?>
+                    <?php echo renderPostContent($post['content']); ?>
                 </div>
 
                 <?php if ($post['image']): ?>

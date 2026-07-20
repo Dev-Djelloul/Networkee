@@ -567,6 +567,23 @@ function postMediaUrl(string $file, string $baseUrl): string {
     return $baseUrl . 'uploads/' . $file;
 }
 
+/**
+ * Rend le contenu d'un post : échappe le HTML (sécurité), transforme les URLs
+ * http(s) en liens cliquables, puis convertit les retours à la ligne en <br>.
+ * L'échappement est fait AVANT la linkification pour ne jamais injecter de HTML
+ * arbitraire ; les URLs ne contenant pas de caractères spéciaux HTML, elles
+ * survivent intactes dans l'attribut href.
+ */
+function renderPostContent(string $content): string {
+    $escaped = htmlspecialchars($content, ENT_QUOTES, 'UTF-8');
+    $linked = preg_replace(
+        '#(https?://[^\s<]+)#',
+        '<a href="$1" target="_blank" rel="noopener nofollow">$1</a>',
+        $escaped
+    );
+    return nl2br($linked);
+}
+
 function renderSkillTags(string $skills): string {
     if (empty(trim($skills))) return '';
     $tags = array_filter(array_map('trim', explode(',', $skills)));
