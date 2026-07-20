@@ -123,6 +123,26 @@ CREATE TABLE `saved_jobs` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `api_tokens`
+-- Jetons d'accès personnels permettant de publier depuis l'extérieur du site
+-- via l'API REST, sans partager email/mot de passe. (table ajoutée après le dump initial)
+--
+
+CREATE TABLE IF NOT EXISTS `api_tokens` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `token_hash` varchar(64) NOT NULL,
+  `last_used_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `api_tokens_hash_unique` (`token_hash`),
+  CONSTRAINT `api_tokens_user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `likes`
 --
 

@@ -151,6 +151,11 @@ include __DIR__ . '/../includes/head.php';
                         <button type="submit" class="btn btn-primary">Mettre à jour</button>
                     </div>
                 </form>
+
+                <p style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border); font-size: 0.875rem;">
+                    <a href="api-tokens.php" style="color: var(--accent); font-weight: 500;">Jetons API</a>
+                    <span style="color: var(--text-muted);"> — publie sur ton fil depuis un site ou un script externe.</span>
+                </p>
             </div>
         </div>
     </main>

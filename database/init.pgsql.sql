@@ -114,6 +114,17 @@ CREATE TABLE IF NOT EXISTS password_resets (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Jetons d'accès personnels : permettent de publier depuis l'extérieur du site
+-- (script, appli tierce...) via l'API REST sans partager email/mot de passe.
+CREATE TABLE IF NOT EXISTS api_tokens (
+    id           SERIAL PRIMARY KEY,
+    user_id      INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name         VARCHAR(100) NOT NULL,
+    token_hash   VARCHAR(64) NOT NULL UNIQUE,
+    last_used_at TIMESTAMP DEFAULT NULL,
+    created_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 -- ─── Données de démonstration (seed only if empty) ──────────────────────────
 -- mots de passe : Alexandre=password, Sophie=123456, Hugo=azerty, Camille=networkee
 INSERT INTO users (id, username, email, password, profile_image, bio, created_at)

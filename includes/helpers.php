@@ -463,6 +463,57 @@ function invalidatePasswordResetToken(string $rawToken, PDO $pdo): void {
 }
 
 /**
+ * Crée un jeton d'accès personnel pour publier depuis l'extérieur du site
+ * (API REST). Retourne le jeton brut (affiché une seule fois côté client) ;
+ * seul son hash est stocké en base, comme pour les tokens de reset mot de passe.
+ */
+function createApiToken(int $userId, string $name, PDO $pdo): string {
+    $rawToken = 'nk_' . bin2hex(random_bytes(32));
+    $stmt = $pdo->prepare(
+        "INSERT INTO api_tokens (user_id, name, token_hash, created_at) VALUES (:user_id, :name, :token_hash, NOW())"
+    );
+    $stmt->execute([
+        'user_id'    => $userId,
+        'name'       => $name,
+        'token_hash' => hash('sha256', $rawToken),
+    ]);
+    return $rawToken;
+}
+
+/**
+ * Retourne l'utilisateur associé à un jeton d'API valide, ou null. Met à jour
+ * last_used_at au passage pour permettre de repérer les jetons inactifs.
+ */
+function validateApiToken(string $rawToken, PDO $pdo): ?array {
+    $stmt = $pdo->prepare(
+        "SELECT u.* FROM api_tokens t JOIN users u ON t.user_id = u.id WHERE t.token_hash = :token_hash"
+    );
+    $stmt->execute(['token_hash' => hash('sha256', $rawToken)]);
+    $user = $stmt->fetch();
+    if (!$user) {
+        return null;
+    }
+    $pdo->prepare("UPDATE api_tokens SET last_used_at = NOW() WHERE token_hash = :token_hash")
+        ->execute(['token_hash' => hash('sha256', $rawToken)]);
+    return $user;
+}
+
+function getApiTokens(int $userId, PDO $pdo): array {
+    $stmt = $pdo->prepare(
+        "SELECT id, name, last_used_at, created_at FROM api_tokens WHERE user_id = :user_id ORDER BY created_at DESC"
+    );
+    $stmt->execute(['user_id' => $userId]);
+    return $stmt->fetchAll();
+}
+
+function revokeApiToken(int $tokenId, int $userId, PDO $pdo): void {
+    // Le filtre sur user_id empêche de révoquer le jeton de quelqu'un d'autre
+    // en bricolant l'id dans la requête.
+    $stmt = $pdo->prepare("DELETE FROM api_tokens WHERE id = :id AND user_id = :user_id");
+    $stmt->execute(['id' => $tokenId, 'user_id' => $userId]);
+}
+
+/**
  * Envoie un email via l'API REST de Resend (https://resend.com). Nécessite la variable
  * d'environnement RESEND_API_KEY. Retourne true si Resend a accepté l'envoi.
  * RESEND_FROM_EMAIL permet de personnaliser l'expéditeur une fois un domaine vérifié
